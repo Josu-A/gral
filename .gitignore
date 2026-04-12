@@ -8,7 +8,7 @@ node_modules/
 *.log
 
 # Editoreak
-# vscode
+# vscode from: https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -17,7 +17,7 @@ node_modules/
 !.vscode/*.code-snippets
 !*.code-workspace
 *.vsix
-# vim
+# vim from: https://github.com/github/gitignore/blob/main/Global/Vim.gitignore
 [._]*.s[a-v][a-z]
 [._]*.sw[a-p]
 [._]s[a-rt-v][a-z]
@@ -31,14 +31,14 @@ tags
 [._]*.un~
 
 # Sistema eragileen gauzak
-# linux
+# linux from: https://github.com/github/gitignore/blob/main/Global/Linux.gitignore
 *~
 .fuse_hidden*
 .directory
 .Trash-*
 .nfs*
 nohup.out
-# windows
+# windows from: https://github.com/github/gitignore/blob/main/Global/Windows.gitignore
 Thumbs.db
 Thumbs.db:encryptable
 ehthumbs.db
@@ -52,7 +52,7 @@ $RECYCLE.BIN/
 *.msm
 *.msp
 *.lnk
-# mac
+# mac from: https://github.com/github/gitignore/blob/main/Global/macOS.gitignore
 .DS_Store
 .localized
 __MACOSX/
