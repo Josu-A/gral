@@ -1,0 +1,10 @@
+{
+  "name": "gral",
+  "version": "1.0.0",
+  "description": "Programazioan laguntzeko web-sistema, LLM eta MCP teknologietan oinarritua",
+  "workspaces": [
+    "zerbitzaria",
+    "bezeroa",
+    "mcp/*"
+  ]
+}
