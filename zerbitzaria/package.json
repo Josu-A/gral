@@ -1,0 +1,41 @@
+{
+  "name": "@gral/zerbitzaria",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsup",
+    "dev": "cross-env NODE_ENV=development npm run dev:watch",
+    "dev:basic": "tsx -C dev src/main.ts",
+    "dev:watch": "tsx watch -C dev src/main.ts",
+    "start": "node dist/main.js"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "imports": {
+    "#*": {
+      "dev": "./src/*",
+      "default": "./dist/*"
+    }
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.1",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "winston": "^3.19.0",
+    "winston-daily-rotate-file": "^5.0.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.0",
+    "cross-env": "^10.1.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  }
+}
