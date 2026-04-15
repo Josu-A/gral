@@ -1,8 +1,8 @@
 import type { NextFunction, Request, Response } from 'express';
 
-import { environment } from '../../common/constants/env';
-import HttpStatusCode from '../../common/constants/HttpStatusCodes';
-import logger from '../../common/constants/logger';
+import { environment } from '@common/constants/env';
+import HttpStatusCode from '@common/constants/HttpStatusCodes';
+import logger from '@common/constants/logger';
 
 
 function handleErrors(err: Error, _r: Request, res: Response, _: NextFunction) {

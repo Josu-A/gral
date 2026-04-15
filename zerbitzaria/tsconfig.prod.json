@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "composite": true,
     "customConditions": ["dev"],
     "declaration": true,
     "declarationMap": true,
@@ -10,6 +11,9 @@
     "moduleDetection": "force",
     "moduleResolution": "Bundler",
     "outDir": "./dist",
+    "paths": {
+      "@*": ["./src/*"]
+    },
     "removeComments": true,
     "resolveJsonModule": true,
     "rootDir": "./src",

@@ -1,13 +1,12 @@
 import type { OptionsJson, OptionsUrlencoded } from 'body-parser';
 
+import { environment } from '@common/constants/env';
+import handleErrors from '@routers/middleware/handleErrors';
+import logRequests from '@routers/middleware/logRequests';
 import cookieParser from 'cookie-parser';
 import cors, { type CorsOptions } from 'cors';
 import express from 'express';
 import helmet, { type HelmetOptions } from 'helmet';
-
-import { environment } from './common/constants/env';
-import handleErrors from './routers/middleware/handleErrors';
-import logRequests from './routers/middleware/logRequests';
 
 const app = express();
 

@@ -12,12 +12,6 @@
   "engines": {
     "node": ">=24.0.0"
   },
-  "imports": {
-    "#*": {
-      "dev": "./src/*",
-      "default": "./dist/*"
-    }
-  },
   "dependencies": {
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",

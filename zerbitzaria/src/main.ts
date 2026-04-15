@@ -1,12 +1,11 @@
 import type { NextFunction, Request, Response } from 'express';
 
+import app from '@app';
+import { environment } from '@common/constants/env';
+import logger from '@common/constants/logger';
+import { isErrno } from '@common/utils/errors';
 import { Server } from 'http';
 import { Socket } from 'net';
-
-import app from './app';
-import { environment } from './common/constants/env';
-import logger from './common/constants/logger';
-import { isErrno } from './common/utils/errors';
 
 declare module 'net' {
     interface Socket {

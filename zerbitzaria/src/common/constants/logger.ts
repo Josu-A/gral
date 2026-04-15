@@ -1,7 +1,6 @@
+import { environment } from '@common/constants/env';
 import * as winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
-
-import { environment } from './env';
 
 const { colorize, combine, errors, json, printf, timestamp } = winston.format;
 

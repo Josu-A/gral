@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 
-import HttpStatusCode from '../../common/constants/HttpStatusCodes';
-import logger from '../../common/constants/logger';
+import HttpStatusCode from '@common/constants/HttpStatusCodes';
+import logger from '@common/constants/logger';
 
 const DONT_LOG_PATHS = ['/health'];
 
