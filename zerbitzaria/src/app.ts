@@ -1,6 +1,8 @@
 import type { OptionsJson, OptionsUrlencoded } from 'body-parser';
 
 import { environment } from '@common/constants/env';
+import Paths from '@common/constants/Paths';
+import apiRouter from '@routers/api';
 import handleErrors from '@routers/middleware/handleErrors';
 import logRequests from '@routers/middleware/logRequests';
 import { generalLimiter } from '@routers/middleware/rateLimiters';
@@ -40,7 +42,7 @@ const corsOptions: CorsOptions = {
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
     maxAge: 86400,
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'PUT', 'POST', 'DELETE'],
     origin: (origin, callback) => {
         if (!origin || allowedOrigins.includes(origin)) {
             return callback(null, true);
@@ -89,6 +91,12 @@ app.use(generalLimiter);
 if (isDevelopment) {
     app.use(logRequests);
 }
+
+/******************************************************************************
+ * Application routers
+******************************************************************************/
+
+app.use(Paths.Base, apiRouter);
 
 /******************************************************************************
  * Error handling

@@ -13,6 +13,7 @@ npm-debug.log*
 
 # Builds
 dist
+*.tsbuildinfo
 
 # Editoreak
 # vscode from: https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
