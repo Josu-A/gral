@@ -3,6 +3,7 @@ import type { OptionsJson, OptionsUrlencoded } from 'body-parser';
 import { environment } from '@common/constants/env';
 import handleErrors from '@routers/middleware/handleErrors';
 import logRequests from '@routers/middleware/logRequests';
+import { generalLimiter } from '@routers/middleware/rateLimiters';
 import cookieParser from 'cookie-parser';
 import cors, { type CorsOptions } from 'cors';
 import express from 'express';
@@ -73,6 +74,13 @@ app.use(express.urlencoded(urlencodedOptions));
 // Parse cookies into req.cookies
 
 app.use(cookieParser());
+
+
+/******************************************************************************
+ * Rate limiting
+******************************************************************************/
+
+app.use(generalLimiter);
 
 /******************************************************************************
  * Route logging
