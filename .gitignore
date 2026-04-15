@@ -1,11 +1,18 @@
 # Ingurunea
 .env
+.env.*
+!.env.example
 
 # Menpekotasunak
 node_modules/
 
 # Log
 *.log
+logs
+npm-debug.log*
+
+# Builds
+dist
 
 # Editoreak
 # vscode from: https://github.com/github/gitignore/blob/main/Global/VisualStudioCode.gitignore
