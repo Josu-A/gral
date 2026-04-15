@@ -6,5 +6,30 @@
     "zerbitzaria",
     "bezeroa",
     "mcp/*"
-  ]
+  ],
+  "scripts": {
+    "build": "npm run build -w zerbitzaria",
+    "dev": "npm run dev:zerbitzaria",
+    "dev:zerbitzaria": "npm run dev -w zerbitzaria",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit -p zerbitzaria/tsconfig.json",
+    "prepare": "simple-git-hooks"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged && npm run type-check"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": "eslint --fix"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.2.0",
+    "eslint-plugin-perfectionist": "^5.8.0",
+    "globals": "^17.5.0",
+    "lint-staged": "^16.4.0",
+    "simple-git-hooks": "^2.13.1",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.58.1"
+  }
 }
