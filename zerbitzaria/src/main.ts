@@ -1,33 +1,10 @@
-import type { NextFunction, Request, Response } from 'express';
-
 import app from '@app';
 import { environment } from '@common/constants/env';
 import logger from '@common/constants/logger';
 import { isErrno } from '@common/utils/errors';
 import pool, { checkDBConnection } from '@infra/db';
+import { connections, handleConnection, serverState } from '@routers/middleware/shutdown';
 import { Server } from 'http';
-import { Socket } from 'net';
-
-declare module 'net' {
-    interface Socket {
-        _isServing?: boolean;
-    }
-}
-
-const connections = new Set<Socket>();
-let isShuttingDown = false;
-
-function handleConnection(socket: Socket): void {
-    connections.add(socket);
-    socket.once('close', () => connections.delete(socket));
-}
-
-function handleConnectionClose(_: Request, res: Response, next: NextFunction): void {
-    if (isShuttingDown) {
-        res.setHeader('Connection', 'close');
-    }
-    next();
-}
 
 function handleListen(error?: Error): void {
     if (error) {
@@ -51,22 +28,12 @@ function handleListen(error?: Error): void {
     logger.info(`Zerbitzaria ${environment.SERVER_PORT} portuan entzuten.`);
 }
 
-function handleRequestReceiving(req: Request, res: Response, next: NextFunction): void {
-    req.socket._isServing = true;
-    res.on('finish', () => {
-        req.socket._isServing = false;
-        if (isShuttingDown) {
-            req.socket.destroy();
-        }
-    });
-    next();
-}
 
 async function shutdown(server: Server, signal: string): Promise<void> {
-    if (isShuttingDown) {
+    if (serverState.isShuttingDown) {
         return;
     }
-    isShuttingDown = true;
+    serverState.isShuttingDown = true;
 
     logger.info(`${signal} seinalea jaso da, zerbitzaria itzaltzen...`);
 
@@ -108,9 +75,6 @@ await checkDBConnection();
 const server = app.listen(environment.SERVER_PORT, handleListen);
 
 server.on('connection', handleConnection);
-
-app.use(handleRequestReceiving);
-app.use(handleConnectionClose);
 
 process.on('SIGTERM', () => shutdown(server, 'SIGTERM'));
 process.on('SIGINT', () => shutdown(server, 'SIGINT'));

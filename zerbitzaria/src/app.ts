@@ -6,6 +6,7 @@ import apiRouter from '@routers/api';
 import handleErrors from '@routers/middleware/handleErrors';
 import logRequests from '@routers/middleware/logRequests';
 import { generalLimiter } from '@routers/middleware/rateLimiters';
+import { handleConnectionClose, handleRequestReceiving } from '@routers/middleware/shutdown';
 import cookieParser from 'cookie-parser';
 import cors, { type CorsOptions } from 'cors';
 import express from 'express';
@@ -14,6 +15,13 @@ import helmet, { type HelmetOptions } from 'helmet';
 const app = express();
 
 const isDevelopment = environment.NODE_ENV === "development";
+
+/******************************************************************************
+ * Track shutdown for active requests
+******************************************************************************/
+
+app.use(handleRequestReceiving);
+app.use(handleConnectionClose);
 
 /******************************************************************************
  * Setup Helmet
