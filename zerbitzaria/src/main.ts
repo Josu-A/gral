@@ -4,6 +4,7 @@ import app from '@app';
 import { environment } from '@common/constants/env';
 import logger from '@common/constants/logger';
 import { isErrno } from '@common/utils/errors';
+import pool, { checkDBConnection } from '@infra/db';
 import { Server } from 'http';
 import { Socket } from 'net';
 
@@ -69,23 +70,40 @@ async function shutdown(server: Server, signal: string): Promise<void> {
 
     logger.info(`${signal} seinalea jaso da, zerbitzaria itzaltzen...`);
 
+    const forcedShutdown = setTimeout(() => {
+        logger.error("Zerbitzaria ezin izan da denbora mugan itzali, behartu egingo da.");
+        process.exit(1);
+    }, 10_000);
+    forcedShutdown.unref();
+
     for (const socket of connections) {
         if (!socket._isServing) {
             socket.destroy();
         }
     }
 
-    server.close(async () => {
+    try {
+        await new Promise<void>((res, rej) => {
+            server.close((err) => err ? rej(err) : res());
+        });
         logger.info("HTTP zerbitzaria itzali da.");
-        process.exit(0);
-    });
+    }
+    catch(err) {
+        logger.error("HTTP zerbitzaria itzaltzean errorea gertatu da: ", err)
+    }
 
-    const forcedShutdown = setTimeout(() => {
-        logger.error("Zerbitzaria ezin izan da denbora mugan itzali, behartu egingo da.");
-        process.exit(1);
-    }, 10_000);
-    forcedShutdown.unref();
+    try {
+        await pool.end();
+        logger.info("Datu-basearen erreserba itxi da.")
+    }
+    catch(err) {
+        logger.error("Datu-basearen erreserba ixtean errorea gertatu da: ", err)
+    }
+
+    process.exit(0);
 }
+
+await checkDBConnection();
 
 const server = app.listen(environment.SERVER_PORT, handleListen);
 

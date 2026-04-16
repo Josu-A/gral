@@ -13,6 +13,11 @@ const EnvironmentSchema = z.object({
         z.httpUrl(),
         z.url({ hostname: /^localhost$/ })
     ]).default('http://localhost:8011'),
+    DB_DATABASE: z.string().default('gral'),
+    DB_HOST: z.hostname().default('localhost'),
+    DB_PASSWORD: z.string().default(''),
+    DB_PORT: z.coerce.number<number>().default(5432),
+    DB_USER: z.string().default('postgres'),
     LOG_LEVEL: z.enum(Object.keys(winston.config.npm.levels) as [string, ...string[]]).default('info'),
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
     SERVER_PORT: z.coerce.number<number>().default(3000)
