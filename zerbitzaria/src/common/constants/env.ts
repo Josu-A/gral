@@ -18,6 +18,10 @@ const EnvironmentSchema = z.object({
     DB_PASSWORD: z.string().default(''),
     DB_PORT: z.coerce.number<number>().default(5432),
     DB_USER: z.string().default('postgres'),
+    JWT_ACCESS_EXPIRATION: z.string('15min'),
+    JWT_ACCESS_SECRET: z.string().min(64, { error: "JWT sarbide sekretuak gutxienez 64 karaktere izan behar ditu" }),
+    JWT_REFRESH_EXPIRATION: z.string().default('14d'),
+    JWT_REFRESH_SECRET: z.string().min(64, { error: "JWT freskatze sekretuak gutxienez 64 karaktere izan behar ditu" }),
     LOG_LEVEL: z.enum(Object.keys(winston.config.npm.levels) as [string, ...string[]]).default('info'),
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
     SERVER_PORT: z.coerce.number<number>().default(3000)

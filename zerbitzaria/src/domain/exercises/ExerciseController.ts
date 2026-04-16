@@ -1,18 +1,19 @@
-import type { NextFunction, Request, Response } from "express";
+import type { AuthRequest } from "@common/types";
+import type { NextFunction, Response } from "express";
 
 import HttpStatusCode from "@common/constants/HttpStatusCodes";
 
-function getExercise(_: Request, res: Response, _n: NextFunction): void {
+function getExercise(_: AuthRequest, res: Response, _n: NextFunction): void {
     // TODO
     res.status(HttpStatusCode.NOT_IMPLEMENTED).send('TODO');
 }
 
-function getSpecificExercise(_: Request, res: Response, _n: NextFunction): void {
+function getSpecificExercise(_: AuthRequest, res: Response, _n: NextFunction): void {
     // TODO
     res.status(HttpStatusCode.NOT_IMPLEMENTED).send('TODO');
 }
 
-function listExercises(_: Request, res: Response, _n: NextFunction): void {
+function listExercises(_: AuthRequest, res: Response, _n: NextFunction): void {
     // TODO
     res.status(HttpStatusCode.NOT_IMPLEMENTED).send('TODO');
 }

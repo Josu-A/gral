@@ -2,7 +2,11 @@ import Paths from '@common/constants/Paths';
 import ExerciseController from '@domain/exercises/ExerciseController';
 import { Router } from 'express';
 
+import { authenticate } from './middleware/authentication';
+
 const exerciseRouter = Router();
+
+exerciseRouter.use(authenticate);
 
 exerciseRouter.get(Paths.Exercises.List, ExerciseController.listExercises);
 exerciseRouter.get(Paths.Exercises.View, ExerciseController.getExercise);

@@ -1,39 +1,40 @@
+import type { AuthRequest } from "@common/types";
 // validate input, pass to userservice, create a resonse
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Response } from "express";
 
 import HttpStatusCode from "@common/constants/HttpStatusCodes";
 
-function deleteAccount(_: Request, res: Response, _n: NextFunction): void {
+function deleteAccount(_: AuthRequest, res: Response, _n: NextFunction): void {
     // TODO
     res.status(HttpStatusCode.NOT_IMPLEMENTED).send('TODO');
 }
 
-function deleteAttempts(_: Request, res: Response, _n: NextFunction): void {
+function deleteAttempts(_: AuthRequest, res: Response, _n: NextFunction): void {
     // TODO
     res.status(HttpStatusCode.NOT_IMPLEMENTED).send('TODO');
 }
 
-function deleteMessages(_: Request, res: Response, _n: NextFunction): void {
+function deleteMessages(_: AuthRequest, res: Response, _n: NextFunction): void {
     // TODO
     res.status(HttpStatusCode.NOT_IMPLEMENTED).send('TODO');
 }
 
-function getProfile(_: Request, res: Response, _n: NextFunction): void {
+function getProfile(_: AuthRequest, res: Response, _n: NextFunction): void {
     // TODO
     res.status(HttpStatusCode.NOT_IMPLEMENTED).send('TODO');
 }
 
-function updateEducation(_: Request, res: Response, _n: NextFunction): void {
+function updateEducation(_: AuthRequest, res: Response, _n: NextFunction): void {
     // TODO
     res.status(HttpStatusCode.NOT_IMPLEMENTED).send('TODO');
 }
 
-function updatePassword(_: Request, res: Response, _n: NextFunction): void {
+function updatePassword(_: AuthRequest, res: Response, _n: NextFunction): void {
     // TODO
     res.status(HttpStatusCode.NOT_IMPLEMENTED).send('TODO');
 }
 
-function updatePersonalData(_: Request, res: Response, _n: NextFunction): void {
+function updatePersonalData(_: AuthRequest, res: Response, _n: NextFunction): void {
     // TODO
     res.status(HttpStatusCode.NOT_IMPLEMENTED).send('TODO');
 }

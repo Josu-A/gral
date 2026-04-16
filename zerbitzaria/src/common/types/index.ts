@@ -1,3 +1,14 @@
+import type { Request } from "express";
+
+interface AuthRequest extends Request {
+    user?: AuthUser;
+};
+
+interface AuthUser {
+    email: string;
+    id: number;
+};
+
 interface IApiResponse<T = void> {
     data?: T;
     error?: string;
@@ -5,5 +16,6 @@ interface IApiResponse<T = void> {
 };
 
 export type {
+    AuthRequest,
     IApiResponse
 };

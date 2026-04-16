@@ -1,8 +1,9 @@
-import type { NextFunction, Request, Response } from "express";
+import type { AuthRequest } from "@common/types";
+import type { NextFunction, Response } from "express";
 
 import HttpStatusCode from "@common/constants/HttpStatusCodes";
 
-function getDashboard(_: Request, res: Response, _n: NextFunction): void {
+function getDashboard(_: AuthRequest, res: Response, _n: NextFunction): void {
     // TODO
     res.status(HttpStatusCode.NOT_IMPLEMENTED).send('TODO');
 }

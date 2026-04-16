@@ -2,7 +2,11 @@ import Paths from '@common/constants/Paths';
 import UserController from '@domain/users/UserController';
 import { Router } from 'express';
 
+import { authenticate } from './middleware/authentication';
+
 const userRouter = Router();
+
+userRouter.use(authenticate);
 
 userRouter.get(Paths.Users.Profile, UserController.getProfile);
 userRouter.put(Paths.Users.Account, UserController.updatePersonalData);

@@ -1,3 +1,4 @@
+import type { AuthRequest } from "@common/types";
 import type { NextFunction, Request, Response } from "express";
 
 import HttpStatusCode from "@common/constants/HttpStatusCodes";
@@ -7,7 +8,7 @@ function login(_: Request, res: Response, _n: NextFunction): void {
     res.status(HttpStatusCode.NOT_IMPLEMENTED).send('TODO');
 }
 
-function logout(_: Request, res: Response, _n: NextFunction): void {
+function logout(_: AuthRequest, res: Response, _n: NextFunction): void {
     // TODO
     res.status(HttpStatusCode.NOT_IMPLEMENTED).send('TODO');
 }

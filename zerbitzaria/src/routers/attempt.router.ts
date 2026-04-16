@@ -2,7 +2,11 @@ import Paths from '@common/constants/Paths';
 import AttemptController from '@domain/attempts/AttemptController';
 import { Router } from 'express';
 
+import { authenticate } from './middleware/authentication';
+
 const attemptRouter = Router();
+
+attemptRouter.use(authenticate);
 
 attemptRouter.get(Paths.Attempts.List, AttemptController.listAttempts)
 attemptRouter.get(Paths.Attempts.View, AttemptController.getAttempt)

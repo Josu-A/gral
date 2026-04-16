@@ -1,0 +1,44 @@
+import type { AuthRequest } from '@common/types';
+import type { NextFunction, Response } from 'express';
+
+import { environment } from '@common/constants/env';
+import HttpStatusCode from '@common/constants/HttpStatusCodes';
+import { RequestError } from '@common/utils/errors';
+import jwt, { JsonWebTokenError, type JwtPayload, TokenExpiredError } from 'jsonwebtoken';
+
+function authenticate(req: AuthRequest, _: Response, next: NextFunction): void {
+    const authHeader = req.headers.authorization || '';
+    const [scheme, tokenFromHeader] = authHeader.split(' ');
+
+    const tokenFromCookie = req.cookies?.access_token;
+
+    const token = scheme === 'Bearer' && tokenFromHeader ? tokenFromHeader : tokenFromCookie;
+
+    if (!token) {
+        next(new RequestError(HttpStatusCode.UNAUTHORIZED, "Kautotze burukorik ez"))
+    }
+
+    try {
+        const decoded = jwt.verify(token, environment.JWT_ACCESS_SECRET) as JwtPayload;
+        req.user = {
+            email: decoded.email,
+            id: decoded.id
+        }
+        next();
+    }
+    catch(err) {
+        if (err instanceof TokenExpiredError) {
+            next(new RequestError(HttpStatusCode.UNAUTHORIZED, "Tokena iraungi da"));
+        }
+        else if (err instanceof JsonWebTokenError) {
+            next(new RequestError(HttpStatusCode.UNAUTHORIZED, "Tokena baliogabea da"));
+        }
+        else {
+            next(err);
+        }
+    }
+}
+
+export {
+    authenticate
+};
