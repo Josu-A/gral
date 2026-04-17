@@ -2,7 +2,7 @@ import app from '@app';
 import { environment } from '@common/constants/env';
 import logger from '@common/constants/logger';
 import { isErrno } from '@common/utils/errors';
-import pool, { checkDBConnection } from '@infra/db';
+import db, { checkDBConnection } from '@infra/db';
 import { connections, handleConnection, serverState } from '@routers/middleware/shutdown';
 import { Server } from 'http';
 
@@ -60,7 +60,7 @@ async function shutdown(server: Server, signal: string): Promise<void> {
     }
 
     try {
-        await pool.end();
+        await db.$disconnect();
         logger.info("Datu-basearen erreserba itxi da.")
     }
     catch(err) {

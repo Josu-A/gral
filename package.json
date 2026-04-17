@@ -9,6 +9,11 @@
   ],
   "scripts": {
     "build": "npm run build -w zerbitzaria",
+    "db:generate": "npm run db:generate -w zerbitzaria",
+    "db:migrate": "npm run db:migrate -w zerbitzaria --",
+    "db:reset": "npm run db:reset -w zerbitzaria",
+    "db:seed": "npm run db:seed -w zerbitzaria",
+    "db:studio": "npm run db:studio -w zerbitzaria",
     "dev": "npm run dev:zerbitzaria",
     "dev:zerbitzaria": "npm run dev -w zerbitzaria",
     "lint": "eslint .",

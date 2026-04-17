@@ -1,0 +1,52 @@
+enum IkasketaMaila {
+    Hasiberria
+    Ertaina
+    Aurreratua
+}
+
+model Erabiltzailea {
+    erabiltzailea_id     Int      @id @default(autoincrement())
+    izena                String   @db.VarChar(255)
+    helbide_elektronikoa String   @db.VarChar(255)
+    pasahitza            String   @db.VarChar(255)
+    sortze_data          DateTime @default(now())
+    aktibatuta           Boolean  @default(false)
+
+    ikaslea Ikaslea?
+
+    freskatze_tokenak FreskatzeTokena[]
+
+    @@map("erabiltzailea")
+}
+
+model Ikaslea {
+    erabiltzailea_id   Int           @id
+    ikasketa_maila     IkasketaMaila
+    gogoko_lengoaia_id Int?
+
+    erabiltzailea   Erabiltzailea        @relation(fields: [erabiltzailea_id], references: [erabiltzailea_id], onDelete: Cascade)
+    gogoko_lengoaia ProgramazioLengoaia? @relation(fields: [gogoko_lengoaia_id], references: [programazio_lengoaia_id], onDelete: SetNull)
+    ebazpenak       Ebazpena[]
+
+    @@map("ikaslea")
+}
+
+model FreskatzeTokena {
+    id                 Int       @id @default(autoincrement())
+    erabiltzailea_id   Int
+    tokena             String    @unique
+    tokena_id          String
+    iraungipen_data    DateTime
+    iraungitutako_data DateTime?
+    ordezkapena        String?
+    sortze_data        DateTime  @default(now())
+    ip_helbidea        String    @db.Inet
+    gailu_mota         String
+
+    erabiltzailea Erabiltzailea @relation(fields: [erabiltzailea_id], references: [erabiltzailea_id], onDelete: Cascade)
+
+    @@index([erabiltzailea_id])
+    @@index([tokena_id])
+    @@index([iraungipen_data])
+    @@map("freskatze_tokena")
+}

@@ -1,0 +1,72 @@
+enum Egoera {
+    Hutsik
+    Hasita
+    Gaindituta
+}
+
+enum Jabea {
+    Erabiltzailea
+    AA
+}
+
+model Ebazpena {
+    ebazpena_id        Int     @id @default(autoincrement())
+    erabiltzailea_id   Int
+    ariketa_zehatza_id Int
+    egoera             Egoera  @default(Hutsik)
+    kodea              String?
+
+    ikaslea         Ikaslea        @relation(fields: [erabiltzailea_id], references: [erabiltzailea_id], onDelete: Cascade)
+    ariketa_zehatza AriketaZehatza @relation(fields: [ariketa_zehatza_id], references: [ariketa_zehatza_id], onDelete: Cascade)
+    mezuak          Mezua[]
+    saiakerak       Saiakera[]
+
+    @@unique([erabiltzailea_id, ariketa_zehatza_id])
+    @@index([erabiltzailea_id])
+    @@index([ariketa_zehatza_id])
+    @@index([egoera])
+    @@map("ebazpena")
+}
+
+model Mezua {
+    mezua_id        Int      @id @default(autoincrement())
+    ebazpena_id     Int
+    denbora_zigilua DateTime @default(now())
+    edukia          String
+    Jabea           Jabea
+
+    ebazpena Ebazpena @relation(fields: [ebazpena_id], references: [ebazpena_id], onDelete: Cascade)
+
+    @@index([ebazpena_id])
+    @@map("mezua")
+}
+
+model Saiakera {
+    saiakera_id     Int      @id @default(autoincrement())
+    ebazpena_id     Int
+    saiakera_kodea  String
+    nota            Float
+    denbora_zigilua DateTime @default(now())
+
+    ebazpena   Ebazpena    @relation(fields: [ebazpena_id], references: [ebazpena_id], onDelete: Cascade)
+    exekuzioak Exekuzioa[]
+
+    @@index([ebazpena_id])
+    @@map("saiakera")
+}
+
+model Exekuzioa {
+    exekuzioa_id     Int     @id @default(autoincrement())
+    saiakera_id      Int
+    testa_id         Int
+    zuzena           Boolean
+    emaitza          String
+    exekuzio_denbora Int
+
+    saiakera Saiakera @relation(fields: [saiakera_id], references: [saiakera_id], onDelete: Cascade)
+    testa    Testa    @relation(fields: [testa_id], references: [testa_id], onDelete: Restrict)
+
+    @@index([saiakera_id])
+    @@index([testa_id])
+    @@map("exekuzioa")
+}

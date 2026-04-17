@@ -1,33 +1,33 @@
-import { environment } from '@common/constants/env';
-import logger from '@common/constants/logger';
-import { Pool, type PoolClient, type PoolOptions } from 'pg';
+import type { LogEvent } from "@infra/prisma/generated/internal/prismaNamespace";
 
-const poolOptions: PoolOptions = {
-    allowExitOnIdle: false,
-    connectionTimeoutMillis: 2_000,
-    database: environment.DB_DATABASE,
-    host: environment.DB_HOST,
-    idleTimeoutMillis: 30_000,
-    max: 20,
-    maxLifetimeSeconds: 0,
-    maxUses: Infinity,
-    password: environment.DB_PASSWORD,
-    port: environment.DB_PORT,
-    user: environment.DB_USER
-};
+import { environment } from "@common/constants/env";
+import logger from "@common/constants/logger";
+import { PrismaClient } from "@infra/prisma/generated/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const pool = new Pool(poolOptions);
+const adapter = new PrismaPg({
+    connectionString: environment.DB_URL,
+    connectionTimeoutMillis: 0,
+    idleTimeoutMillis: 10_000,
+    max: 10,
+    maxLifetimeSeconds:0
+});
+
+const db = new PrismaClient({
+    adapter: adapter,
+    log: [
+        {
+            emit: 'event',
+            level: 'error'
+        }
+    ]
+});
 
 async function checkDBConnection(): Promise<void> {
     try {
-        const client = await pool.connect();
-        try {
-            const res = await client.query('SELECT $1::text as message', ['Kaixo mundua!']);
-            logger.info(`Datu-basetik mezua dator: ${res.rows[0].message}`)
-        }
-        finally {
-            client.release();
-        }
+        const res = await db.$queryRaw<[{ message: string }]>`SELECT ${'Kaixo mundua!'}::text as message`;
+        logger.info(`Datu-basetik mezua dator: ${res[0].message}`)
+        logger.info("Zerbitzaria datu-basera konektatu da.");
     }
     catch(err) {
         logger.error("Ezin izan da datu-basearekin konektatu:", err);
@@ -35,19 +35,14 @@ async function checkDBConnection(): Promise<void> {
     }
 }
 
-function onConnect(): void {
-    logger.info("Zerbitzaria datu-basera konektatu da.");
-}
-
-function onError(err: Error, _: PoolClient): void {
+function onError(event: LogEvent): void {
     logger.error("Datu-baseko konexioan errorea gertatu da.", {
-        error: err.message
+        error: event.message || event
     });
     process.exit(-1);
 }
 
-pool.on('connect', onConnect);
-pool.on('error', onError);
+db.$on("error", onError);
 
-export default pool;
+export default db;
 export { checkDBConnection };

@@ -1,0 +1,86 @@
+enum Zailtasuna {
+    Erraza
+    Ertaina
+    Zaila
+}
+
+model EtiketaKategoria {
+    kategoria_id Int    @id @default(autoincrement())
+    izena        String @unique @db.VarChar(100)
+    deskribapena String
+
+    etiketa Etiketa[]
+
+    @@map("etiketa_kategoria")
+}
+
+model Etiketa {
+    etiketa_id   Int    @id @default(autoincrement())
+    izena        String @unique @db.VarChar(100)
+    deskribapena String
+    kategoria_id Int
+
+    kategoria EtiketaKategoria @relation(fields: [kategoria_id], references: [kategoria_id], onDelete: Restrict)
+    ariketak  AriketaEtiketa[]
+
+    @@index([kategoria_id])
+    @@map("etiketa")
+}
+
+model Ariketa {
+    ariketa_id      Int        @id @default(autoincrement())
+    izenburua       String     @unique @db.VarChar(255)
+    zailtasun_maila Zailtasuna
+
+    etiketak         AriketaEtiketa[]
+    ariketa_zehatzak AriketaZehatza[]
+
+    @@index([zailtasun_maila])
+    @@map("ariketa")
+}
+
+model AriketaEtiketa {
+    ariketa_id Int
+    etiketa_id Int
+
+    ariketa Ariketa @relation(fields: [ariketa_id], references: [ariketa_id], onDelete: Cascade)
+    etiketa Etiketa @relation(fields: [etiketa_id], references: [etiketa_id], onDelete: Cascade)
+
+    @@id([ariketa_id, etiketa_id])
+    @@index([etiketa_id])
+    @@map("ariketa_etiketa")
+}
+
+model AriketaZehatza {
+    ariketa_zehatza_id      Int     @id @default(autoincrement())
+    ariketa_id              Int
+    programazio_lengoaia_id Int
+    funtzio_izena           String  @db.VarChar(255)
+    hasierako_kodea         String?
+    erreferentzia_emaitza   String
+
+    ariketa              Ariketa             @relation(fields: [ariketa_id], references: [ariketa_id], onDelete: Cascade)
+    programazio_lengoaia ProgramazioLengoaia @relation(fields: [programazio_lengoaia_id], references: [programazio_lengoaia_id], onDelete: Restrict)
+    testak               Testa[]
+    ebazpenak            Ebazpena[]
+
+    @@unique([ariketa_id, programazio_lengoaia_id])
+    @@index([programazio_lengoaia_id])
+    @@map("ariketa_zehatza")
+}
+
+model Testa {
+    testa_id           Int    @id @default(autoincrement())
+    ariketa_zehatza_id Int
+    izena              String @db.VarChar(255)
+    testa_kodea        String
+    ordena             Int
+    pisua              Int    @default(1)
+    timeout            Int    @default(5000)
+
+    ariketa_zehatza AriketaZehatza @relation(fields: [ariketa_zehatza_id], references: [ariketa_zehatza_id], onDelete: Cascade)
+    exekuzioak      Exekuzioa[]
+
+    @@unique([ariketa_zehatza_id, izena])
+    @@map("testa")
+}

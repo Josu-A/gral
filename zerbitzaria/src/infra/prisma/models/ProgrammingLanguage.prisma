@@ -1,0 +1,11 @@
+model ProgramazioLengoaia {
+    programazio_lengoaia_id Int    @id @default(autoincrement())
+    izena                   String @db.VarChar(255)
+    bertsioa                String @db.VarChar(100)
+
+    ikaslea         Ikaslea[]
+    ariketa_zehatza AriketaZehatza[]
+
+    @@unique([izena, bertsioa])
+    @@map("programazio_lengoaia")
+}

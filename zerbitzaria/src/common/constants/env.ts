@@ -13,11 +13,7 @@ const EnvironmentSchema = z.object({
         z.httpUrl(),
         z.url({ hostname: /^localhost$/ })
     ]).default('http://localhost:8011'),
-    DB_DATABASE: z.string().default('gral'),
-    DB_HOST: z.hostname().default('localhost'),
-    DB_PASSWORD: z.string().default(''),
-    DB_PORT: z.coerce.number<number>().default(5432),
-    DB_USER: z.string().default('postgres'),
+    DB_URL: z.string().default('postgresql://postgres:@localhost:5432/gral?schema=public'),
     JWT_ACCESS_EXPIRATION: z.string('15min'),
     JWT_ACCESS_SECRET: z.string().min(64, { error: "JWT sarbide sekretuak gutxienez 64 karaktere izan behar ditu" }),
     JWT_REFRESH_EXPIRATION: z.string().default('14d'),
