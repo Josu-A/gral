@@ -4,7 +4,8 @@ import type { NextFunction, Response } from 'express';
 import { environment } from '@common/constants/env';
 import HttpStatusCode from '@common/constants/HttpStatusCodes';
 import { RequestError } from '@common/utils/errors';
-import jwt, { JsonWebTokenError, type JwtPayload, TokenExpiredError } from 'jsonwebtoken';
+import jwt, { type JwtPayload } from 'jsonwebtoken';
+const { JsonWebTokenError, TokenExpiredError } = jwt;
 
 function authenticate(req: AuthRequest, _: Response, next: NextFunction): void {
     const authHeader = req.headers.authorization || '';
