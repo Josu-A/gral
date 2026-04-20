@@ -27,7 +27,7 @@ CREATE TABLE "mezua" (
     "ebazpena_id" INTEGER NOT NULL,
     "denbora_zigilua" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "edukia" TEXT NOT NULL,
-    "Jabea" "Jabea" NOT NULL,
+    "jabea" "Jabea" NOT NULL,
 
     CONSTRAINT "mezua_pkey" PRIMARY KEY ("mezua_id")
 );
@@ -78,6 +78,7 @@ CREATE TABLE "etiketa" (
 CREATE TABLE "ariketa" (
     "ariketa_id" SERIAL NOT NULL,
     "izenburua" VARCHAR(255) NOT NULL,
+    "enuntziatua" TEXT NOT NULL,
     "zailtasun_maila" "Zailtasuna" NOT NULL,
 
     CONSTRAINT "ariketa_pkey" PRIMARY KEY ("ariketa_id")
@@ -97,8 +98,10 @@ CREATE TABLE "ariketa_zehatza" (
     "ariketa_id" INTEGER NOT NULL,
     "programazio_lengoaia_id" INTEGER NOT NULL,
     "funtzio_izena" VARCHAR(255) NOT NULL,
-    "hasierako_kodea" TEXT,
+    "hasierako_kodea" TEXT NOT NULL,
     "erreferentzia_emaitza" TEXT NOT NULL,
+    "saiakera_fitxategia" TEXT NOT NULL,
+    "buru_fitxategia" TEXT,
 
     CONSTRAINT "ariketa_zehatza_pkey" PRIMARY KEY ("ariketa_zehatza_id")
 );
@@ -215,6 +218,12 @@ CREATE UNIQUE INDEX "testa_ariketa_zehatza_id_izena_key" ON "testa"("ariketa_zeh
 
 -- CreateIndex
 CREATE UNIQUE INDEX "programazio_lengoaia_izena_bertsioa_key" ON "programazio_lengoaia"("izena", "bertsioa");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "erabiltzailea_helbide_elektronikoa_key" ON "erabiltzailea"("helbide_elektronikoa");
+
+-- CreateIndex
+CREATE INDEX "erabiltzailea_helbide_elektronikoa_idx" ON "erabiltzailea"("helbide_elektronikoa");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "freskatze_tokena_tokena_key" ON "freskatze_tokena"("tokena");

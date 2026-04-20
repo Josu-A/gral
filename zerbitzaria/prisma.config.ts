@@ -8,7 +8,7 @@ export default defineConfig({
     },
     migrations: {
         path: "src/infra/prisma/migrations",
-        seed: "tsx src/infra/prisma/seed.ts"
+        seed: "tsx src/infra/prisma/seed/index.ts"
     },
     schema: "src/infra/prisma/"
 });

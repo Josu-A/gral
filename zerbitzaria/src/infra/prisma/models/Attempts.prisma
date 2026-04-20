@@ -33,7 +33,7 @@ model Mezua {
     ebazpena_id     Int
     denbora_zigilua DateTime @default(now())
     edukia          String
-    Jabea           Jabea
+    jabea           Jabea
 
     ebazpena Ebazpena @relation(fields: [ebazpena_id], references: [ebazpena_id], onDelete: Cascade)
 

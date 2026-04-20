@@ -30,6 +30,7 @@ model Etiketa {
 model Ariketa {
     ariketa_id      Int        @id @default(autoincrement())
     izenburua       String     @unique @db.VarChar(255)
+    enuntziatua     String
     zailtasun_maila Zailtasuna
 
     etiketak         AriketaEtiketa[]
@@ -56,8 +57,10 @@ model AriketaZehatza {
     ariketa_id              Int
     programazio_lengoaia_id Int
     funtzio_izena           String  @db.VarChar(255)
-    hasierako_kodea         String?
+    hasierako_kodea         String
     erreferentzia_emaitza   String
+    saiakera_fitxategia     String
+    buru_fitxategia         String?
 
     ariketa              Ariketa             @relation(fields: [ariketa_id], references: [ariketa_id], onDelete: Cascade)
     programazio_lengoaia ProgramazioLengoaia @relation(fields: [programazio_lengoaia_id], references: [programazio_lengoaia_id], onDelete: Restrict)

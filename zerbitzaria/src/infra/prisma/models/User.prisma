@@ -7,7 +7,7 @@ enum IkasketaMaila {
 model Erabiltzailea {
     erabiltzailea_id     Int      @id @default(autoincrement())
     izena                String   @db.VarChar(255)
-    helbide_elektronikoa String   @db.VarChar(255)
+    helbide_elektronikoa String   @unique @db.VarChar(255)
     pasahitza            String   @db.VarChar(255)
     sortze_data          DateTime @default(now())
     aktibatuta           Boolean  @default(false)
@@ -16,6 +16,7 @@ model Erabiltzailea {
 
     freskatze_tokenak FreskatzeTokena[]
 
+    @@index([helbide_elektronikoa])
     @@map("erabiltzailea")
 }
 
