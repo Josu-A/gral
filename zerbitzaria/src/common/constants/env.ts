@@ -3,7 +3,7 @@ import path from 'path';
 import * as winston from 'winston';
 import * as z from 'zod';
 
-const env = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV || 'production';
 const envPath = path.resolve(process.cwd(), `.env.${env}`);
 
 dotenv.config({ path: envPath });
