@@ -20,6 +20,7 @@ const EnvironmentSchema = z.object({
     JWT_REFRESH_SECRET: z.string().min(64, { error: "JWT freskatze sekretuak gutxienez 64 karaktere izan behar ditu" }),
     LOG_LEVEL: z.enum(Object.keys(winston.config.npm.levels) as [string, ...string[]]).default('info'),
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+    SALT_ROUNDS: z.coerce.number<number>().default(10),
     SERVER_PORT: z.coerce.number<number>().default(3000)
 });
 

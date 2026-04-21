@@ -1,4 +1,4 @@
-import type { AuthRequest } from '@common/types';
+import type { AuthenticatedRequest, AuthRequest } from '@common/types';
 import type { NextFunction, Response } from 'express';
 
 import { environment } from '@common/constants/env';
@@ -16,7 +16,8 @@ function authenticate(req: AuthRequest, _: Response, next: NextFunction): void {
     const token = scheme === 'Bearer' && tokenFromHeader ? tokenFromHeader : tokenFromCookie;
 
     if (!token) {
-        next(new RequestError(HttpStatusCode.UNAUTHORIZED, "Kautotze burukorik ez"))
+        next(new RequestError(HttpStatusCode.UNAUTHORIZED, "Kautotze burukorik ez"));
+        return;
     }
 
     try {
@@ -40,6 +41,26 @@ function authenticate(req: AuthRequest, _: Response, next: NextFunction): void {
     }
 }
 
+function hasUser(req: AuthRequest): req is AuthenticatedRequest {
+    return Boolean(req.user);
+}
+
+function reqAuthenticated(
+    handler: (
+        req: AuthenticatedRequest,
+        res: Response,
+        next: NextFunction,
+    ) => Promise<unknown> | unknown
+) {
+    return (req: AuthRequest, res: Response, next: NextFunction) => {
+        if (!hasUser(req)) {
+            return next(new RequestError(HttpStatusCode.UNAUTHORIZED, "Kautotu gabea"));
+        }
+        return handler(req, res, next);
+    };
+}
+
 export {
-    authenticate
+    authenticate,
+    reqAuthenticated
 };
