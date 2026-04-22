@@ -5,6 +5,7 @@ import type {
 } from '@domain/users/local/types/schemas';
 
 import db from '@infra/db';
+import { IkasketaMaila } from "@infra/prisma/generated/enums";
 
 async function deleteAccount(erabiltzailea_id: number): Promise<void> {
     await db.erabiltzailea.delete({
@@ -24,6 +25,14 @@ async function deleteMessages(erabiltzailea_id: number): Promise<number> {
         where: { ebazpena: { erabiltzailea_id } },
     });
     return result.count;
+}
+
+async function getEducationLevel(erabiltzailea_id: number): Promise<IkasketaMaila | null> {
+    const ikaslea = await db.ikaslea.findUnique({
+        select: { ikasketa_maila: true },
+        where: { erabiltzailea_id }
+    });
+    return ikaslea?.ikasketa_maila ?? null;
 }
 
 async function getPassword(erabiltzailea_id: number): Promise<null | string> {
@@ -91,6 +100,7 @@ export default {
     deleteAccount,
     deleteAttempts,
     deleteMessages,
+    getEducationLevel,
     getPassword,
     getProfile,
     updateEducation,

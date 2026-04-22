@@ -1,13 +1,19 @@
-import type { AuthRequest } from "@common/types";
+import type { AuthenticatedRequest } from "@common/types";
 import type { NextFunction, Response } from "express";
 
 import HttpStatusCode from "@common/constants/HttpStatusCodes";
+import DashboardService from "@domain/dashboard/DashboardService";
+import { reqAuthenticated } from "@routers/middleware/authentication";
 
-function getDashboard(_: AuthRequest, res: Response, _n: NextFunction): void {
-    // TODO
-    res.status(HttpStatusCode.NOT_IMPLEMENTED).send('TODO');
+async function getDashboard(
+    req: AuthenticatedRequest,
+    res: Response,
+    _: NextFunction
+): Promise<void> {
+    const data = await DashboardService.getDashboard(req.user.id);
+    res.status(HttpStatusCode.OK).json(data);
 }
 
 export default {
-    getDashboard,
+    getDashboard: reqAuthenticated(getDashboard),
 } as const;
