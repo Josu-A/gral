@@ -8,7 +8,7 @@ export const testingStudentData = [
         ikasketa_maila: 'Hasiberria',
         izena: 'Test Student',
         key: 'testStudent',
-        pasahitza: 'unhashed'
+        pasahitza: '$2b$10$PjL3jz/Bn6qScbWRkEyTzO.NB.LRk/plXn3DlDYB14CwPSjKYu4te' // "test"
     }
 ] as const satisfies Students;
 

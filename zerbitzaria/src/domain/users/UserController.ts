@@ -3,15 +3,13 @@ import type { NextFunction, Response } from "express";
 
 import HttpStatusCode from "@common/constants/HttpStatusCodes";
 import { formatSuccess } from "@common/utils/responses";
-import UserService from "@domain/users/UserService";
-import { reqAuthenticated } from "@routers/middleware/authentication";
-
 import {
     UpdateEducationSchema,
     UpdatePasswordSchema,
     UpdatePersonalDataSchema
-} from "./local/types/schemas";
-
+} from "@domain/users/local/types/schemas";
+import UserService from "@domain/users/UserService";
+import { reqAuthenticated } from "@routers/middleware/authentication";
 
 async function deleteAccount(
     req: AuthenticatedRequest,
