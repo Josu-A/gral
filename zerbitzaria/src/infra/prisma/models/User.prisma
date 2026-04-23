@@ -21,9 +21,10 @@ model Erabiltzailea {
 }
 
 model Ikaslea {
-    erabiltzailea_id   Int           @id
-    ikasketa_maila     IkasketaMaila
-    gogoko_lengoaia_id Int?
+    erabiltzailea_id     Int           @id
+    ikasketa_maila       IkasketaMaila
+    gogoko_lengoaia_id   Int?
+    nire_mailakoak_ikusi Boolean       @default(false)
 
     erabiltzailea   Erabiltzailea        @relation(fields: [erabiltzailea_id], references: [erabiltzailea_id], onDelete: Cascade)
     gogoko_lengoaia ProgramazioLengoaia? @relation(fields: [gogoko_lengoaia_id], references: [programazio_lengoaia_id], onDelete: SetNull)

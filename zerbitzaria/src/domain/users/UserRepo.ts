@@ -60,6 +60,15 @@ async function getProfile(erabiltzailea_id: number): Promise<null | UserProfile>
     return profile;
 }
 
+async function getViewOnlyMyLevel(erabiltzailea_id: number): Promise<boolean> {
+    const user = await db.erabiltzailea.findUnique({
+        select: { ikaslea: { select: { nire_mailakoak_ikusi: true } } },
+        where: { erabiltzailea_id }
+    });
+    return user?.ikaslea?.nire_mailakoak_ikusi ?? false;
+}
+
+
 async function updateEducation(
     erabiltzailea_id: number,
     data: IUpdateEducation
@@ -67,7 +76,8 @@ async function updateEducation(
     const updatedData = db.ikaslea.update({
         data: {
             gogoko_lengoaia_id: data.gogoko_lengoaia,
-            ikasketa_maila: data.ikasketa_maila
+            ikasketa_maila: data.ikasketa_maila,
+            nire_mailakoak_ikusi: data.nire_mailakoak_ikusi
         },
         where: { erabiltzailea_id }
     });
@@ -103,6 +113,7 @@ export default {
     getEducationLevel,
     getPassword,
     getProfile,
+    getViewOnlyMyLevel,
     updateEducation,
     updatePassword,
     updatePersonalData

@@ -3,7 +3,8 @@ import { z } from "zod";
 
 const UpdateEducationSchema = z.object({
     gogoko_lengoaia: z.number().int().positive().nullable().optional(),
-    ikasketa_maila: z.enum(IkasketaMaila).optional()
+    ikasketa_maila: z.enum(IkasketaMaila).optional(),
+    nire_mailakoak_ikusi: z.boolean().optional()
 });
 
 type IUpdateEducation = z.infer<typeof UpdateEducationSchema>;
