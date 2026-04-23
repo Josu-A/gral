@@ -27,7 +27,7 @@ const Paths = {
     },
     Exercises: {
         Base: '/exercises',
-        Language: '/:exerciseId/language/:languageId',
+        Language: '/:exerciseId/language',
         List: '/',
         View: '/:exerciseId'
     },

@@ -10,6 +10,6 @@ exerciseRouter.use(authenticate);
 
 exerciseRouter.get(Paths.Exercises.List, ExerciseController.listExercises);
 exerciseRouter.get(Paths.Exercises.View, ExerciseController.getExercise);
-exerciseRouter.get(Paths.Exercises.Language, ExerciseController.getSpecificExercise);
+exerciseRouter.post(Paths.Exercises.Language, ExerciseController.getSpecificExercise);
 
 export default exerciseRouter;
