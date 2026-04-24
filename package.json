@@ -7,8 +7,9 @@
     "bezeroa",
     "mcp/*"
   ],
+  "//": "concurrentlyri --raw gehitu behar zaio windows-en ondo funtzionatzeko (ikus https://github.com/privatenumber/tsx/issues/623)",
   "scripts": {
-    "build": "npm run build -w zerbitzaria",
+    "build": "npm run build -w zerbitzaria && npm run build -w bezeroa",
     "db:deploy": "npm run db:deploy -w zerbitzaria",
     "db:deploy:seed": "npm run db:deploy:seed -w zerbitzaria",
     "db:generate": "npm run db:generate -w zerbitzaria",
@@ -19,11 +20,14 @@
     "db:reset:noseed": "npm run db:reset:noseed -w zerbitzaria",
     "db:seed": "npm run db:seed -w zerbitzaria",
     "db:studio": "npm run db:studio -w zerbitzaria",
-    "dev": "npm run dev:zerbitzaria",
+    "dev": "concurrently --names bezeroa,zerbitzaria --prefix-colors magenta,cyan \"npm:dev:bezeroa\" \"npm:dev:zerbitzaria\"",
+    "dev:windows": "concurrently --raw --names bezeroa,zerbitzaria --prefix-colors magenta,cyan \"npm:dev:bezeroa\" \"npm:dev:zerbitzaria\"",
+    "dev:bezeroa": "npm run dev -w bezeroa",
     "dev:zerbitzaria": "npm run dev -w zerbitzaria",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "start": "npm run start:zerbitzaria",
+    "start": "npm run start:zerbitzaria && npm run start:bezeroa",
+    "start:bezeroa": "npm start -w bezeroa",
     "start:zerbitzaria": "npm start -w zerbitzaria",
     "type-check": "tsc --noEmit -p zerbitzaria/tsconfig.json",
     "prepare": "simple-git-hooks"
@@ -34,8 +38,12 @@
   "lint-staged": {
     "*.{ts,tsx}": "eslint --fix"
   },
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "concurrently": "^9.2.1",
     "eslint": "^10.2.0",
     "eslint-plugin-perfectionist": "^5.8.0",
     "globals": "^17.5.0",

@@ -1,3 +1,5 @@
+import { environment } from "@common/constants/env";
+
 const Paths = {
     Attempts: {
         Base: '/attempts',
@@ -16,7 +18,7 @@ const Paths = {
         RestorePassword: '/restore',
         Verify: '/verify'
     },
-    Base: '/api',
+    Base: environment.BASE_API_PATH,
     Chat: {
         Base: '/chat',
         Message: '/:specificExerciseId'

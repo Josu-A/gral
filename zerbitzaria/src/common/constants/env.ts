@@ -4,9 +4,12 @@ import path from 'path';
 import * as winston from 'winston';
 import * as z from 'zod';
 
+const monorepoRootDir = path.resolve(import.meta.dirname, '../../../../');
 const env = process.env.NODE_ENV || 'production';
-const envPath = path.resolve(process.cwd(), `.env.${env}`);
+const envPath = path.resolve(monorepoRootDir, `.env.${env}`);
+const baseEnvPath = path.resolve(monorepoRootDir, '.env');
 
+dotenv.config({ path: baseEnvPath });
 dotenv.config({ path: envPath });
 
 const JwtDurationSchema = z.string()
@@ -15,10 +18,11 @@ const JwtDurationSchema = z.string()
     }).transform(val => val as StringValue);
 
 const EnvironmentSchema = z.object({
+    BASE_API_PATH: z.string().default('/api'),
     CLIENT_URL: z.union([
         z.httpUrl(),
         z.url({ hostname: /^localhost$/ })
-    ]).default('http://localhost:8011'),
+    ]).default('http://localhost:5173'),
     DB_URL: z.string().default('postgresql://postgres:@localhost:5432/gral?schema=public'),
     JWT_ACCESS_EXPIRATION: JwtDurationSchema.default('15min'),
     JWT_ACCESS_SECRET: z.string().min(64, {
