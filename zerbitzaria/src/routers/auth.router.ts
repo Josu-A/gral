@@ -7,11 +7,9 @@ import { authenticate } from './middleware/authentication';
 
 const authRouter = Router();
 
-authRouter.use(authLimiter);
-
-authRouter.post(Paths.Auth.Register, AuthController.register);
-authRouter.post(Paths.Auth.Verify, AuthController.verify);
-authRouter.post(Paths.Auth.Login, AuthController.login);
+authRouter.post(Paths.Auth.Register, authLimiter, AuthController.register);
+authRouter.post(Paths.Auth.Verify, authLimiter, AuthController.verify);
+authRouter.post(Paths.Auth.Login, authLimiter, AuthController.login);
 authRouter.post(Paths.Auth.Logout, authenticate, AuthController.logout);
 authRouter.post(Paths.Auth.Refresh, AuthController.refreshToken);
 authRouter.post(Paths.Auth.RequestPasswordRestore, restorePasswordLimiter, AuthController.requestPasswordRestore);
