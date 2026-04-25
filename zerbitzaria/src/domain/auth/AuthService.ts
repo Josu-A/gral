@@ -96,9 +96,13 @@ async function refreshToken(
     const token = await AuthRepo.findRefreshToken(refreshTokenHash, decoded.jti);
 
     if (!token) {
+        await AuthRepo.revokeAllRefreshTokens(decoded.id);
+        logger.warn("Tokena berrerabiltzen saiatu da, erabiltzailearen saio guztiak baliogabetu dira", { erabiltzailea_id: decoded.id, ip });
         throw new RequestError(HttpStatusCode.UNAUTHORIZED, "Tokena baliogabea da");
     }
     if (token.iraungitutako_data) {
+        await AuthRepo.revokeAllRefreshTokens(token.erabiltzailea_id);
+        logger.warn("Tokena berrerabiltzen saiatu da, erabiltzailearen saio guztiak baliogabetu dira", { erabiltzailea_id: decoded.id, ip });
         throw new RequestError(HttpStatusCode.UNAUTHORIZED, "Tokena iraungituta dago");
     }
     if (token.iraungipen_data < new Date()) {
@@ -114,8 +118,8 @@ async function refreshToken(
         revokedAt: new Date()
     });
     const accessToken = signAccessToken(token.erabiltzailea_id, token.erabiltzailea.helbide_elektronikoa);
-    const newRefreshTolem = signRefreshToken(token.erabiltzailea_id, newJti);
-    const newRefreshTokenHash = hashToken(newRefreshTolem);
+    const newRefreshToken = signRefreshToken(token.erabiltzailea_id, newJti);
+    const newRefreshTokenHash = hashToken(newRefreshToken);
     const expiresAt = new Date(Date.now() + ms(environment.JWT_REFRESH_EXPIRATION));
 
     await AuthRepo.createRefreshToken({
@@ -134,7 +138,7 @@ async function refreshToken(
             helbide_elektronikoa: token.erabiltzailea.helbide_elektronikoa,
             izena: token.erabiltzailea.izena
         },
-        refreshToken
+        refreshToken: newRefreshToken
     };
 }
 
