@@ -41,7 +41,7 @@ async function logout(
     res: Response,
     _: NextFunction
 ): Promise<void> {
-    const refreshToken = req.cookies?.refreshToken;
+    const refreshToken = req.cookies?.refresh_token;
     if (refreshToken) {
         await AuthService.logout(refreshToken);
     }
@@ -56,7 +56,7 @@ async function refreshToken(
     res: Response,
     _: NextFunction
 ): Promise<void> {
-    const refreshToken = req.cookies?.refreshToken;
+    const refreshToken = req.cookies?.refresh_token;
     if (!refreshToken) {
         res.status(HttpStatusCode.UNAUTHORIZED).json(formatError(
             'Ez da freskatze tokenik aurkitu'
