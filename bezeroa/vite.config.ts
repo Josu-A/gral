@@ -26,7 +26,7 @@ export default defineConfig(({ mode })  => {
         server: {
             port: env.CLIENT_PORT ? Number(env.CLIENT_PORT) : 5173,
             proxy: {
-                [env.BASE_API_PATH]: {
+                [env.VITE_BASE_API_PATH]: {
                     changeOrigin: true,
                     target: env.SERVER_URL || 'http://localhost:3000',
                 },

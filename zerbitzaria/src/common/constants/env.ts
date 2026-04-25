@@ -18,7 +18,6 @@ const JwtDurationSchema = z.string()
     }).transform(val => val as StringValue);
 
 const EnvironmentSchema = z.object({
-    BASE_API_PATH: z.string().default('/api'),
     CLIENT_URL: z.union([
         z.httpUrl(),
         z.url({ hostname: /^localhost$/ })
@@ -35,7 +34,8 @@ const EnvironmentSchema = z.object({
     LOG_LEVEL: z.enum(Object.keys(winston.config.npm.levels) as [string, ...string[]]).default('info'),
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
     SALT_ROUNDS: z.coerce.number<number>().default(10),
-    SERVER_PORT: z.coerce.number<number>().default(3000)
+    SERVER_PORT: z.coerce.number<number>().default(3000),
+    VITE_BASE_API_PATH: z.string().default('/api')
 });
 
 function validateEnvironment() {

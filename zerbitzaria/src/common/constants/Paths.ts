@@ -18,7 +18,7 @@ const Paths = {
         RestorePassword: '/restore',
         Verify: '/verify'
     },
-    Base: environment.BASE_API_PATH,
+    Base: environment.VITE_BASE_API_PATH,
     Chat: {
         Base: '/chat',
         Message: '/:specificExerciseId'
