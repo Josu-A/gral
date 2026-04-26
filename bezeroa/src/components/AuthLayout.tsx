@@ -13,14 +13,16 @@ function AuthLayout(): JSX.Element {
     return (
         <div className="flex min-h-full items-center justify-center px-4 py-12">
             <div className="w-full max-w-md">
-                <div className="mb-5 text-center">
+                <div className="mb-8 text-center">
                     <h1 className="text-3xl font-bold text-gray-900">GrAL</h1>
                     <p className="mt-2 text-sm text-gray-600">
                         Programazio-ikasleentzako laguntza pedagogikoa
                     </p>
                 </div>
-                <div className="rounded-lg bg-gray-100 p-8 shadow">
-                    <h2 className="mb-1 text-xl font-semibold text-gray-900">{titulua}</h2>
+                <div className="rounded-lg bg-gray-100 p-8 shadow-sm">
+                    <h2 className="
+                      mb-1 text-center text-xl font-semibold text-gray-900
+                    ">{titulua}</h2>
                     <Outlet />
                 </div>
             </div>
