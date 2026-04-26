@@ -71,6 +71,11 @@ export default defineConfig(
                 cwd: bezeroaRootDir,
                 entryPoint: 'src/styles/index.css'
             }
+        },
+        rules: {
+            'better-tailwindcss/enforce-consistent-line-wrapping': ['warn', {
+                lineBreakStyle: 'unix'
+            }]
         }
     }
 );
