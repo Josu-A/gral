@@ -55,6 +55,12 @@ const corsOptions: CorsOptions = {
         if (!origin || allowedOrigins.includes(origin)) {
             return callback(null, true);
         }
+        if (environment.NODE_ENV === 'development') {
+            const isLocalNetwork = new RegExp(`^http://192\\.168\\.\\d+\\.\\d+:${environment.CLIENT_PORT}$`)
+            if (isLocalNetwork) {
+                return callback(null, true);
+            }
+        }
         callback(new Error(`CORS: ${origin} jatorriak ez du baimenik.`));
     }
 }

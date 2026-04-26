@@ -18,6 +18,7 @@ const JwtDurationSchema = z.string()
     }).transform(val => val as StringValue);
 
 const EnvironmentSchema = z.object({
+    CLIENT_PORT: z.coerce.number<number>().default(5173),
     CLIENT_URL: z.union([
         z.httpUrl(),
         z.url({ hostname: /^localhost$/ })
