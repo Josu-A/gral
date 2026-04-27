@@ -9,6 +9,7 @@ import {
 //import { Logout } from "@/pages/Logout";
 import AuthLayout from "@/components/AuthLayout";
 import { useAuth } from "@/hooks/useAuth";
+import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import SignUp from "@/pages/SignUp";
 import { ProtectedRoute } from "@/routes/ProtectedRoute";
@@ -43,7 +44,7 @@ function Routes(): JSX.Element {
     ];
     const routesForNonAuthenticated: RouteObject[] = [
         {
-            element: <div>Home page</div>,
+            element: <Home />,
             path: "/",
         },
         {

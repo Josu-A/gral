@@ -9,7 +9,22 @@
         height: 100%;
     }
     body {
-        @apply bg-gray-200 wrap-break-word hyphens-auto text-gray-900 antialiased;
+        background-color: var(--color-gray-200);
+        color: var(--color-gray-900);
+        hyphens: auto;
+        overflow-wrap: break-word;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-font-smoothing: antialiased;
+        -webkit-hyphens: auto;
+    }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        text-wrap: balance;
+        white-space: unset;
     }
 }
 
