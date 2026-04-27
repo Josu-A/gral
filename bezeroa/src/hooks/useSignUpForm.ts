@@ -3,12 +3,12 @@ import { useState } from "react";
 import type { IkasketaMaila } from "@/common/types/entities";
 
 interface FormErrors {
-    confirmPassword?: string;
-    educationLevel?: string;
-    email?: string;
     general?: string;
-    name?: string;
-    password?: string;
+    helbide_elektronikoa?: string;
+    ikasketa_maila?: string;
+    izena?: string;
+    pasahitza?: string;
+    pasahitza_errepikatu?: string;
 }
 
 function useSignUpForm() {
@@ -60,22 +60,24 @@ function useSignUpForm() {
     const validate = (): boolean => {
         const validationErrors: FormErrors = {};
         if (!email.includes("@")) {
-            validationErrors.email = "Helbide elektronikoa ez da baliozkoa";
+            validationErrors.helbide_elektronikoa =
+                "Helbide elektronikoa ez da baliozkoa";
         }
         if (!name.trim()) {
-            validationErrors.name = "Izena ezin da hutsik egon";
+            validationErrors.izena = "Izena ezin da hutsik egon";
         }
         if (!password.trim()) {
-            validationErrors.password = "Pasahitza huts dago";
+            validationErrors.pasahitza = "Pasahitza huts dago";
         }
         if (!confirmPassword.trim()) {
-            validationErrors.confirmPassword = "Berretsi pasahitza";
+            validationErrors.pasahitza_errepikatu = "Berretsi pasahitza";
         }
         if (confirmPassword.trim() && password !== confirmPassword) {
-            validationErrors.confirmPassword = "Pasahitzak ez dira berdinak";
+            validationErrors.pasahitza_errepikatu =
+                "Pasahitzak ez dira berdinak";
         }
         if (!educationLevel) {
-            validationErrors.educationLevel =
+            validationErrors.ikasketa_maila =
                 "Ikasketa maila aukeratu behar duzu";
         }
         setErrors(validationErrors);

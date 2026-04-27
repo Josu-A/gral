@@ -16,6 +16,10 @@ interface LoginResponse {
         accessToken: string;
     };
     error?: string;
+    issues?: {
+        message: string;
+        path: string;
+    }[];
     success: boolean;
 }
 
@@ -67,10 +71,26 @@ function Login(): JSX.Element {
             setToken(response.data.data.accessToken);
             navigate(from, { replace: true });
         } catch (err: unknown) {
-            const message = axios.isAxiosError<{ error: string }>(err)
-                ? err.response?.data?.error || ERROR_GENERIC
-                : "Ustekabeko errore bat gertatu da";
-            setErrors({ general: message });
+            if (!axios.isAxiosError<LoginResponse>(err)) {
+                setErrors({ general: "Ustekabeko errore bat gertatu da" });
+                return;
+            }
+            const responseData = err.response?.data;
+            if (!responseData) {
+                setErrors({ general: ERROR_GENERIC });
+                return;
+            }
+            if (responseData.error === "VALIDATION_ERROR") {
+                const fieldErrors: Record<string, string> = {};
+                responseData.issues?.forEach((issue) => {
+                    fieldErrors[issue.path] = fieldErrors[issue.path]
+                        ? `${fieldErrors[issue.path]}\n${issue.message}`
+                        : issue.message;
+                });
+                setErrors(fieldErrors);
+            } else {
+                setErrors({ general: responseData.error || ERROR_GENERIC });
+            }
         } finally {
             setIsLoading(false);
         }
@@ -81,13 +101,13 @@ function Login(): JSX.Element {
             <Input
                 autoComplete="email"
                 disabled={isLoading}
-                error={errors.email}
+                error={errors.helbide_elektronikoa}
                 inputMode="email"
                 label="Helbide elektronikoa"
                 onBlur={handleEmailBlur}
                 onChange={(e) => {
                     setEmail(e.target.value);
-                    clearError("email");
+                    clearError("helbide_elektronikoa");
                 }}
                 required
                 type="email"
@@ -96,11 +116,11 @@ function Login(): JSX.Element {
             <Input
                 autoComplete="current-password"
                 disabled={isLoading}
-                error={errors.password}
+                error={errors.pasahitza}
                 label="Pasahitza"
                 onChange={(e) => {
                     setPassword(e.target.value);
-                    clearError("password");
+                    clearError("pasahitza");
                 }}
                 required
                 type="password"

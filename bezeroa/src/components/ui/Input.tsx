@@ -30,7 +30,9 @@ function Input({
                 {...props}
             />
             {error && (
-                <span className="mt-1 text-xs text-red-600">{error}</span>
+                <span className="mt-1 text-xs whitespace-pre-line text-red-600">
+                    {error}
+                </span>
             )}
         </div>
     );

@@ -1,11 +1,11 @@
-import type { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from "express";
 
-import { environment } from '@common/constants/env';
-import HttpStatusCode from '@common/constants/HttpStatusCodes';
-import logger from '@common/constants/logger';
-import { RequestError } from '@common/utils/errors';
-import { formatError } from '@common/utils/responses';
-
+import { environment } from "@common/constants/env";
+import HttpStatusCode from "@common/constants/HttpStatusCodes";
+import logger from "@common/constants/logger";
+import { RequestError } from "@common/utils/errors";
+import { formatError } from "@common/utils/responses";
+import { ZodError } from "zod";
 
 function handleErrors(err: Error, _r: Request, res: Response, _: NextFunction) {
     if (err instanceof RequestError) {
@@ -14,13 +14,28 @@ function handleErrors(err: Error, _r: Request, res: Response, _: NextFunction) {
         return;
     }
 
-    if (environment.NODE_ENV !== 'test') {
+    if (err instanceof ZodError) {
+        const fullErrorMessage = err.issues.map((e) => e.path).join(", ");
+        const issues = err.issues.map((issue) => ({
+            message: issue.message,
+            path: String(issue.path),
+        }));
+        logger.info(`${HttpStatusCode.BAD_REQUEST} ${fullErrorMessage}`);
+        res.status(HttpStatusCode.BAD_REQUEST).json(
+            formatError("VALIDATION_ERROR", issues),
+        );
+        return;
+    }
+
+    if (environment.NODE_ENV !== "test") {
         logger.error("Zerbait oso txarra gertatu da", {
             error: err.message,
-            stack: err.stack
+            stack: err.stack,
         });
     }
-    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(formatError(err.message));
+    res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(
+        formatError(err.message),
+    );
 }
 
 export default handleErrors;

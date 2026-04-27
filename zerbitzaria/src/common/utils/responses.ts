@@ -1,20 +1,21 @@
 import type { IApiResponse } from "@common/types";
 
-function formatError(error: string): IApiResponse {
+function formatError(
+    error: string,
+    issues?: { message: string; path: string }[],
+): IApiResponse {
     return {
         error,
-        success: false
+        issues,
+        success: false,
     };
 }
 
 function formatSuccess<T>(data: T): IApiResponse<T> {
     return {
         data,
-        success: true
+        success: true,
     };
 }
 
-export {
-    formatError,
-    formatSuccess
-};
+export { formatError, formatSuccess };

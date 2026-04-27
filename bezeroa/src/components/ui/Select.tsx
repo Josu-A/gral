@@ -62,7 +62,9 @@ function Select<T extends string>({
                 ))}
             </select>
             {error && (
-                <span className="mt-1 text-xs text-red-600">{error}</span>
+                <span className="mt-1 text-xs whitespace-pre-line text-red-600">
+                    {error}
+                </span>
             )}
         </div>
     );

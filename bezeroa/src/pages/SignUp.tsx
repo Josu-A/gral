@@ -17,6 +17,10 @@ interface SignUpResponse {
         message: string;
     };
     error?: string;
+    issues?: {
+        message: string;
+        path: string;
+    }[];
     success: boolean;
 }
 
@@ -85,10 +89,26 @@ function SignUp(): JSX.Element {
             navigate("/login");
             toast.success(response.data.data?.message);
         } catch (err: unknown) {
-            const message = axios.isAxiosError<{ error: string }>(err)
-                ? err.response?.data?.error || ERROR_GENERIC
-                : "Ustekabeko errore bat gertatu da";
-            setErrors({ general: message });
+            if (!axios.isAxiosError<SignUpResponse>(err)) {
+                setErrors({ general: "Ustekabeko errore bat gertatu da" });
+                return;
+            }
+            const responseData = err.response?.data;
+            if (!responseData) {
+                setErrors({ general: ERROR_GENERIC });
+                return;
+            }
+            if (responseData.error === "VALIDATION_ERROR") {
+                const fieldErrors: Record<string, string> = {};
+                responseData.issues?.forEach((issue) => {
+                    fieldErrors[issue.path] = fieldErrors[issue.path]
+                        ? `${fieldErrors[issue.path]}\n${issue.message}`
+                        : issue.message;
+                });
+                setErrors(fieldErrors);
+            } else {
+                setErrors({ general: responseData.error || ERROR_GENERIC });
+            }
         } finally {
             setIsLoading(false);
         }
@@ -99,13 +119,13 @@ function SignUp(): JSX.Element {
             <Input
                 autoComplete="email"
                 disabled={isLoading}
-                error={errors.email}
+                error={errors.helbide_elektronikoa}
                 inputMode="email"
                 label="Helbide elektronikoa"
                 onBlur={handleEmailBlur}
                 onChange={(e) => {
                     setEmail(e.target.value);
-                    clearError("email");
+                    clearError("helbide_elektronikoa");
                 }}
                 required
                 type="email"
@@ -114,13 +134,13 @@ function SignUp(): JSX.Element {
             <Input
                 autoComplete="name"
                 disabled={isLoading}
-                error={errors.name}
+                error={errors.izena}
                 inputMode="text"
                 label="Izena"
                 onBlur={handleNameBlur}
                 onChange={(e) => {
                     setName(e.target.value);
-                    clearError("name");
+                    clearError("izena");
                 }}
                 required
                 type="text"
@@ -129,11 +149,11 @@ function SignUp(): JSX.Element {
             <Input
                 autoComplete="current-password"
                 disabled={isLoading}
-                error={errors.password}
+                error={errors.pasahitza}
                 label="Pasahitza"
                 onChange={(e) => {
                     setPassword(e.target.value);
-                    clearError("password");
+                    clearError("pasahitza");
                 }}
                 required
                 type="password"
@@ -142,12 +162,12 @@ function SignUp(): JSX.Element {
             <Input
                 autoComplete="current-password"
                 disabled={isLoading}
-                error={errors.confirmPassword}
+                error={errors.pasahitza_errepikatu}
                 label="Errepikatu pasahitza"
                 onBlur={handleConfirmPasswordBlur}
                 onChange={(e) => {
                     setConfirmPassword(e.target.value);
-                    clearError("confirmPassword");
+                    clearError("pasahitza_errepikatu");
                 }}
                 required
                 type="password"
@@ -155,11 +175,11 @@ function SignUp(): JSX.Element {
             />
             <Select
                 disabled={isLoading}
-                error={errors.educationLevel}
+                error={errors.ikasketa_maila}
                 label="Ikasketa maila"
                 onChange={(value) => {
                     setEducationLevel(value);
-                    clearError("educationLevel");
+                    clearError("ikasketa_maila");
                 }}
                 options={MAILAK}
                 required
