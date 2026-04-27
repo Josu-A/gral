@@ -13,9 +13,10 @@ import { Select } from "@/components/ui/Select";
 import { useSignUpForm } from "@/hooks/useSignUpForm";
 
 interface SignUpResponse {
-    data: {
+    data?: {
         message: string;
     };
+    error?: string;
     success: boolean;
 }
 
@@ -27,6 +28,8 @@ const MAILAK: {
     { label: "Ertaina", value: "Ertaina" },
     { label: "Aurreratua", value: "Aurreratua" },
 ];
+
+const ERROR_GENERIC = "Akats bat gertatu da erregistratzean";
 
 function SignUp(): JSX.Element {
     const navigate = useNavigate();
@@ -75,12 +78,15 @@ function SignUp(): JSX.Element {
                     pasahitza_errepikatu: confirmPassword,
                 },
             );
+            if (!response.data.success) {
+                setErrors({ general: response.data.error || ERROR_GENERIC });
+                return;
+            }
             navigate("/login");
-            toast.success(response.data.data.message);
+            toast.success(response.data.data?.message);
         } catch (err: unknown) {
             const message = axios.isAxiosError<{ error: string }>(err)
-                ? err.response?.data?.error ||
-                  "Akats bat gertatu da erregistratzean"
+                ? err.response?.data?.error || ERROR_GENERIC
                 : "Ustekabeko errore bat gertatu da";
             setErrors({ general: message });
         } finally {

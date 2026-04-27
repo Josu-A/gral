@@ -12,11 +12,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLoginForm } from "@/hooks/useLoginForm";
 
 interface LoginResponse {
-    data: {
+    data?: {
         accessToken: string;
     };
+    error?: string;
     success: boolean;
 }
+
+const ERROR_GENERIC = "Akats bat gertatu da saioa hastean";
 
 function Login(): JSX.Element {
     const { setToken } = useAuth();
@@ -57,13 +60,15 @@ function Login(): JSX.Element {
                     pasahitza: password,
                 },
             );
-
+            if (!response.data.data?.accessToken) {
+                setErrors({ general: response.data.error || ERROR_GENERIC });
+                return;
+            }
             setToken(response.data.data.accessToken);
             navigate(from, { replace: true });
         } catch (err: unknown) {
             const message = axios.isAxiosError<{ error: string }>(err)
-                ? err.response?.data?.error ||
-                  "Akats bat gertatu da saioa hastean"
+                ? err.response?.data?.error || ERROR_GENERIC
                 : "Ustekabeko errore bat gertatu da";
             setErrors({ general: message });
         } finally {
