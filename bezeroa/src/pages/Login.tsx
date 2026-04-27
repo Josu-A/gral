@@ -1,10 +1,10 @@
-import axios from "axios";
 import { type JSX, type SubmitEvent, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import type { LocationState } from "@/common/types";
 
 import apiClient from "@/common/apiClient";
+import { handleApiError } from "@/common/errorHelper";
 import { Button } from "@/components/ui/Button";
 import { FormError } from "@/components/ui/FormError";
 import { Input } from "@/components/ui/Input";
@@ -71,26 +71,7 @@ function Login(): JSX.Element {
             setToken(response.data.data.accessToken);
             navigate(from, { replace: true });
         } catch (err: unknown) {
-            if (!axios.isAxiosError<LoginResponse>(err)) {
-                setErrors({ general: "Ustekabeko errore bat gertatu da" });
-                return;
-            }
-            const responseData = err.response?.data;
-            if (!responseData) {
-                setErrors({ general: ERROR_GENERIC });
-                return;
-            }
-            if (responseData.error === "VALIDATION_ERROR") {
-                const fieldErrors: Record<string, string> = {};
-                responseData.issues?.forEach((issue) => {
-                    fieldErrors[issue.path] = fieldErrors[issue.path]
-                        ? `${fieldErrors[issue.path]}\n${issue.message}`
-                        : issue.message;
-                });
-                setErrors(fieldErrors);
-            } else {
-                setErrors({ general: responseData.error || ERROR_GENERIC });
-            }
+            setErrors(handleApiError(err, ERROR_GENERIC));
         } finally {
             setIsLoading(false);
         }
