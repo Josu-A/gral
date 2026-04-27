@@ -20,6 +20,7 @@ const buttonClasses = (isLoading: boolean, variant: ComponentVariant, className?
     'rounded-md border border-transparent shadow-sm',
     'text-sm font-medium text-gray-100',
     'transition-colors',
+    'cursor-pointer',
     'focus:ring-2 focus:ring-offset-2 focus:outline-none',
     isLoading
         ? buttonVariantClasses[variant].loading
