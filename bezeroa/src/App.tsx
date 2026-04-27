@@ -1,14 +1,17 @@
-import type { JSX } from 'react';
+import type { JSX } from "react";
 
-import AuthProvider from '@/provider/authProvider';
-import Routes from '@/routes';
+import { Toaster } from "sonner";
+
+import AuthProvider from "@/provider/authProvider";
+import Routes from "@/routes";
 
 function App(): JSX.Element {
     return (
         <AuthProvider>
+            <Toaster position="top-center" richColors />
             <Routes />
         </AuthProvider>
     );
 }
 
-export default App
+export default App;

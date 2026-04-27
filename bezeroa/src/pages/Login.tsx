@@ -1,15 +1,15 @@
-import axios from 'axios';
-import { type JSX, type SubmitEvent, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import axios from "axios";
+import { type JSX, type SubmitEvent, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import type { LocationState } from '@/common/types';
+import type { LocationState } from "@/common/types";
 
-import apiClient from '@/common/apiClient';
-import { Button } from '@/components/ui/Button';
-import { FormError } from '@/components/ui/FormError';
-import { Input } from '@/components/ui/Input';
-import { useAuth } from '@/hooks/useAuth';
-import { useLoginForm } from '@/hooks/useLoginForm';
+import apiClient from "@/common/apiClient";
+import { Button } from "@/components/ui/Button";
+import { FormError } from "@/components/ui/FormError";
+import { Input } from "@/components/ui/Input";
+import { useAuth } from "@/hooks/useAuth";
+import { useLoginForm } from "@/hooks/useLoginForm";
 
 interface LoginResponse {
     data: {
@@ -17,8 +17,6 @@ interface LoginResponse {
     };
     success: boolean;
 }
-
-const linkClasses = "text-xs text-amber-600 hover:text-amber-700 hover:underline transition-colors";
 
 function Login(): JSX.Element {
     const { setToken } = useAuth();
@@ -28,7 +26,7 @@ function Login(): JSX.Element {
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const state: LocationState | null = location.state;
-    const from = state?.from?.pathname || '/';
+    const from = state?.from?.pathname || "/";
 
     const {
         clearError,
@@ -39,9 +37,8 @@ function Login(): JSX.Element {
         setEmail,
         setErrors,
         setPassword,
-        validate
+        validate,
     } = useLoginForm();
-
 
     async function handleLogin(e: SubmitEvent<HTMLFormElement>): Promise<void> {
         e.preventDefault();
@@ -58,19 +55,18 @@ function Login(): JSX.Element {
                 {
                     helbide_elektronikoa: email,
                     pasahitza: password,
-                }
+                },
             );
 
             setToken(response.data.data.accessToken);
             navigate(from, { replace: true });
-        }
-        catch (err: unknown) {
+        } catch (err: unknown) {
             const message = axios.isAxiosError<{ error: string }>(err)
-                ? err.response?.data?.error || 'Akats bat gertatu da saioa hastean'
-                : 'Ustekabeko errore bat gertatu da';
+                ? err.response?.data?.error ||
+                  "Akats bat gertatu da saioa hastean"
+                : "Ustekabeko errore bat gertatu da";
             setErrors({ general: message });
-        }
-        finally {
+        } finally {
             setIsLoading(false);
         }
     }
@@ -81,13 +77,12 @@ function Login(): JSX.Element {
                 autoComplete="email"
                 disabled={isLoading}
                 error={errors.email}
-                id="email"
                 inputMode="email"
                 label="Helbide elektronikoa"
                 onBlur={handleEmailBlur}
-                onChange={e => {
+                onChange={(e) => {
                     setEmail(e.target.value);
-                    clearError('email');
+                    clearError("email");
                 }}
                 required
                 type="email"
@@ -97,11 +92,10 @@ function Login(): JSX.Element {
                 autoComplete="current-password"
                 disabled={isLoading}
                 error={errors.password}
-                id="password"
                 label="Pasahitza"
-                onChange={e => {
+                onChange={(e) => {
                     setPassword(e.target.value);
-                    clearError('password');
+                    clearError("password");
                 }}
                 required
                 type="password"
@@ -112,25 +106,18 @@ function Login(): JSX.Element {
 
             <div className="flex w-full flex-col items-center space-y-4">
                 <Button
-                    className="
-                      w-full
-                      sm:w-auto sm:px-12
-                    "
+                    className="w-full sm:w-auto sm:px-12"
                     isLoading={isLoading}
-                    type='submit'
-                    variant='primary'
+                    type="submit"
+                    variant="primary"
                 >
                     Saioa hasi
                 </Button>
-                <div className="
-                  flex w-full flex-col items-center justify-center gap-4
-                  text-center
-                  sm:flex-row sm:gap-8
-                ">
-                    <Link className={linkClasses} to="/forgot-password">
+                <div className="flex w-full flex-col items-center justify-center gap-4 text-center sm:flex-row sm:gap-8">
+                    <Link className="link-primary" to="/forgot-password">
                         Pasahitza ahaztu duzu?
                     </Link>
-                    <Link className={linkClasses} to="/register">
+                    <Link className="link-primary" to="/signup">
                         Ez duzu konturik?
                     </Link>
                 </div>

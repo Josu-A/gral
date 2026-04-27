@@ -3,13 +3,41 @@
 /*@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));*/
 
 @layer base {
-    html, body, #root {
+    html,
+    body,
+    #root {
         height: 100%;
     }
     body {
-        @apply bg-gray-200 text-gray-900 antialiased wrap-break-word hyphens-auto;
+        @apply bg-gray-200 wrap-break-word hyphens-auto text-gray-900 antialiased;
     }
 }
 
 @theme {
+}
+
+@layer components {
+    .link-primary {
+        color: var(--color-amber-600);
+        font-size: var(--text-xs);
+        line-height: var(--tw-leading, var(--text-xs--line-height));
+        transition-property:
+            color, background-color, border-color, outline-color,
+            text-decoration-color, fill, stroke, --tw-gradient-from,
+            --tw-gradient-via, var(--tw-gradient-to);
+        transition-timing-function: var(
+            --tw-ease,
+            var(--default-transition-timing-function)
+        );
+        transition-duration: var(
+            --tw-duration,
+            var(--default-transition-duration)
+        );
+        &:hover {
+            @media (hover: hover) {
+                color: var(--color-amber-700);
+                text-decoration-line: underline;
+            }
+        }
+    }
 }

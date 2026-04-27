@@ -3,13 +3,14 @@ import type { JSX } from "react";
 import {
     createBrowserRouter,
     type RouteObject,
-    RouterProvider
+    RouterProvider,
 } from "react-router-dom";
 
 //import { Logout } from "@/pages/Logout";
 import AuthLayout from "@/components/AuthLayout";
 import { useAuth } from "@/hooks/useAuth";
 import Login from "@/pages/Login";
+import SignUp from "@/pages/SignUp";
 import { ProtectedRoute } from "@/routes/ProtectedRoute";
 
 function Routes(): JSX.Element {
@@ -17,55 +18,55 @@ function Routes(): JSX.Element {
     const routesForPublic: RouteObject[] = [
         {
             element: <div>About us</div>,
-            path: "/about"
-        }
+            path: "/about",
+        },
     ];
     const routesForAuthenticated: RouteObject[] = [
         {
             children: [
                 {
                     element: <div>User home page</div>,
-                    path: "/"
+                    path: "/",
                 },
                 {
                     element: <div>User profile</div>,
-                    path: "/profile"
+                    path: "/profile",
                 },
                 {
                     element: <div>Logout</div>,
-                    path: "/logout"
-                }
+                    path: "/logout",
+                },
             ],
             element: <ProtectedRoute />,
-            path: "/"
-        }
+            path: "/",
+        },
     ];
     const routesForNonAuthenticated: RouteObject[] = [
         {
             element: <div>Home page</div>,
-            path: "/"
+            path: "/",
         },
         {
             children: [
                 {
                     element: <Login />,
-                    handle: { titulua: 'Saioa hasi' },
-                    path: "login"
+                    handle: { titulua: "Saioa hasi" },
+                    path: "login",
                 },
                 {
-                    element: <div>Register</div>,
-                    handle: { titulua: 'Erregistratu' },
-                    path: "register"
-                }
+                    element: <SignUp />,
+                    handle: { titulua: "Erregistratu" },
+                    path: "signup",
+                },
             ],
-            element: <AuthLayout />
-        }
+            element: <AuthLayout />,
+        },
     ];
 
     const router = createBrowserRouter([
         ...routesForPublic,
         ...(!token ? routesForNonAuthenticated : []),
-        ...routesForAuthenticated
+        ...routesForAuthenticated,
     ]);
 
     return <RouterProvider router={router} />;

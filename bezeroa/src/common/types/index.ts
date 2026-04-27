@@ -10,7 +10,18 @@ interface LocationState {
     };
 }
 
-export type {
-    AuthContextType,
-    LocationState
-};
+const tw = (
+    strings: TemplateStringsArray,
+    ...values: readonly (
+        | bigint
+        | boolean
+        | null
+        | number
+        | string
+        | undefined
+    )[]
+): string => String.raw({ raw: strings }, ...values);
+
+export { tw };
+
+export type { AuthContextType, LocationState };

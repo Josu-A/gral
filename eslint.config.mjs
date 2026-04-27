@@ -4,7 +4,6 @@ import eslint from '@eslint/js';
 import perfectionist from 'eslint-plugin-perfectionist';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
-import eslintPluginBetterTailwindcss from "eslint-plugin-better-tailwindcss";
 import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import { join } from 'node:path';
@@ -54,8 +53,7 @@ export default defineConfig(
         files: ['bezeroa/**/*.{ts,tsx}'],
         extends: [
             reactHooks.configs.flat.recommended,
-            reactRefresh.configs.vite,
-            eslintPluginBetterTailwindcss.configs.recommended
+            reactRefresh.configs.vite
         ],
         languageOptions: {
             globals: {
@@ -65,17 +63,6 @@ export default defineConfig(
                 project: ['./tsconfig.app.json', './tsconfig.node.json'],
                 tsconfigRootDir: bezeroaRootDir
             }
-        },
-        settings: {
-            'better-tailwindcss': {
-                cwd: bezeroaRootDir,
-                entryPoint: 'src/styles/index.css'
-            }
-        },
-        rules: {
-            'better-tailwindcss/enforce-consistent-line-wrapping': ['warn', {
-                lineBreakStyle: 'unix'
-            }]
         }
     }
 );
