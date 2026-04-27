@@ -1,5 +1,5 @@
-import { type JSX } from 'react';
-import { Outlet, useMatches } from 'react-router-dom';
+import { type JSX } from "react";
+import { Outlet, useMatches } from "react-router-dom";
 
 type AuthHandle = {
     titulua?: string;
@@ -7,11 +7,12 @@ type AuthHandle = {
 
 function AuthLayout(): JSX.Element {
     const matches = useMatches();
-    const lastRouteWithHandle = [...matches].reverse().find(m => m.handle);
-    const titulua = (lastRouteWithHandle?.handle as AuthHandle)?.titulua ?? 'Ongi etorri';
+    const lastRouteWithHandle = [...matches].reverse().find((m) => m.handle);
+    const titulua =
+        (lastRouteWithHandle?.handle as AuthHandle)?.titulua ?? "Ongi etorri";
 
     return (
-        <div className="flex min-h-full items-center justify-center px-4 py-12">
+        <main className="flex min-h-full items-center justify-center px-4 py-12">
             <div className="w-full max-w-md">
                 <div className="mb-8 text-center">
                     <h1 className="text-3xl font-bold text-gray-900">GrAL</h1>
@@ -20,13 +21,13 @@ function AuthLayout(): JSX.Element {
                     </p>
                 </div>
                 <div className="rounded-lg bg-gray-100 p-8 shadow-sm">
-                    <h2 className="
-                      mb-1 text-center text-xl font-semibold text-gray-900
-                    ">{titulua}</h2>
+                    <h2 className="mb-1 text-center text-xl font-semibold text-gray-900">
+                        {titulua}
+                    </h2>
                     <Outlet />
                 </div>
             </div>
-        </div>
+        </main>
     );
 }
 
