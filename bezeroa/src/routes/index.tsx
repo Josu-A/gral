@@ -33,10 +33,6 @@ function Routes(): JSX.Element {
                     element: <div>User profile</div>,
                     path: "/profile",
                 },
-                {
-                    element: <div>Logout</div>,
-                    path: "/logout",
-                },
             ],
             element: <ProtectedRoute />,
             path: "/",
