@@ -4,7 +4,7 @@ interface CogProps {
     className?: string;
 }
 
-function Cog({ className = "h-5 w-5" }: CogProps): JSX.Element {
+function CogIcon({ className = "h-5 w-5" }: CogProps): JSX.Element {
     return (
         <svg
             className={className}
@@ -29,4 +29,4 @@ function Cog({ className = "h-5 w-5" }: CogProps): JSX.Element {
     );
 }
 
-export { Cog };
+export { CogIcon };
