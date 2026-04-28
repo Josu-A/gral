@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 
 //import { Logout } from "@/pages/Logout";
-import AuthLayout from "@/components/AuthLayout";
+import AuthLayout from "@/components/layout/AuthLayout";
 import { useAuth } from "@/hooks/useAuth";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
