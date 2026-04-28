@@ -4,7 +4,7 @@ import { type ButtonHTMLAttributes, type JSX } from "react";
 import type { ComponentVariant } from "@/components/ui/types";
 
 import { tw } from "@/common/types";
-import { Spinner } from "@/components/ui/Spinner";
+import { SpinnerIcon } from "@/components/icon/Spinner";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     isLoading?: boolean;
@@ -65,7 +65,7 @@ function Button({
             <div className="flex flex-row items-center align-bottom">
                 {isLoading && (
                     <div className="mr-2 inline-flex">
-                        <Spinner />
+                        <SpinnerIcon />
                     </div>
                 )}
                 <div className="flex-1">
