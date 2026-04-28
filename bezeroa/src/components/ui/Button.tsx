@@ -25,7 +25,7 @@ const buttonClasses = (
     className?: string,
 ): string =>
     clsx(
-        "flex w-full justify-center px-4 py-2",
+        "flex justify-center px-4 py-2",
         "rounded-md border border-transparent shadow-sm",
         "text-sm font-medium text-gray-100",
         "transition-colors",
