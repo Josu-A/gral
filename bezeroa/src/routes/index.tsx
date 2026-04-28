@@ -6,11 +6,12 @@ import {
     RouterProvider,
 } from "react-router-dom";
 
-//import { Logout } from "@/pages/Logout";
+import AppLayout from "@/components/layout/AppLayout";
 import AuthLayout from "@/components/layout/AuthLayout";
 import { useAuth } from "@/hooks/useAuth";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
+import { Logout } from "@/pages/Logout";
 import SignUp from "@/pages/SignUp";
 import { ProtectedRoute } from "@/routes/ProtectedRoute";
 
@@ -26,12 +27,21 @@ function Routes(): JSX.Element {
         {
             children: [
                 {
-                    element: <div>User home page</div>,
-                    path: "/",
+                    children: [
+                        {
+                            element: <div>User home page</div>,
+                            path: "/",
+                        },
+                        {
+                            element: <div>User profile</div>,
+                            path: "profile",
+                        },
+                    ],
+                    element: <AppLayout />,
                 },
                 {
-                    element: <div>User profile</div>,
-                    path: "/profile",
+                    element: <Logout />,
+                    path: "logout",
                 },
             ],
             element: <ProtectedRoute />,
