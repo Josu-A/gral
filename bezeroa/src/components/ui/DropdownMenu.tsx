@@ -64,7 +64,7 @@ function DropdownMenu({
             {isOpen &&
                 createPortal(
                     <div
-                        className="fixed top-16 right-4 z-10 flex w-3xs flex-col rounded-md border-2 border-slate-300 bg-slate-100 py-2 shadow-md *:flex *:flex-row *:items-center *:gap-x-4 *:py-3 *:pl-4 [&_a:hover]:bg-slate-200"
+                        className="fixed top-23 right-4 z-10 flex w-3xs flex-col rounded-md border-2 border-slate-300 bg-slate-100 py-2 shadow-md *:flex *:flex-row *:items-center *:gap-x-4 *:py-3 *:pl-4 sm:top-16 [&_a:hover]:bg-slate-200"
                         onClick={() => setIsOpen(false)}
                         ref={menuRef}
                     >
