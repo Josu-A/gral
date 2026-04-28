@@ -9,7 +9,7 @@
         height: 100%;
     }
     body {
-        background-color: var(--color-gray-200);
+        background-color: var(--color-slate-50);
         color: var(--color-gray-900);
         hyphens: auto;
         overflow-wrap: break-word;
