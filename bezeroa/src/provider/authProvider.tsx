@@ -40,7 +40,7 @@ function AuthProvider({ children }: AuthProviderProps): JSX.Element {
                 }
             } catch {
                 setToken(null);
-                console.error("Error refreshing access token:");
+                console.error("Error refreshing access token");
             } finally {
                 setIsLoading(false);
             }
