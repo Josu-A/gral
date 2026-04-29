@@ -27,14 +27,19 @@ function handleErrors(err: Error, _r: Request, res: Response, _: NextFunction) {
         return;
     }
 
+    const errorMessage = "Zerbait oso txarra gertatu da";
+
     if (environment.NODE_ENV !== "test") {
-        logger.error("Zerbait oso txarra gertatu da", {
+        logger.error(errorMessage, {
             error: err.message,
             stack: err.stack,
         });
     }
+
     res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(
-        formatError(err.message),
+        formatError(
+            environment.NODE_ENV === "development" ? err.message : errorMessage,
+        ),
     );
 }
 
