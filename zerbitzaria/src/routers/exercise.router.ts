@@ -1,15 +1,22 @@
-import Paths from '@common/constants/Paths';
-import ExerciseController from '@domain/exercises/ExerciseController';
-import { Router } from 'express';
+import Paths from "@common/constants/Paths";
+import ExerciseController from "@domain/exercises/ExerciseController";
+import { Router } from "express";
 
-import { authenticate } from './middleware/authentication';
+import { authenticate } from "./middleware/authentication";
 
 const exerciseRouter = Router();
 
 exerciseRouter.use(authenticate);
 
 exerciseRouter.get(Paths.Exercises.List, ExerciseController.listExercises);
+exerciseRouter.get(
+    Paths.Exercises.ProgrammingLanguages,
+    ExerciseController.getProgrammingLanguages,
+);
 exerciseRouter.get(Paths.Exercises.View, ExerciseController.getExercise);
-exerciseRouter.post(Paths.Exercises.Language, ExerciseController.getSpecificExercise);
+exerciseRouter.post(
+    Paths.Exercises.Language,
+    ExerciseController.getSpecificExercise,
+);
 
 export default exerciseRouter;

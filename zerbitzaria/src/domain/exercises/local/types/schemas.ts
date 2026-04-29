@@ -4,11 +4,15 @@ import { z } from "zod";
 
 const GetExerciseSchema = z.object({
     params: z.object({
-        ariketa_id: z.coerce.number<number>().int().positive()
+        ariketa_id: z.coerce.number<number>().int().positive(),
     }),
     query: z.object({
-        programazio_lengoaia_id: z.coerce.number<number>().int().positive().optional()
-    })
+        programazio_lengoaia_id: z.coerce
+            .number<number>()
+            .int()
+            .positive()
+            .optional(),
+    }),
 });
 
 type IGetExercise = z.infer<typeof GetExerciseSchema>;
@@ -19,11 +23,11 @@ type IGetExerciseFlat = {
 
 const GetSpecificExerciseSchema = z.object({
     params: z.object({
-        ariketa_id: z.coerce.number<number>().int().positive()
+        ariketa_id: z.coerce.number<number>().int().positive(),
     }),
     query: z.object({
-        programazio_lengoaia_id: z.coerce.number<number>().int().positive()
-    })
+        programazio_lengoaia_id: z.coerce.number<number>().int().positive(),
+    }),
 });
 
 type IGetSpecificExercise = z.infer<typeof GetSpecificExerciseSchema>;
@@ -36,7 +40,11 @@ const ListExercisesSchema = z.object({
     egoera: z.enum(Egoera).optional(),
     etiketa_id: z.coerce.number<number>().int().positive().optional(),
     etiketa_kategoria_id: z.coerce.number<number>().int().positive().optional(),
-    programazio_lengoaia_id: z.coerce.number<number>().int().positive().optional(),
+    programazio_lengoaia_id: z.coerce
+        .number<number>()
+        .int()
+        .positive()
+        .optional(),
     titulua: z.string().trim().optional(),
     zailtasuna: z.enum(Zailtasuna).optional(),
 });
@@ -45,22 +53,22 @@ type ExerciseArgs = {
     include: {
         ariketa_zehatzak: {
             include: {
-                ebazpenak: true,
-                programazio_lengoaia: true
-            }
-        },
+                ebazpenak: true;
+                programazio_lengoaia: true;
+            };
+        };
         etiketak: {
             include: {
                 etiketa: {
                     include: {
                         kategoria: {
-                            select: { izena: true, kategoria_id: true }
-                        }
-                    }
-                }
-            }
-        }
-    }
+                            select: { izena: true; kategoria_id: true };
+                        };
+                    };
+                };
+            };
+        };
+    };
 };
 
 type FullAriketa = Prisma.AriketaGetPayload<ExerciseArgs>;
@@ -72,6 +80,11 @@ interface GetExerciseResponse {
     ikasle_kodea: null | string;
 }
 
+interface GetProgrammingLanguagesResponse {
+    bertsioa: string;
+    izena: string;
+    programazio_lengoaia_id: number;
+}
 
 interface GetSpecificExerciseResponse {
     ebazpena: null | SinglePartialEbazpena;
@@ -87,28 +100,25 @@ type SolutionArgs = {
     select: {
         ebazpenak: {
             select: {
-                ebazpena_id: true,
-                egoera: true,
-                kodea: true
-            }
-        },
-        hasierako_kodea: true
-    }
+                ebazpena_id: true;
+                egoera: true;
+                kodea: true;
+            };
+        };
+        hasierako_kodea: true;
+    };
 };
 
-export {
-    GetExerciseSchema,
-    GetSpecificExerciseSchema,
-    ListExercisesSchema
-};
+export { GetExerciseSchema, GetSpecificExerciseSchema, ListExercisesSchema };
 
 export type {
     FullAriketa,
     GetExerciseResponse,
+    GetProgrammingLanguagesResponse,
     GetSpecificExerciseResponse,
     IGetExercise,
     IGetExerciseFlat,
     IGetSpecificExercise,
     IGetSpecificExerciseFlat,
-    IListExercises
+    IListExercises,
 };

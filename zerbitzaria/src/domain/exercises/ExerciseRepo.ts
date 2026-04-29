@@ -1,16 +1,17 @@
 import type {
     FullAriketa,
     GetExerciseResponse,
+    GetProgrammingLanguagesResponse,
     GetSpecificExerciseResponse,
-    IListExercises
-} from '@domain/exercises/local/types/schemas';
+    IListExercises,
+} from "@domain/exercises/local/types/schemas";
 
-import db from '@infra/db';
+import db from "@infra/db";
 
 async function getExercise(
     ariketa_id: number,
     erabiltzailea_id: number,
-    programazio_lengoaia_id: null | number
+    programazio_lengoaia_id: null | number,
 ): Promise<GetExerciseResponse | null> {
     const exercise = await db.ariketa.findUnique({
         include: {
@@ -20,14 +21,14 @@ async function getExercise(
                         select: {
                             ebazpena_id: true,
                             egoera: true,
-                            kodea: true
+                            kodea: true,
                         },
                         where: {
-                            erabiltzailea_id
-                        }
+                            erabiltzailea_id,
+                        },
                     },
-                    programazio_lengoaia: true
-                }
+                    programazio_lengoaia: true,
+                },
             },
             etiketak: {
                 include: {
@@ -36,15 +37,15 @@ async function getExercise(
                             kategoria: {
                                 select: {
                                     izena: true,
-                                    kategoria_id: true
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                    kategoria_id: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
-        where: { ariketa_id }
+        where: { ariketa_id },
     });
 
     if (!exercise) {
@@ -53,9 +54,12 @@ async function getExercise(
 
     let chosenSpecificExercise = null;
     if (programazio_lengoaia_id) {
-        chosenSpecificExercise = exercise.ariketa_zehatzak.find(specific_exercise =>
-            specific_exercise.programazio_lengoaia_id === programazio_lengoaia_id
-        ) ?? null;
+        chosenSpecificExercise =
+            exercise.ariketa_zehatzak.find(
+                (specific_exercise) =>
+                    specific_exercise.programazio_lengoaia_id ===
+                    programazio_lengoaia_id,
+            ) ?? null;
     }
     if (!chosenSpecificExercise && exercise.ariketa_zehatzak.length > 0) {
         chosenSpecificExercise = exercise.ariketa_zehatzak[0];
@@ -66,13 +70,13 @@ async function getExercise(
     return {
         ariketa: exercise,
         ariketa_zehatza: chosenSpecificExercise,
-        ikasle_kodea
+        ikasle_kodea,
     };
 }
 
 async function getExercises(
     erabiltzailea_id: number,
-    filters: IListExercises
+    filters: IListExercises,
 ): Promise<FullAriketa[]> {
     const {
         egoera,
@@ -80,7 +84,7 @@ async function getExercises(
         etiketa_kategoria_id,
         programazio_lengoaia_id,
         titulua,
-        zailtasuna
+        zailtasuna,
     } = filters;
     return await db.ariketa.findMany({
         include: {
@@ -90,14 +94,14 @@ async function getExercises(
                         select: {
                             ebazpena_id: true,
                             egoera: true,
-                            kodea: true
+                            kodea: true,
                         },
                         where: {
-                            erabiltzailea_id
-                        }
+                            erabiltzailea_id,
+                        },
                     },
-                    programazio_lengoaia: true
-                }
+                    programazio_lengoaia: true,
+                },
             },
             etiketak: {
                 include: {
@@ -106,44 +110,65 @@ async function getExercises(
                             kategoria: {
                                 select: {
                                     izena: true,
-                                    kategoria_id: true
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+                                    kategoria_id: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
         },
         where: {
             AND: [
-                programazio_lengoaia_id ? {
-                    ariketa_zehatzak: {
-                        some: { programazio_lengoaia_id }
-                    }
-                } : {},
-                egoera ? {
-                    ariketa_zehatzak: {
-                        some: {
-                            ebazpenak: {
-                                some: {
-                                    egoera,
-                                    erabiltzailea_id
-                                }
-                            }
-                        }
-                    }
-                } : {}
+                programazio_lengoaia_id
+                    ? {
+                          ariketa_zehatzak: {
+                              some: { programazio_lengoaia_id },
+                          },
+                      }
+                    : {},
+                egoera
+                    ? {
+                          ariketa_zehatzak: {
+                              some: {
+                                  ebazpenak: {
+                                      some: {
+                                          egoera,
+                                          erabiltzailea_id,
+                                      },
+                                  },
+                              },
+                          },
+                      }
+                    : {},
             ],
-            etiketak: (etiketa_id || etiketa_kategoria_id) ? {
-                some: {
-                    etiketa: {
-                        etiketa_id: etiketa_id,
-                        kategoria_id: etiketa_kategoria_id
-                    }
-                }
-            } : undefined,
-            izenburua: titulua ? { contains: titulua, mode: 'insensitive' } : undefined,
-            zailtasun_maila: zailtasuna
+            etiketak:
+                etiketa_id || etiketa_kategoria_id
+                    ? {
+                          some: {
+                              etiketa: {
+                                  etiketa_id: etiketa_id,
+                                  kategoria_id: etiketa_kategoria_id,
+                              },
+                          },
+                      }
+                    : undefined,
+            izenburua: titulua
+                ? { contains: titulua, mode: "insensitive" }
+                : undefined,
+            zailtasun_maila: zailtasuna,
+        },
+    });
+}
+
+async function getProgrammingLanguages(): Promise<
+    GetProgrammingLanguagesResponse[]
+> {
+    return await db.programazioLengoaia.findMany({
+        select: {
+            bertsioa: true,
+            izena: true,
+            programazio_lengoaia_id: true,
         },
     });
 }
@@ -151,7 +176,7 @@ async function getExercises(
 async function getSpecificExercise(
     ariketa_id: number,
     erabiltzailea_id: number,
-    programazio_lengoaia_id: number
+    programazio_lengoaia_id: number,
 ): Promise<GetSpecificExerciseResponse | null> {
     const specificExercise = await db.ariketaZehatza.findUnique({
         select: {
@@ -159,20 +184,20 @@ async function getSpecificExercise(
                 select: {
                     ebazpena_id: true,
                     egoera: true,
-                    kodea: true
+                    kodea: true,
                 },
                 where: {
-                    erabiltzailea_id
-                }
+                    erabiltzailea_id,
+                },
             },
-            hasierako_kodea: true
+            hasierako_kodea: true,
         },
         where: {
             ariketa_id_programazio_lengoaia_id: {
                 ariketa_id,
-                programazio_lengoaia_id
-            }
-        }
+                programazio_lengoaia_id,
+            },
+        },
     });
 
     if (!specificExercise) {
@@ -181,12 +206,13 @@ async function getSpecificExercise(
 
     return {
         ebazpena: specificExercise.ebazpenak?.[0] ?? null,
-        hasierako_kodea: specificExercise.hasierako_kodea
+        hasierako_kodea: specificExercise.hasierako_kodea,
     };
 }
 
 export default {
     getExercise,
     getExercises,
-    getSpecificExercise
+    getProgrammingLanguages,
+    getSpecificExercise,
 } as const;

@@ -7,48 +7,61 @@ import ExerciseService from "@domain/exercises/ExerciseService";
 import {
     GetExerciseSchema,
     GetSpecificExerciseSchema,
-    ListExercisesSchema
+    ListExercisesSchema,
 } from "@domain/exercises/local/types/schemas";
 import { reqAuthenticated } from "@routers/middleware/authentication";
 
 async function getExercise(
     req: AuthenticatedRequest,
     res: Response,
-    _: NextFunction
+    _: NextFunction,
 ): Promise<void> {
     const verified = GetExerciseSchema.parse({
         params: req.params,
-        query: req.query
+        query: req.query,
     });
     const data = {
         ariketa_id: verified.params.ariketa_id,
-        programazio_lengoaia_id: verified.query.programazio_lengoaia_id
+        programazio_lengoaia_id: verified.query.programazio_lengoaia_id,
     };
     const exercise = await ExerciseService.getExercise(req.user.id, data);
     res.status(HttpStatusCode.OK).json(formatSuccess(exercise));
 }
 
+async function getProgrammingLanguages(
+    req: AuthenticatedRequest,
+    res: Response,
+    _: NextFunction,
+): Promise<void> {
+    const programmingLanguages =
+        await ExerciseService.getProgrammingLanguages();
+    res.status(HttpStatusCode.OK).json(formatSuccess(programmingLanguages));
+}
+
 async function getSpecificExercise(
     req: AuthenticatedRequest,
     res: Response,
-    _: NextFunction
+    _: NextFunction,
 ): Promise<void> {
     const verified = GetSpecificExerciseSchema.parse({
         params: req.params,
-        query: req.query
+        query: req.query,
     });
     const data = {
         ariketa_id: verified.params.ariketa_id,
-        programazio_lengoaia_id: verified.query.programazio_lengoaia_id
+        programazio_lengoaia_id: verified.query.programazio_lengoaia_id,
     };
-    const exercise = await ExerciseService.getSpecificExercise(req.user.id, data);
+    const exercise = await ExerciseService.getSpecificExercise(
+        req.user.id,
+        data,
+    );
     res.status(HttpStatusCode.OK).json(formatSuccess(exercise));
 }
 
 async function listExercises(
     req: AuthenticatedRequest,
     res: Response,
-    _: NextFunction
+    _: NextFunction,
 ): Promise<void> {
     const data = ListExercisesSchema.parse(req.query);
     const exercises = await ExerciseService.listExercises(req.user.id, data);
@@ -57,6 +70,7 @@ async function listExercises(
 
 export default {
     getExercise: reqAuthenticated(getExercise),
+    getProgrammingLanguages: reqAuthenticated(getProgrammingLanguages),
     getSpecificExercise: reqAuthenticated(getSpecificExercise),
-    listExercises: reqAuthenticated(listExercises)
+    listExercises: reqAuthenticated(listExercises),
 } as const;
