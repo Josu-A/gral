@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "@/components/layout/AppLayout";
 import AuthLayout from "@/components/layout/AuthLayout";
 import Login from "@/pages/Login";
-import { Logout } from "@/pages/Logout";
+import Logout from "@/pages/Logout";
 import SignUp from "@/pages/SignUp";
 import { GuestRoute } from "@/routes/GuestRoute";
 import { ProtectedRoute } from "@/routes/ProtectedRoute";
@@ -21,6 +21,10 @@ const router = createBrowserRouter([
         path: "/",
     },
     {
+        element: <Logout />,
+        path: "logout",
+    },
+    {
         children: [
             {
                 children: [
@@ -30,10 +34,6 @@ const router = createBrowserRouter([
                     },
                 ],
                 element: <AppLayout />,
-            },
-            {
-                element: <Logout />,
-                path: "logout",
             },
         ],
         element: <ProtectedRoute />,

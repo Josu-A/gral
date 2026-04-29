@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import apiClient from "@/common/apiClient";
 import { useAuth } from "@/hooks/useAuth";
 
-export function Logout() {
+function Logout() {
     const { setToken } = useAuth();
     const navigate = useNavigate();
 
@@ -29,3 +29,5 @@ export function Logout() {
 
     return null;
 }
+
+export default Logout;
