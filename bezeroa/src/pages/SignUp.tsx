@@ -2,10 +2,9 @@ import { type JSX, type SubmitEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-import type { IkasketaMaila } from "@/common/types/entities";
-
 import apiClient from "@/common/apiClient";
 import { handleApiError } from "@/common/errorHelper";
+import { MAILAK } from "@/common/types/entities";
 import { Button } from "@/components/ui/Button";
 import { FormError } from "@/components/ui/FormError";
 import { Input } from "@/components/ui/Input";
@@ -23,15 +22,6 @@ interface SignUpResponse {
     }[];
     success: boolean;
 }
-
-const MAILAK: {
-    label: string;
-    value: IkasketaMaila;
-}[] = [
-    { label: "Hasiberria", value: "Hasiberria" },
-    { label: "Ertaina", value: "Ertaina" },
-    { label: "Aurreratua", value: "Aurreratua" },
-];
 
 const ERROR_GENERIC = "Akats bat gertatu da erregistratzean";
 
