@@ -82,4 +82,4 @@ apiClient.interceptors.response.use(
 );
 
 export default apiClient;
-export { getAccessToken, setAccessToken };
+export { getAccessToken, refreshAccessToken, setAccessToken };

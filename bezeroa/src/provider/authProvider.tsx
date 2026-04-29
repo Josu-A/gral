@@ -10,7 +10,11 @@ import {
 
 import type { AuthContextType } from "@/common/types";
 
-import apiClient, { getAccessToken, setAccessToken } from "@/common/apiClient";
+import {
+    getAccessToken,
+    refreshAccessToken,
+    setAccessToken,
+} from "@/common/apiClient";
 
 interface AuthProviderProps {
     children: ReactNode;
@@ -30,13 +34,9 @@ function AuthProvider({ children }: AuthProviderProps): JSX.Element {
     useEffect(() => {
         const initializeAuth = async () => {
             try {
-                const currentAccessToken = getAccessToken();
-                if (!currentAccessToken) {
-                    const response = await apiClient.post<{
-                        data: { accessToken: string };
-                    }>("/auth/refresh", {}, { withCredentials: true });
-                    const newAccessToken = response.data.data.accessToken;
-                    setToken(newAccessToken);
+                if (!getAccessToken()) {
+                    await refreshAccessToken();
+                    setToken(getAccessToken());
                 }
             } catch {
                 setToken(null);
