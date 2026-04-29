@@ -23,7 +23,7 @@ function AppHeader(): JSX.Element {
                     <NavLink className={isActiveLink} to="/">
                         Ariketak
                     </NavLink>
-                    <NavLink className={isActiveLink} to="/profile">
+                    <NavLink className={isActiveLink} to="/dashboard">
                         Aurrerapena
                     </NavLink>
                 </nav>

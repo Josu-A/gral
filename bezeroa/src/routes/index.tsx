@@ -7,15 +7,12 @@ import AuthLayout from "@/components/layout/AuthLayout";
 import Login from "@/pages/Login";
 import Logout from "@/pages/Logout";
 import SignUp from "@/pages/SignUp";
+import UserProfile from "@/pages/UserProfile";
 import { GuestRoute } from "@/routes/GuestRoute";
 import { ProtectedRoute } from "@/routes/ProtectedRoute";
 import { RootIndexRoute } from "@/routes/RootIndexRoute";
 
 const router = createBrowserRouter([
-    {
-        element: <div>About us</div>,
-        path: "/about",
-    },
     {
         element: <RootIndexRoute />,
         path: "/",
@@ -29,8 +26,12 @@ const router = createBrowserRouter([
             {
                 children: [
                     {
-                        element: <div>User profile</div>,
+                        element: <UserProfile />,
                         path: "profile",
+                    },
+                    {
+                        element: <div>Dashboard</div>,
+                        path: "dashboard",
                     },
                 ],
                 element: <AppLayout />,
