@@ -11,6 +11,7 @@ import HttpStatusCode from "@common/constants/HttpStatusCodes";
 import logger from "@common/constants/logger";
 import { RequestError } from "@common/utils/errors";
 import AuthRepo from "@domain/auth/AuthRepo";
+import db from "@infra/db";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import jwt, { type JwtPayload, type SignOptions } from "jsonwebtoken";
@@ -163,10 +164,6 @@ async function refreshToken(
     }
 
     const newJti = createJti();
-    await AuthRepo.replaceRefreshToken(refreshTokenHash, {
-        ordezkapena: newJti,
-        revokedAt: new Date(),
-    });
     const accessToken = signAccessToken(
         token.erabiltzailea_id,
         token.erabiltzailea.helbide_elektronikoa,
@@ -177,13 +174,34 @@ async function refreshToken(
         Date.now() + ms(environment.JWT_REFRESH_EXPIRATION),
     );
 
-    await AuthRepo.createRefreshToken({
-        erabiltzailea_id: token.erabiltzailea_id,
-        expiresAt,
-        ip: ip ?? "",
-        jti: newJti,
-        refreshToken: newRefreshTokenHash,
-        userAgent: userAgent ?? "",
+    await db.$transaction(async (tx) => {
+        const success = await AuthRepo.replaceRefreshToken(
+            refreshTokenHash,
+            {
+                ordezkapena: newJti,
+                revokedAt: new Date(),
+            },
+            tx,
+        );
+
+        if (!success) {
+            throw new RequestError(
+                HttpStatusCode.UNAUTHORIZED,
+                "Tokena baliogabea da",
+            );
+        }
+
+        await AuthRepo.createRefreshToken(
+            {
+                erabiltzailea_id: token.erabiltzailea_id,
+                expiresAt,
+                ip: ip ?? "",
+                jti: newJti,
+                refreshToken: newRefreshTokenHash,
+                userAgent: userAgent ?? "",
+            },
+            tx,
+        );
     });
 
     logger.info("Erabiltzaileak tokena freskatu du", {

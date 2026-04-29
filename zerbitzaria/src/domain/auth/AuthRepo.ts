@@ -2,19 +2,27 @@ import type {
     Erabiltzailea,
     FreskatzeTokena,
     IkasketaMaila,
+    Prisma,
+    PrismaClient,
 } from "@infra/prisma/generated/client";
 
 import db from "@infra/db";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
-async function createRefreshToken(data: {
-    erabiltzailea_id: number;
-    expiresAt: Date;
-    ip: string;
-    jti: string;
-    refreshToken: string;
-    userAgent: string;
-}): Promise<void> {
-    await db.freskatzeTokena.create({
+type DbClient = Prisma.TransactionClient | PrismaClient;
+
+async function createRefreshToken(
+    data: {
+        erabiltzailea_id: number;
+        expiresAt: Date;
+        ip: string;
+        jti: string;
+        refreshToken: string;
+        userAgent: string;
+    },
+    databaseClient: DbClient = db,
+): Promise<void> {
+    await databaseClient.freskatzeTokena.create({
         data: {
             erabiltzailea_id: data.erabiltzailea_id,
             gailu_mota: data.userAgent,
@@ -82,14 +90,29 @@ async function findUser(
 async function replaceRefreshToken(
     refreshTokenHash: string,
     data: { ordezkapena: string; revokedAt: Date },
-): Promise<void> {
-    await db.freskatzeTokena.update({
-        data: {
-            iraungitutako_data: data.revokedAt,
-            ordezkapena: data.ordezkapena,
-        },
-        where: { tokena: refreshTokenHash },
-    });
+    databaseClient: DbClient = db,
+): Promise<boolean> {
+    try {
+        await databaseClient.freskatzeTokena.update({
+            data: {
+                iraungitutako_data: data.revokedAt,
+                ordezkapena: data.ordezkapena,
+            },
+            where: {
+                iraungitutako_data: null,
+                tokena: refreshTokenHash,
+            },
+        });
+    } catch (err: unknown) {
+        if (
+            err instanceof PrismaClientKnownRequestError &&
+            err.code === "P2025"
+        ) {
+            return false;
+        }
+        throw err;
+    }
+    return true;
 }
 
 async function revokeAllRefreshTokens(erabiltzailea_id: number): Promise<void> {
