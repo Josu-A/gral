@@ -38,7 +38,7 @@ async function getExercise(
 }
 
 async function getProgrammingLanguages(
-    req: AuthenticatedRequest,
+    _req: AuthenticatedRequest,
     res: Response,
     _: NextFunction,
 ): Promise<void> {
