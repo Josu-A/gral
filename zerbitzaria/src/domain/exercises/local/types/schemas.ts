@@ -74,6 +74,12 @@ type ExerciseArgs = {
 type FullAriketa = Prisma.AriketaGetPayload<ExerciseArgs>;
 type FullAriketaZehatza = FullAriketa["ariketa_zehatzak"][number];
 
+interface GetCategoryResponse {
+    deskribapena: string;
+    izena: string;
+    kategoria_id: number;
+}
+
 interface GetExerciseResponse {
     ariketa: FullAriketa;
     ariketa_zehatza: FullAriketaZehatza | null;
@@ -89,6 +95,13 @@ interface GetProgrammingLanguagesResponse {
 interface GetSpecificExerciseResponse {
     ebazpena: null | SinglePartialEbazpena;
     hasierako_kodea: string;
+}
+
+interface GetTagResponse {
+    deskribapena: string;
+    etiketa_id: number;
+    izena: string;
+    kategoria_id: number;
 }
 
 type IListExercises = z.infer<typeof ListExercisesSchema>;
@@ -113,9 +126,11 @@ export { GetExerciseSchema, GetSpecificExerciseSchema, ListExercisesSchema };
 
 export type {
     FullAriketa,
+    GetCategoryResponse,
     GetExerciseResponse,
     GetProgrammingLanguagesResponse,
     GetSpecificExerciseResponse,
+    GetTagResponse,
     IGetExercise,
     IGetExerciseFlat,
     IGetSpecificExercise,

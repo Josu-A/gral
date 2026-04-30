@@ -1,6 +1,8 @@
 import type {
+    GetCategoryResponse,
     GetExerciseResponse,
     GetProgrammingLanguagesResponse,
+    GetTagResponse,
     IGetExerciseFlat,
     IGetSpecificExerciseFlat,
     IListExercises,
@@ -18,6 +20,12 @@ const IKASKETA_MAILA_TO_ZAILTASUNA: Record<IkasketaMaila, Zailtasuna> = {
     [IkasketaMaila.Ertaina]: Zailtasuna.Ertaina,
     [IkasketaMaila.Hasiberria]: Zailtasuna.Erraza,
 };
+
+async function getCategories(): Promise<GetCategoryResponse[]> {
+    const categories = await ExerciseRepo.getCategories();
+    logger.info("Erabiltzaileak etiketa kategoriak lortu ditu");
+    return categories;
+}
 
 async function getExercise(
     erabiltzailea_id: number,
@@ -74,6 +82,12 @@ async function getSpecificExercise(
     return exercise;
 }
 
+async function getTags(): Promise<GetTagResponse[]> {
+    const tags = await ExerciseRepo.getTags();
+    logger.info("Erabiltzaileak etiketak lortu ditu");
+    return tags;
+}
+
 function ikasketaMailaToZailtasuna(ikasetaMaila: IkasketaMaila): Zailtasuna {
     return IKASKETA_MAILA_TO_ZAILTASUNA[ikasetaMaila];
 }
@@ -108,8 +122,10 @@ async function listExercises(
 }
 
 export default {
+    getCategories,
     getExercise,
     getProgrammingLanguages,
     getSpecificExercise,
+    getTags,
     listExercises,
 } as const;

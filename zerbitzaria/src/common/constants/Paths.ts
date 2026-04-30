@@ -28,9 +28,11 @@ const Paths = {
     },
     Exercises: {
         Base: "/exercises",
+        Categories: "/categories",
         Language: "/:exerciseId/language",
         List: "/",
         ProgrammingLanguages: "/programming-languages",
+        Tags: "/tags",
         View: "/:exerciseId",
     },
     Health: {

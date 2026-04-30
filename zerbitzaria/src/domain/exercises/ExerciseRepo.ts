@@ -1,12 +1,25 @@
 import type {
     FullAriketa,
+    GetCategoryResponse,
     GetExerciseResponse,
     GetProgrammingLanguagesResponse,
     GetSpecificExerciseResponse,
+    GetTagResponse,
     IListExercises,
 } from "@domain/exercises/local/types/schemas";
 
 import db from "@infra/db";
+
+async function getCategories(): Promise<GetCategoryResponse[]> {
+    return await db.etiketaKategoria.findMany({
+        orderBy: { izena: "asc" },
+        select: {
+            deskribapena: true,
+            izena: true,
+            kategoria_id: true,
+        },
+    });
+}
 
 async function getExercise(
     ariketa_id: number,
@@ -210,9 +223,23 @@ async function getSpecificExercise(
     };
 }
 
+async function getTags(): Promise<GetTagResponse[]> {
+    return await db.etiketa.findMany({
+        orderBy: { izena: "asc" },
+        select: {
+            deskribapena: true,
+            etiketa_id: true,
+            izena: true,
+            kategoria_id: true,
+        },
+    });
+}
+
 export default {
+    getCategories,
     getExercise,
     getExercises,
     getProgrammingLanguages,
     getSpecificExercise,
+    getTags,
 } as const;

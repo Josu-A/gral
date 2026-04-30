@@ -11,6 +11,15 @@ import {
 } from "@domain/exercises/local/types/schemas";
 import { reqAuthenticated } from "@routers/middleware/authentication";
 
+async function getCategories(
+    _req: AuthenticatedRequest,
+    res: Response,
+    _: NextFunction,
+): Promise<void> {
+    const categories = await ExerciseService.getCategories();
+    res.status(HttpStatusCode.OK).json(formatSuccess(categories));
+}
+
 async function getExercise(
     req: AuthenticatedRequest,
     res: Response,
@@ -58,6 +67,15 @@ async function getSpecificExercise(
     res.status(HttpStatusCode.OK).json(formatSuccess(exercise));
 }
 
+async function getTags(
+    _req: AuthenticatedRequest,
+    res: Response,
+    _: NextFunction,
+): Promise<void> {
+    const tags = await ExerciseService.getTags();
+    res.status(HttpStatusCode.OK).json(formatSuccess(tags));
+}
+
 async function listExercises(
     req: AuthenticatedRequest,
     res: Response,
@@ -69,8 +87,10 @@ async function listExercises(
 }
 
 export default {
+    getCategories: reqAuthenticated(getCategories),
     getExercise: reqAuthenticated(getExercise),
     getProgrammingLanguages: reqAuthenticated(getProgrammingLanguages),
     getSpecificExercise: reqAuthenticated(getSpecificExercise),
+    getTags: reqAuthenticated(getTags),
     listExercises: reqAuthenticated(listExercises),
 } as const;
