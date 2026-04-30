@@ -1,5 +1,3 @@
-type ComponentVariant = 'primary' | 'secondary';
+type ComponentVariant = "danger" | "primary" | "secondary" | "warning";
 
-export type {
-    ComponentVariant
-}
+export type { ComponentVariant };
