@@ -16,6 +16,14 @@ import { useUpdateEducationForm } from "@/hooks/useUpdateEducationForm";
 import { useUpdatePasswordForm } from "@/hooks/useUpdatePasswordForm";
 import { useUpdatePersonalDataForm } from "@/hooks/useUpdatePersonalDataForm";
 
+interface DeleteActionsResponse {
+    data?: {
+        message: string;
+    };
+    error?: string;
+    success: boolean;
+}
+
 interface GetProfileResponse {
     data?: {
         profile: {
@@ -322,9 +330,94 @@ function UserProfile(): JSX.Element {
         }
     }
 
+    async function handleDeleteMessages(): Promise<void> {
+        const confirmation = window.confirm(
+            "Ziur zaude mezu guztiak ezabatu nahi dituzula?",
+        );
+        if (!confirmation) {
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            const response =
+                await apiClient.delete<DeleteActionsResponse>(
+                    "/users/messages",
+                );
+            if (!response.data.success) {
+                toast.error(response.data.error || ERROR_GENERIC_UPDATE);
+                return;
+            }
+            toast.success(
+                response.data.data?.message || "Mezu guztiak ezabatu dira",
+            );
+        } catch (err: unknown) {
+            toast.error(handleApiError(err, ERROR_GENERIC_UPDATE).general);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    async function handleDeleteAttempts(): Promise<void> {
+        const confirmation = window.confirm(
+            "Ziur zaude egindako ariketen saiakera guztiak ezabatu nahi dituzula?",
+        );
+        if (!confirmation) {
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            const response =
+                await apiClient.delete<DeleteActionsResponse>(
+                    "/users/attempts",
+                );
+            if (!response.data.success) {
+                toast.error(response.data.error || ERROR_GENERIC_UPDATE);
+                return;
+            }
+            toast.success(
+                response.data.data?.message || "Saiakera guztiak ezabatu dira",
+            );
+        } catch (err: unknown) {
+            toast.error(handleApiError(err, ERROR_GENERIC_UPDATE).general);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    async function handleDeleteAccount(): Promise<void> {
+        const confirmation = window.confirm(
+            "Ziur zaude zure kontua BETIRAKO ezabatu nahi duzula? Onartu ondoren ezin izango duzu ekintza hau gelditu!",
+        );
+        if (!confirmation) {
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            const response =
+                await apiClient.delete<DeleteActionsResponse>("/users/account");
+            if (!response.data.success) {
+                toast.error(response.data.error || ERROR_GENERIC_UPDATE);
+                return;
+            }
+            toast.success(response.data.data?.message || "Kontua ezabatu da");
+            setToken(null);
+            navigate("/", { replace: true });
+        } catch (err: unknown) {
+            toast.error(handleApiError(err, ERROR_GENERIC_UPDATE).general);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     return (
         <div className="mx-auto h-full max-w-6xl">
-            <div className="mx-12 h-full divide-y divide-slate-400 bg-slate-200 px-6 py-8 [&_form]:mt-6 [&_form]:space-y-4 [&_form]:pb-6 [&_h2]:text-xl [&_h2]:font-semibold">
+            <div className="mx-12 h-full divide-y divide-slate-400 bg-slate-200 px-6 py-8 *:mt-6 *:space-y-4 *:pb-6 [&_h2]:text-xl [&_h2]:font-semibold">
                 <h1 className="pb-4 text-2xl font-semibold">
                     Ongi etorri,{" "}
                     <span className="font-bold text-amber-600">
@@ -489,6 +582,35 @@ function UserProfile(): JSX.Element {
                         </Button>
                     </div>
                 </form>
+                <div>
+                    <h2>Eremu arriskutsua</h2>
+                    <div className="mx-10 flex flex-col gap-4 sm:grid sm:grid-cols-2 sm:[&_button:last-child]:col-span-2">
+                        <Button
+                            isLoading={isLoading}
+                            onClick={handleDeleteMessages}
+                            type="button"
+                            variant="warning"
+                        >
+                            Mezu guztiak ezabatu
+                        </Button>
+                        <Button
+                            isLoading={isLoading}
+                            onClick={handleDeleteAttempts}
+                            type="button"
+                            variant="warning"
+                        >
+                            Saiakera guztiak ezabatu
+                        </Button>
+                        <Button
+                            isLoading={isLoading}
+                            onClick={handleDeleteAccount}
+                            type="button"
+                            variant="danger"
+                        >
+                            Kontua ezabatu
+                        </Button>
+                    </div>
+                </div>
             </div>
         </div>
     );
