@@ -243,6 +243,7 @@ async function getProgrammingLanguages(): Promise<
     GetProgrammingLanguagesResponse[]
 > {
     return await db.programazioLengoaia.findMany({
+        orderBy: [{ bertsioa: "asc" }, { izena: "asc" }],
         select: {
             bertsioa: true,
             izena: true,
