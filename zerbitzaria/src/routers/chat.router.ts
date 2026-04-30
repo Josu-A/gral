@@ -1,8 +1,7 @@
-import Paths from '@common/constants/Paths';
-import ChatController from '@domain/chats/ChatController';
-import { Router } from 'express';
-
-import { authenticate } from './middleware/authentication';
+import Paths from "@common/constants/Paths";
+import ChatController from "@domain/chats/ChatController";
+import { authenticate } from "@routers/middleware/authentication";
+import { Router } from "express";
 
 const chatRouter = Router();
 

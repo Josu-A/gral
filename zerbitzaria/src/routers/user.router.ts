@@ -1,8 +1,7 @@
-import Paths from '@common/constants/Paths';
-import UserController from '@domain/users/UserController';
-import { Router } from 'express';
-
-import { authenticate } from './middleware/authentication';
+import Paths from "@common/constants/Paths";
+import UserController from "@domain/users/UserController";
+import { authenticate } from "@routers/middleware/authentication";
+import { Router } from "express";
 
 const userRouter = Router();
 
