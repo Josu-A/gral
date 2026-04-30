@@ -417,7 +417,7 @@ function UserProfile(): JSX.Element {
 
     return (
         <div className="mx-auto h-full max-w-6xl">
-            <div className="mx-12 h-full divide-y divide-slate-400 bg-slate-200 px-6 py-8 *:mt-6 *:space-y-4 *:pb-6 [&_h2]:text-xl [&_h2]:font-semibold">
+            <div className="mx-6 h-full divide-y divide-slate-400 bg-slate-200 px-6 py-8 *:mt-6 *:space-y-4 *:pb-6 sm:mx-12 [&_h2]:text-xl [&_h2]:font-semibold">
                 <h1 className="pb-4 text-2xl font-semibold">
                     Ongi etorri,{" "}
                     <span className="font-bold text-amber-600">
@@ -584,7 +584,7 @@ function UserProfile(): JSX.Element {
                 </form>
                 <div>
                     <h2>Eremu arriskutsua</h2>
-                    <div className="mx-10 flex flex-col gap-4 sm:grid sm:grid-cols-2 sm:[&_button:last-child]:col-span-2">
+                    <div className="mx-5 flex flex-col gap-4 sm:mx-10 sm:grid sm:grid-cols-2 sm:[&_button:last-child]:col-span-2">
                         <Button
                             isLoading={isLoading}
                             onClick={handleDeleteMessages}
