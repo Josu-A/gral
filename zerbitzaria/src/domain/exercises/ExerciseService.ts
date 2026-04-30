@@ -6,6 +6,7 @@ import type {
     IGetExerciseFlat,
     IGetSpecificExerciseFlat,
     IListExercises,
+    ListedAriketa,
 } from "@domain/exercises/local/types/schemas";
 
 import HttpStatusCode from "@common/constants/HttpStatusCodes";
@@ -95,7 +96,7 @@ function ikasketaMailaToZailtasuna(ikasetaMaila: IkasketaMaila): Zailtasuna {
 async function listExercises(
     erabiltzailea_id: number,
     filters: IListExercises,
-) {
+): Promise<ListedAriketa[]> {
     let newFilters = filters;
     const viewOnlyUserLevel =
         await UserRepo.getViewOnlyMyLevel(erabiltzailea_id);
@@ -106,7 +107,7 @@ async function listExercises(
             const zailtasuna = ikasketaMailaToZailtasuna(educationLevel);
             newFilters = {
                 ...filters,
-                zailtasuna,
+                zailtasunak: [zailtasuna],
             };
         }
     }

@@ -36,17 +36,56 @@ type IGetSpecificExerciseFlat = {
     programazio_lengoaia_id: IGetSpecificExercise["query"]["programazio_lengoaia_id"];
 };
 
+const FilterMode = z.enum(["AND", "OR"]).default("OR");
+
+const queryToArray = z
+    .union([z.string(), z.array(z.string())])
+    .optional()
+    .transform((val) => {
+        if (!val) {
+            return [];
+        }
+        const raw = Array.isArray(val) ? val : [val];
+        return raw
+            .flatMap((s) => s.split(","))
+            .map((s) => s.trim())
+            .filter(Boolean);
+    });
+
+const intArrayFromQuery = queryToArray
+    .transform((items) => items.map(Number))
+    .pipe(
+        z
+            .array(z.number().int().positive())
+            .transform((vals) => Array.from(new Set(vals))),
+    );
+
+const enumArrayFromQuery = <T extends z.ZodTypeAny>(enumSchema: T) =>
+    queryToArray.pipe(z.array(z.string())).transform((vals) => {
+        const result: z.infer<T>[] = [];
+        for (const val of vals) {
+            const parsed = enumSchema.safeParse(val);
+            if (parsed.success) {
+                result.push(parsed.data);
+            }
+        }
+        return Array.from(new Set(result));
+    });
+
 const ListExercisesSchema = z.object({
-    egoera: z.enum(Egoera).optional(),
-    etiketa_id: z.coerce.number<number>().int().positive().optional(),
-    etiketa_kategoria_id: z.coerce.number<number>().int().positive().optional(),
-    programazio_lengoaia_id: z.coerce
-        .number<number>()
-        .int()
-        .positive()
-        .optional(),
-    titulua: z.string().trim().optional(),
-    zailtasuna: z.enum(Zailtasuna).optional(),
+    egoerak: enumArrayFromQuery(z.enum(Egoera)),
+    etiketa_ids: intArrayFromQuery,
+    etiketa_ids_mode: FilterMode,
+    etiketa_kategoria_ids: intArrayFromQuery,
+    etiketa_kategoria_ids_mode: FilterMode,
+    programazio_lengoaia_ids: intArrayFromQuery,
+    programazio_lengoaia_ids_mode: FilterMode,
+    titulua: z
+        .string()
+        .trim()
+        .nullish()
+        .transform((s) => s || undefined),
+    zailtasunak: enumArrayFromQuery(z.enum(Zailtasuna)),
 });
 
 type ExerciseArgs = {
@@ -72,8 +111,8 @@ type ExerciseArgs = {
 };
 
 type FullAriketa = Prisma.AriketaGetPayload<ExerciseArgs>;
-type FullAriketaZehatza = FullAriketa["ariketa_zehatzak"][number];
 
+type FullAriketaZehatza = FullAriketa["ariketa_zehatzak"][number];
 interface GetCategoryResponse {
     deskribapena: string;
     izena: string;
@@ -106,6 +145,13 @@ interface GetTagResponse {
 
 type IListExercises = z.infer<typeof ListExercisesSchema>;
 
+interface ListedAriketa {
+    ariketa_id: number;
+    egoera: Egoera;
+    izenburua: string;
+    zailtasun_maila: Zailtasuna;
+}
+
 type PartialEbazpenaPayload = Prisma.AriketaZehatzaGetPayload<SolutionArgs>;
 type SinglePartialEbazpena = PartialEbazpenaPayload["ebazpenak"][number];
 
@@ -136,4 +182,5 @@ export type {
     IGetSpecificExercise,
     IGetSpecificExerciseFlat,
     IListExercises,
+    ListedAriketa,
 };
