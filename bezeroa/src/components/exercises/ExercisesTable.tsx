@@ -1,5 +1,7 @@
 import type { JSX } from "react";
 
+import { Link } from "react-router-dom";
+
 import type { Egoera, Zailtasuna } from "@/common/types/entities";
 
 interface ExerciseRow {
@@ -26,7 +28,7 @@ function ExercisesTable({
     }
     return (
         <div className="w-full overflow-x-auto">
-            <table className="w-full table-auto border-collapse text-sm sm:text-base [&_td]:px-4 [&_td]:py-2 sm:[&_td]:whitespace-nowrap [&_th]:px-4 [&_th]:py-2 sm:[&_th]:whitespace-nowrap">
+            <table className="w-full table-auto border-collapse text-sm sm:text-base sm:[&_td]:whitespace-nowrap [&_td>a]:inline-block [&_td>a]:w-full [&_td>a]:px-4 [&_td>a]:py-2 [&_th]:px-4 [&_th]:py-2 sm:[&_th]:whitespace-nowrap">
                 <colgroup>
                     <col />
                     <col className="w-1" />
@@ -42,12 +44,24 @@ function ExercisesTable({
                 <tbody>
                     {exercises.map((exercise) => (
                         <tr
-                            className="hover:bg-slate-100"
+                            className="rounded-2xl hover:bg-slate-200"
                             key={exercise.ariketa_id}
                         >
-                            <td>{exercise.izenburua}</td>
-                            <td>{exercise.zailtasun_maila}</td>
-                            <td>{exercise.egoera}</td>
+                            <td>
+                                <Link to={`/exercise/${exercise.ariketa_id}`}>
+                                    {exercise.izenburua}
+                                </Link>
+                            </td>
+                            <td>
+                                <Link to={`/exercise/${exercise.ariketa_id}`}>
+                                    {exercise.zailtasun_maila}
+                                </Link>
+                            </td>
+                            <td>
+                                <Link to={`/exercise/${exercise.ariketa_id}`}>
+                                    {exercise.egoera}
+                                </Link>
+                            </td>
                         </tr>
                     ))}
                 </tbody>
