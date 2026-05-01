@@ -9,12 +9,13 @@ function Logout() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const logout = async () => {
+        const controller = new AbortController();
+        const logout = async (): Promise<void> => {
             try {
                 await apiClient.post(
                     "/auth/logout",
                     {},
-                    { withCredentials: true },
+                    { signal: controller.signal, withCredentials: true },
                 );
             } catch (error) {
                 console.error("Error while logging out on server-side:", error);
@@ -25,6 +26,8 @@ function Logout() {
         };
 
         logout();
+
+        return () => controller.abort();
     }, [navigate, setToken]);
 
     return null;

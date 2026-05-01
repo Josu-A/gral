@@ -154,13 +154,17 @@ function UserProfile(): JSX.Element {
     } = useUpdateEducationForm();
 
     useEffect(() => {
+        const controller = new AbortController();
         const fetchProfile = async (): Promise<void> => {
             setIsLoading(true);
             try {
                 const [profileRes, languagesRes] = await Promise.all([
-                    apiClient.get<GetProfileResponse>("/users/profile"),
+                    apiClient.get<GetProfileResponse>("/users/profile", {
+                        signal: controller.signal,
+                    }),
                     apiClient.get<GetProgrammingLanguagesResponse>(
                         "/exercises/programming-languages",
+                        { signal: controller.signal },
                     ),
                 ]);
 
@@ -209,6 +213,8 @@ function UserProfile(): JSX.Element {
             }
         };
         fetchProfile();
+
+        return () => controller.abort();
     }, [
         setEmail,
         setName,
