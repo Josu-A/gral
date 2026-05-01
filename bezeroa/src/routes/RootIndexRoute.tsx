@@ -2,6 +2,7 @@ import type { JSX } from "react";
 
 import AppLayout from "@/components/layout/AppLayout";
 import { useAuth } from "@/hooks/useAuth";
+import Exercises from "@/pages/Exercises";
 import Home from "@/pages/Home";
 
 function RootIndexRoute(): JSX.Element {
@@ -9,7 +10,7 @@ function RootIndexRoute(): JSX.Element {
     if (token) {
         return (
             <AppLayout>
-                <div>User home page</div>
+                <Exercises />
             </AppLayout>
         );
     }

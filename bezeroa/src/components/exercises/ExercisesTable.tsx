@@ -25,32 +25,34 @@ function ExercisesTable({
         return <p>Ez dago ariketarik</p>;
     }
     return (
-        <table className="w-full table-auto border-collapse [&_td]:px-4 [&_td]:py-2 [&_td]:whitespace-nowrap [&_th]:px-4 [&_th]:py-2 [&_th]:whitespace-nowrap">
-            <colgroup>
-                <col />
-                <col className="w-1" />
-                <col className="w-1" />
-            </colgroup>
-            <thead>
-                <tr className="border-b-2 border-slate-300 [&>th]:text-left">
-                    <th>Izenburua</th>
-                    <th>Zailtasun maila</th>
-                    <th>Egoera</th>
-                </tr>
-            </thead>
-            <tbody>
-                {exercises.map((exercise) => (
-                    <tr
-                        className="hover:bg-slate-100"
-                        key={exercise.ariketa_id}
-                    >
-                        <td>{exercise.izenburua}</td>
-                        <td>{exercise.zailtasun_maila}</td>
-                        <td>{exercise.egoera}</td>
+        <div className="w-full overflow-x-auto">
+            <table className="w-full table-auto border-collapse text-sm sm:text-base [&_td]:px-4 [&_td]:py-2 sm:[&_td]:whitespace-nowrap [&_th]:px-4 [&_th]:py-2 sm:[&_th]:whitespace-nowrap">
+                <colgroup>
+                    <col />
+                    <col className="w-1" />
+                    <col className="w-1" />
+                </colgroup>
+                <thead>
+                    <tr className="border-b-2 border-slate-300 [&>th]:text-left">
+                        <th>Izenburua</th>
+                        <th>Zailtasun maila</th>
+                        <th>Egoera</th>
                     </tr>
-                ))}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {exercises.map((exercise) => (
+                        <tr
+                            className="hover:bg-slate-100"
+                            key={exercise.ariketa_id}
+                        >
+                            <td>{exercise.izenburua}</td>
+                            <td>{exercise.zailtasun_maila}</td>
+                            <td>{exercise.egoera}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
     );
 }
 
