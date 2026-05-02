@@ -8,6 +8,7 @@ import Login from "@/pages/Login";
 import Logout from "@/pages/Logout";
 import SignUp from "@/pages/SignUp";
 import UserProfile from "@/pages/UserProfile";
+import Workspace from "@/pages/Workspace";
 import { GuestRoute } from "@/routes/GuestRoute";
 import { ProtectedRoute } from "@/routes/ProtectedRoute";
 import { RootIndexRoute } from "@/routes/RootIndexRoute";
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
                     {
                         element: <div>Dashboard</div>,
                         path: "dashboard",
+                    },
+                    {
+                        element: <Workspace />,
+                        path: "workspace/:ariketaId",
                     },
                 ],
                 element: <AppLayout />,
