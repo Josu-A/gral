@@ -207,6 +207,12 @@ function UserProfile(): JSX.Element {
                         : NO_PREFERRED_LANGUAGE_VALUE,
                 );
             } catch (err: unknown) {
+                if (
+                    err instanceof Error &&
+                    (err.name === "CanceledError" || err.name === "AbortError")
+                ) {
+                    return;
+                }
                 toast.error(handleApiError(err, ERROR_GENERIC_FETCH).general);
             } finally {
                 setIsLoading(false);
