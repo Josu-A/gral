@@ -48,17 +48,17 @@ function ExercisesTable({
                             key={exercise.ariketa_id}
                         >
                             <td>
-                                <Link to={`/exercise/${exercise.ariketa_id}`}>
+                                <Link to={`/workspace/${exercise.ariketa_id}`}>
                                     {exercise.izenburua}
                                 </Link>
                             </td>
                             <td>
-                                <Link to={`/exercise/${exercise.ariketa_id}`}>
+                                <Link to={`/workspace/${exercise.ariketa_id}`}>
                                     {exercise.zailtasun_maila}
                                 </Link>
                             </td>
                             <td>
-                                <Link to={`/exercise/${exercise.ariketa_id}`}>
+                                <Link to={`/workspace/${exercise.ariketa_id}`}>
                                     {exercise.egoera}
                                 </Link>
                             </td>
