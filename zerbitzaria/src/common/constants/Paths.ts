@@ -33,7 +33,7 @@ const Paths = {
         List: "/",
         ProgrammingLanguages: "/programming-languages",
         Tags: "/tags",
-        View: "/:exerciseId",
+        View: "/:ariketa_id",
     },
     Health: {
         Base: "/health",
