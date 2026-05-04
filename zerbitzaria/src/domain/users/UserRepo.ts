@@ -45,6 +45,16 @@ async function getPassword(erabiltzailea_id: number): Promise<null | string> {
     return user?.pasahitza ?? null;
 }
 
+async function getPreferredProgrammingLanguageId(
+    erabiltzailea_id: number,
+): Promise<null | number> {
+    const ikaslea = await db.ikaslea.findUnique({
+        select: { gogoko_lengoaia_id: true },
+        where: { erabiltzailea_id },
+    });
+    return ikaslea?.gogoko_lengoaia_id ?? null;
+}
+
 async function getProfile(
     erabiltzailea_id: number,
 ): Promise<null | UserProfile> {
@@ -115,6 +125,7 @@ export default {
     deleteMessages,
     getEducationLevel,
     getPassword,
+    getPreferredProgrammingLanguageId,
     getProfile,
     getViewOnlyMyLevel,
     updateEducation,
