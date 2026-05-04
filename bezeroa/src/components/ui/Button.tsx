@@ -30,7 +30,7 @@ const buttonClasses = (
         "text-sm font-medium text-gray-100",
         "transition-colors",
         "cursor-pointer",
-        "focus:ring-2 focus:ring-offset-2 focus:outline-none",
+        "focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none",
         isLoading
             ? buttonVariantClasses[variant].loading
             : buttonVariantClasses[variant].idle,
@@ -39,20 +39,28 @@ const buttonClasses = (
     );
 
 const buttonVariantClasses: ButtonVariantClasses = {
+    activeTab: {
+        idle: tw`bg-slate-200 text-gray-900`,
+        loading: tw`cursor-wait bg-slate-200 text-gray-900`,
+    },
     danger: {
-        idle: tw`bg-red-600 hover:bg-red-700 focus:ring-red-500 active:bg-red-800 not-disabled:active:scale-[0.98]`,
+        idle: tw`bg-red-600 hover:bg-red-700 focus-visible:ring-red-500 active:bg-red-800 not-disabled:active:scale-[0.98]`,
         loading: tw`cursor-wait bg-red-400`,
     },
+    inactiveTab: {
+        idle: tw`bg-slate-100 text-gray-600 hover:bg-slate-200 hover:text-gray-800 focus-visible:ring-amber-500`,
+        loading: tw`cursor-wait bg-slate-100 text-gray-600`,
+    },
     primary: {
-        idle: tw`bg-amber-600 hover:bg-amber-700 focus:ring-amber-500 active:bg-amber-800 not-disabled:active:scale-[0.98]`,
+        idle: tw`bg-amber-600 hover:bg-amber-700 focus-visible:ring-amber-500 active:bg-amber-800 not-disabled:active:scale-[0.98]`,
         loading: tw`cursor-wait bg-amber-400`,
     },
     secondary: {
-        idle: tw`bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 active:bg-gray-800 not-disabled:active:scale-[0.98]`,
+        idle: tw`bg-gray-600 hover:bg-gray-700 focus-visible:ring-gray-500 active:bg-gray-800 not-disabled:active:scale-[0.98]`,
         loading: tw`cursor-wait bg-gray-400`,
     },
     warning: {
-        idle: tw`bg-orange-600 hover:bg-orange-700 focus:ring-orange-500 active:bg-orange-800 not-disabled:active:scale-[0.98]`,
+        idle: tw`bg-orange-600 hover:bg-orange-700 focus-visible:ring-orange-500 active:bg-orange-800 not-disabled:active:scale-[0.98]`,
         loading: tw`cursor-wait bg-orange-400`,
     },
 };
