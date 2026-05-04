@@ -36,6 +36,7 @@ const router = createBrowserRouter([
                     },
                     {
                         element: <Workspace />,
+                        handle: { fillViewport: true },
                         path: "workspace/:ariketaId",
                     },
                 ],
