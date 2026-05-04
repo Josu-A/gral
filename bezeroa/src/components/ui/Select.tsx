@@ -8,7 +8,7 @@ interface SelectProps<T extends string> extends Omit<
     "onChange"
 > {
     error?: string;
-    label: string;
+    label?: string;
     onChange: (value: T) => void;
     options: {
         label: string;
@@ -32,12 +32,14 @@ function Select<T extends string>({
     const isPlaceholderActive = value === "";
     return (
         <div className="flex flex-col">
-            <label
-                className="text-sm font-medium text-gray-800"
-                htmlFor={finalId}
-            >
-                {label}
-            </label>
+            {label && (
+                <label
+                    className="text-sm font-medium text-gray-800"
+                    htmlFor={finalId}
+                >
+                    {label}
+                </label>
+            )}
             <select
                 className={clsx(
                     inputClasses(!!error, className),
