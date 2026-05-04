@@ -1,3 +1,9 @@
-type ComponentVariant = "danger" | "primary" | "secondary" | "warning";
+type ComponentVariant =
+    | "activeTab"
+    | "danger"
+    | "inactiveTab"
+    | "primary"
+    | "secondary"
+    | "warning";
 
 export type { ComponentVariant };
