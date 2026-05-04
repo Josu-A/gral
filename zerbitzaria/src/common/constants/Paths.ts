@@ -4,8 +4,9 @@ const Paths = {
     Attempts: {
         Base: "/attempts",
         List: "/",
+        Save: "/save",
         Send: "/solution",
-        View: "/:attemptId",
+        View: "/:saiakera_id",
     },
     Auth: {
         Base: "/auth",

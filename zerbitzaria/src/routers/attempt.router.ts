@@ -9,6 +9,7 @@ attemptRouter.use(authenticate);
 
 attemptRouter.get(Paths.Attempts.List, AttemptController.listAttempts);
 attemptRouter.get(Paths.Attempts.View, AttemptController.getAttempt);
+attemptRouter.post(Paths.Attempts.Save, AttemptController.saveSolution);
 attemptRouter.post(Paths.Attempts.Send, AttemptController.submitAttempt);
 
 export default attemptRouter;
