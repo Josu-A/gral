@@ -32,7 +32,11 @@ async function getExercise(
     erabiltzailea_id: number,
     data: IGetExerciseFlat,
 ): Promise<GetExerciseResponse> {
-    const preferedProgrammingLanguage = data.programazio_lengoaia_id ?? null;
+    let preferedProgrammingLanguage = data.programazio_lengoaia_id ?? null;
+    if (!preferedProgrammingLanguage) {
+        preferedProgrammingLanguage =
+            await UserRepo.getPreferredProgrammingLanguageId(erabiltzailea_id);
+    }
     const exerciseData = await ExerciseRepo.getExercise(
         data.ariketa_id,
         erabiltzailea_id,
