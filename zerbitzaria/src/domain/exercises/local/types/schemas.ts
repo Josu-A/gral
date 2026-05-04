@@ -92,7 +92,13 @@ type ExerciseArgs = {
     include: {
         ariketa_zehatzak: {
             include: {
-                ebazpenak: true;
+                ebazpenak: {
+                    select: {
+                        ebazpena_id: true;
+                        egoera: true;
+                        kodea: true;
+                    };
+                };
                 programazio_lengoaia: true;
             };
         };
