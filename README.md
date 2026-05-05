@@ -53,5 +53,5 @@
     npm run dev
     ```
 
-    > [!WARNING]
-    > Windows erabiliz gero, `npm run dev:windows` komandoa erabili behar duzu.
+> [!WARNING]
+> Windows erabiliz gero, `npm run dev:windows` komandoa erabili behar duzu.
