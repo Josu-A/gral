@@ -25,6 +25,12 @@ interface ContainerRunResult {
     timeout: boolean;
 }
 
+type ProcessedTestWithMetadata = Pick<
+    TestCase,
+    "name" | "order" | "timeout" | "weight"
+> &
+    ProcessedTest;
+
 interface RunAttemptOptions<TAttempt> {
     attempt: TAttempt;
     language: Language<TAttempt>;
@@ -135,8 +141,14 @@ async function runAttempt<TAttempt>(
     const totalTimeout = getTotalTimeout(tests);
 
     const processedAttempt: ProcessedAttempt = language.processAttempt(attempt);
-    const processedTests: Array<ProcessedTest> = tests.map((test) =>
-        language.processTest(test.code, test.fileName),
+    const processedTests: Array<ProcessedTestWithMetadata> = tests.map(
+        (test) => ({
+            ...language.processTest(test.code, test.fileName),
+            name: test.name,
+            order: test.order,
+            timeout: test.timeout,
+            weight: test.weight,
+        }),
     );
 
     const uniqueFileNameError = verifyUniqueTestFileNames(processedTests);
@@ -413,16 +425,156 @@ async function runInsideContainer(
     };
 }
 
-async function runTests(
-    _time: { initialTime: number; maxTimeout: number },
-    _options: {
+async function runTest(
+    test: ProcessedTestWithMetadata,
+    dockerOptions: {
         image: string;
         mounts: ContainerMounts;
-        tests: Array<ProcessedTest>;
+    },
+    time: { initialTime: number; maxTimeout: number },
+): Promise<TestResult> {
+    const remainingTime = processRemainingTime(
+        time.maxTimeout,
+        time.initialTime,
+    );
+
+    if (remainingTime <= 0) {
+        return {
+            duration: 0,
+            exitCode: null,
+            name: test.name,
+            order: test.order,
+            phase: null,
+            status: "skipped",
+            stderr: "",
+            stdout: "",
+            weight: test.weight,
+        };
+    }
+
+    const testStartTime = Date.now();
+    const testMaxTimeout = test.timeout + BUFFER_TIMEOUT;
+
+    const getCurrentTestTimeout = (): number => {
+        const individualRemainingTime = processRemainingTime(
+            testMaxTimeout,
+            testStartTime,
+        );
+        return Math.min(remainingTime, individualRemainingTime);
+    };
+
+    let stdoutFull = "";
+    let stderrFull = "";
+    let lastRunPhase: null | string = null;
+    let lastExitCode: null | number = null;
+    const hasMultipleSteps = test.steps.length > 1;
+
+    const appendOutput = (
+        current: string,
+        chunk: string,
+        phase: string,
+    ): string => {
+        if (!chunk) {
+            return current;
+        }
+        if (hasMultipleSteps) {
+            const needsNewline = current.length > 0 && !current.endsWith("\n");
+            const headerPrefix = needsNewline ? "\n" : "";
+            return `${current}${headerPrefix}*** ${phase} ***\n${chunk}`;
+        }
+        return current + chunk;
+    };
+
+    for (const step of test.steps) {
+        lastRunPhase = step.phase;
+        const testRemainingTime = getCurrentTestTimeout();
+        if (testRemainingTime <= 0) {
+            return {
+                duration: Date.now() - testStartTime,
+                exitCode: null,
+                name: test.name,
+                order: test.order,
+                phase: lastRunPhase,
+                status: "timed_out",
+                stderr: stderrFull,
+                stdout: stdoutFull,
+                weight: test.weight,
+            };
+        }
+        const result = await runInsideContainer(
+            dockerOptions.image,
+            dockerOptions.mounts,
+            step.args,
+            testRemainingTime,
+        );
+
+        stdoutFull = appendOutput(stdoutFull, result.stdout, step.phase);
+        stderrFull = appendOutput(stderrFull, result.stderr, step.phase);
+
+        lastExitCode = result.exitCode;
+
+        if (result.timeout) {
+            return {
+                duration: Date.now() - testStartTime,
+                exitCode: lastExitCode,
+                name: test.name,
+                order: test.order,
+                phase: step.phase,
+                status: "timed_out",
+                stderr: stderrFull,
+                stdout: stdoutFull,
+                weight: test.weight,
+            };
+        }
+        if (result.exitCode !== 0) {
+            return {
+                duration: Date.now() - testStartTime,
+                exitCode: lastExitCode,
+                name: test.name,
+                order: test.order,
+                phase: step.phase,
+                status: "failed",
+                stderr: stderrFull,
+                stdout: stdoutFull,
+                weight: test.weight,
+            };
+        }
+    }
+
+    return {
+        duration: Date.now() - testStartTime,
+        exitCode: lastExitCode,
+        name: test.name,
+        order: test.order,
+        phase: lastRunPhase,
+        status: "passed",
+        stderr: stderrFull,
+        stdout: stdoutFull,
+        weight: test.weight,
+    };
+}
+
+async function runTests(
+    time: { initialTime: number; maxTimeout: number },
+    options: {
+        image: string;
+        mounts: ContainerMounts;
+        tests: Array<ProcessedTestWithMetadata>;
     },
 ): Promise<Array<TestResult>> {
-    // Implementation for running tests
-    return [];
+    const results: Array<TestResult> = [];
+    for (const test of options.tests) {
+        const result: TestResult = await runTest(
+            test,
+            {
+                image: options.image,
+                mounts: options.mounts,
+            },
+            time,
+        );
+        results.push(result);
+    }
+    return results;
 }
 
 function verifyUniqueTestFileNames(
