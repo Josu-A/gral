@@ -21,8 +21,27 @@ const server = new McpServer({
     version: "1.0.0",
 });
 
-function formatRunAttemptResult(_result: RunAttemptResult): string {
-    return "";
+function formatRunAttemptResult(result: RunAttemptResult): string {
+    if (result.error) {
+        return `Errore bat gertatu da: ${result.error}`;
+    }
+    if (result.preRun && !result.preRun.success) {
+        return `Errore bat gertatu da pre-run fasean. Irteera kodea ${result.preRun.exitCode} izan da eta ${result.preRun.duration} ms iraun du.`;
+    }
+    const passedTests =
+        result.testResults?.filter(
+            (testResult) => testResult.status === "passed",
+        ).length ?? 0;
+    const totalTests = result.testResults?.length ?? 0;
+    const resultMsg = [
+        `Exekuzioak ${result.duration} ms iraun du. ${passedTests}/${totalTests} test gainditu dira.`,
+    ];
+    for (const testResult of result.testResults ?? []) {
+        resultMsg.push(
+            `  [${testResult.status}] ${testResult.phase} @ ${testResult.name} - ${testResult.duration} ms`,
+        );
+    }
+    return resultMsg.join("\n");
 }
 
 async function main() {
