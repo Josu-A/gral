@@ -3,6 +3,7 @@ import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
+import { buildImages } from "./build.js";
 import logger from "./common/logger.js";
 import { cLanguage } from "./languages/c.js";
 import {
@@ -45,6 +46,7 @@ function formatRunAttemptResult(result: RunAttemptResult): string {
 }
 
 async function main() {
+    await buildImages();
     const transport = new StdioServerTransport();
     await server.connect(transport);
     console.log("Code execution MCP zerbitzaria abiarazi da.");
