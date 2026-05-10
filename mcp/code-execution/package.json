@@ -6,8 +6,8 @@
     "code-execution": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc && chmod 755 dist/index.js",
-    "build:windows": "tsc"
+    "build": "tsc && node ./scripts/copy-docker.js && chmod 755 dist/index.js",
+    "build:windows": "tsc && node ./scripts/copy-docker.js"
   },
   "files": [
     "dist"

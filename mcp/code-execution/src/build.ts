@@ -13,25 +13,21 @@ const DOCKERFILE_NAME = "Dockerfile";
 const dockerFilesPath = join(import.meta.dirname, "docker");
 
 interface LanguageData {
-    dockerfilePath: string;
+    dockerContextPath: string;
     dockerImageName: string;
 }
 
 const LANGUAGE_DATA: Record<string, LanguageData> = {
     [cLanguage.id]: {
-        dockerfilePath: join(dockerFilesPath, cLanguage.id, DOCKERFILE_NAME),
+        dockerContextPath: join(dockerFilesPath, cLanguage.id),
         dockerImageName: cLanguage.image,
     },
     [javaLanguage.id]: {
-        dockerfilePath: join(dockerFilesPath, javaLanguage.id, DOCKERFILE_NAME),
+        dockerContextPath: join(dockerFilesPath, javaLanguage.id),
         dockerImageName: javaLanguage.image,
     },
     [pythonLanguage.id]: {
-        dockerfilePath: join(
-            dockerFilesPath,
-            pythonLanguage.id,
-            DOCKERFILE_NAME,
-        ),
+        dockerContextPath: join(dockerFilesPath, pythonLanguage.id),
         dockerImageName: pythonLanguage.image,
     },
 };
@@ -46,10 +42,10 @@ async function buildImage(languageId: string): Promise<void> {
         );
         return;
     }
-
-    const buildContext = tar.pack(languageData.dockerfilePath);
+    const buildContext = tar.pack(languageData.dockerContextPath);
 
     const stream = await docker.buildImage(buildContext, {
+        dockerfile: DOCKERFILE_NAME,
         t: languageData.dockerImageName,
     });
 
@@ -57,7 +53,7 @@ async function buildImage(languageId: string): Promise<void> {
         docker.modem.followProgress(
             stream,
             (err, res) => (err ? reject(err) : resolve(res)),
-            (event) => logger.info(`[${languageId}] ${event}`),
+            (event) => logger.info(`[${languageId}] ${JSON.stringify(event)}`),
         );
     });
 }

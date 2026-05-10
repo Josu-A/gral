@@ -66,7 +66,9 @@ class MCPClient {
                 args: [serverScriptPath],
                 command,
             });
-            await this.mcp.connect(this.transport);
+            await this.mcp.connect(this.transport, {
+                timeout: 5 * 60 * 1_000,
+            });
 
             const toolResult = await this.mcp.listTools();
             this.tools = toolResult.tools.map((tool) => ({
