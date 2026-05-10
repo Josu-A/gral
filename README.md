@@ -34,11 +34,10 @@
     - `PORT`: datu-basearen portua (adibidez, `5432`).
     - `DATABASE`: datu-basearen izena.
 
-4. Beharrezko paketeak instalatu eta git-hook-ak konfiguratu:
+4. Beharrezko paketeak instalatu:
 
     ```bash
     npm install
-    npm run prepare
     ```
 
 5. Datu-basea sortu, prisma bezeroa eraiki eta hasierako datuak sortu:
