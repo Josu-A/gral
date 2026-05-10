@@ -80,6 +80,7 @@ model Testa {
     ordena             Int
     pisua              Int    @default(1)
     timeout            Int    @default(5000)
+    fitxategi_izena    String @db.VarChar(255)
 
     ariketa_zehatza AriketaZehatza @relation(fields: [ariketa_zehatza_id], references: [ariketa_zehatza_id], onDelete: Cascade)
     exekuzioak      Exekuzioa[]
