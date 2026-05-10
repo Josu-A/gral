@@ -6,6 +6,7 @@
 
 - Node.js >= 24
 - PostgreSQL datu-basea instalatuta.
+- Docker
 
 ### Instalazioa
 
