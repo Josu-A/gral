@@ -164,10 +164,20 @@ interface GetExerciseResponse {
 
 type StatementTab = "attempts" | "statement";
 
+interface SubmitAttemptResponse {
+    data?: {
+        isError: boolean;
+        output: string;
+    };
+    error?: string;
+    success: boolean;
+}
+
 const ERROR_GENERIC_FETCH = "Akats bat gertatu da ariketa eskuratzean";
 const ERROR_GENERIC_ATTEMPT_FETCH = "Akats bat gertatu da saiakera eskuratzean";
 const ERROR_GENERIC_ATTEMPTS_FETCH =
     "Akats bat gertatu da saiakerak eskuratzean";
+const ERROR_GENERIC_SUBMIT = "Akats bat gertatu da saiakera bidaltzean";
 
 function supportedLanguageToMonaco(language: string): string {
     const mapping: Record<string, string> = {
@@ -212,6 +222,7 @@ function Workspace(): JSX.Element {
     const isSwitchingLanguageRef = useRef<boolean>(false);
     const userRequestedLanguageChangeRef = useRef<boolean>(false);
     const languageChangeTokenRef = useRef<number>(0);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -501,6 +512,58 @@ function Workspace(): JSX.Element {
         }
     };
 
+    const handleSubmitAttempt = async (): Promise<void> => {
+        const ariketaZehatza = exerciseDetails?.ariketa_zehatza;
+        if (!ariketaZehatza || isSubmitting) {
+            return;
+        }
+
+        if (!editingCode.trim()) {
+            toast.warning("Kodea ezin da hutsik egon");
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            const res = await apiClient.post<SubmitAttemptResponse>(
+                `/attempts/solution`,
+                {
+                    ariketa_zehatza_id: ariketaZehatza.ariketa_zehatza_id,
+                    kodea: editingCode,
+                },
+            );
+
+            if (!res.data.success || !res.data.data) {
+                toast.warning(res.data.error || ERROR_GENERIC_SUBMIT);
+                return;
+            }
+
+            const { isError, output } = res.data.data;
+
+            if (isError) {
+                toast.error("Saiakera", {
+                    description: output,
+                });
+            } else {
+                toast.success("Saiakera", {
+                    description: output,
+                });
+            }
+        } catch (err: unknown) {
+            if (
+                err instanceof Error &&
+                (err.name === "CanceledError" || err.name === "AbortError")
+            ) {
+                return;
+            }
+
+            toast.warning(handleApiError(err, ERROR_GENERIC_SUBMIT).general);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     useEffect(() => {
         if (!isSwitchingLanguage && userRequestedLanguageChangeRef.current) {
             userRequestedLanguageChangeRef.current = false;
@@ -638,10 +701,12 @@ function Workspace(): JSX.Element {
                     </div>
                 )}
                 {!isViewingPreviousAttempt && (
-                    <div className="mb-2 flex items-center justify-center gap-4 rounded-md border border-slate-300 bg-slate-200 px-2 py-1">
+                    <div className="mb-2 flex items-center justify-between gap-4 rounded-md border border-slate-300 bg-slate-200 px-2 py-1">
                         <Select
                             className="mt-0! px-4!"
-                            disabled={isLoading || isSwitchingLanguage}
+                            disabled={
+                                isLoading || isSwitchingLanguage || isSubmitting
+                            }
                             onChange={(value) =>
                                 handleProgrammingLanguageChange(value)
                             }
@@ -653,6 +718,19 @@ function Workspace(): JSX.Element {
                             )}
                             value={selectedLanguageId}
                         />
+                        <Button
+                            disabled={
+                                isLoading ||
+                                isSwitchingLanguage ||
+                                isSubmitting ||
+                                !editingCode.trim()
+                            }
+                            isLoading={isSubmitting}
+                            onClick={handleSubmitAttempt}
+                            variant="primary"
+                        >
+                            Bidali
+                        </Button>
                     </div>
                 )}
                 <GralMonacoEditor
