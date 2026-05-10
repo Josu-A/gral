@@ -5,6 +5,7 @@ import HttpStatusCode from "@common/constants/HttpStatusCodes";
 import { formatSuccess } from "@common/utils/responses";
 import AttemptService from "@domain/attempts/AttemptService";
 import {
+    AttemptSubmitSchema,
     GetAttemptSchema,
     ListAttemptsSchema,
     SolutionSaveSchema,
@@ -55,13 +56,14 @@ async function saveSolution(
     );
 }
 
-function submitAttempt(
-    _: AuthenticatedRequest,
+async function submitAttempt(
+    req: AuthenticatedRequest,
     res: Response,
     _n: NextFunction,
-): void {
-    // TODO
-    res.status(HttpStatusCode.NOT_IMPLEMENTED).send("TODO");
+): Promise<void> {
+    const data = AttemptSubmitSchema.parse(req.body);
+    const result = await AttemptService.submitAttempt(req.user.id, data);
+    res.status(HttpStatusCode.OK).json(formatSuccess(result));
 }
 
 export default {

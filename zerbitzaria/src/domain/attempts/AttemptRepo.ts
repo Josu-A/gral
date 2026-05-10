@@ -4,6 +4,7 @@ import type {
     IGetAttemptFlat,
     IListAttemptsFlat,
     ISolutionSave,
+    SubmissionContext,
 } from "@domain/attempts/local/types/schemas";
 
 import db from "@infra/db";
@@ -25,6 +26,36 @@ async function getAttempt(
         },
     });
     return attempt;
+}
+
+async function getSubmissionContext(
+    ariketa_zehatza_id: number,
+): Promise<null | SubmissionContext> {
+    const ariketaZehatza = await db.ariketaZehatza.findUnique({
+        select: {
+            buru_fitxategia: true,
+            programazio_lengoaia: {
+                select: {
+                    izena: true,
+                },
+            },
+            testak: {
+                orderBy: {
+                    ordena: "asc",
+                },
+                select: {
+                    fitxategi_izena: true,
+                    izena: true,
+                    ordena: true,
+                    pisua: true,
+                    testa_kodea: true,
+                    timeout: true,
+                },
+            },
+        },
+        where: { ariketa_zehatza_id },
+    });
+    return ariketaZehatza;
 }
 
 async function listAttempts(
@@ -79,6 +110,7 @@ async function saveSolution(
 
 export default {
     getAttempt,
+    getSubmissionContext,
     listAttempts,
     saveSolution,
 } as const;

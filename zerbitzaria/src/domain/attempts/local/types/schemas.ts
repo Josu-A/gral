@@ -7,6 +7,13 @@ const SolutionSaveSchema = z.object({
 
 type ISolutionSave = z.infer<typeof SolutionSaveSchema>;
 
+const AttemptSubmitSchema = z.object({
+    ariketa_zehatza_id: z.number().int().positive(),
+    kodea: z.string().min(1, "Kodea ezin da hutsik egon"),
+});
+
+type IAttemptSubmit = z.infer<typeof AttemptSubmitSchema>;
+
 const GetAttemptSchema = z.object({
     params: z.object({
         saiakera_id: z.coerce.number<number>().int().positive(),
@@ -41,13 +48,44 @@ type IListAttemptsFlat = {
     ariketa_id?: IListAttempts["query"]["ariketa_id"];
 };
 
-export { GetAttemptSchema, ListAttemptsSchema, SolutionSaveSchema };
+interface SubmissionContext {
+    buru_fitxategia: null | string;
+    programazio_lengoaia: {
+        izena: string;
+    };
+    testak: Array<SubmissionContextTest>;
+}
+
+interface SubmissionContextTest {
+    fitxategi_izena: string;
+    izena: string;
+    ordena: number;
+    pisua: number;
+    testa_kodea: string;
+    timeout: number;
+}
+
+interface SubmitAttemptResponse {
+    isError: boolean;
+    output: string;
+}
+
+export {
+    AttemptSubmitSchema,
+    GetAttemptSchema,
+    ListAttemptsSchema,
+    SolutionSaveSchema,
+};
 
 export type {
     GetAttemptResponse,
     GetAttemptsResponse,
+    IAttemptSubmit,
     IGetAttempt,
     IGetAttemptFlat,
     IListAttemptsFlat,
     ISolutionSave,
+    SubmissionContext,
+    SubmissionContextTest,
+    SubmitAttemptResponse,
 };
