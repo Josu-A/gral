@@ -4,6 +4,7 @@ import logger from "@common/constants/logger";
 import { isErrno } from "@common/utils/errors";
 import { startTokenCleanup } from "@infra/cron/cleanRefreshTokens";
 import db, { checkDBConnection } from "@infra/db";
+import mcpClient from "@infra/mcp";
 import {
     connections,
     handleConnection,
@@ -74,6 +75,13 @@ async function shutdown(server: Server, signal: string): Promise<void> {
     tokenCleanupTask.stop();
 
     try {
+        await mcpClient.closeConnection();
+        logger.info("MCP konexioa itxi da.");
+    } catch (err) {
+        logger.error("MCP konexioa itxtean errorea gertatu da: ", err);
+    }
+
+    try {
         await db.$disconnect();
         logger.info("Datu-basearen erreserba itxi da.");
     } catch (err) {
@@ -87,6 +95,8 @@ async function shutdown(server: Server, signal: string): Promise<void> {
 }
 
 await checkDBConnection();
+
+await mcpClient.connectToServer(environment.MCP_CODE_EXECUTION_SERVER_PATH);
 
 const server = app.listen(environment.SERVER_PORT, handleListen);
 
