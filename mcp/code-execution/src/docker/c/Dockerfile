@@ -1,6 +1,6 @@
 FROM gcc:latest
 
-RUN addgroup -S runner && adduser -S -G runner -H -s /sbin/nologin runner
+RUN groupadd --system runner && useradd --system --gid runner --no-create-home --shell /sbin/nologin runner
 
 RUN mkdir -p /opt/code-execution/src \
     /opt/code-execution/tests \
