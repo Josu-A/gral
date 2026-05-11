@@ -304,8 +304,8 @@ async function runInsideContainer(
         HostConfig: {
             AutoRemove: true,
             Binds: [
-                `${mounts.src}:/opt/code-execution/src:ro,noexec`,
-                `${mounts.tests}:/opt/code-execution/tests:ro,noexec`,
+                `${mounts.src}:/opt/code-execution/src:ro`,
+                `${mounts.tests}:/opt/code-execution/tests:ro`,
             ],
             CapDrop: ["ALL"],
             Memory: MEMORY_LIMIT_BYTES,
