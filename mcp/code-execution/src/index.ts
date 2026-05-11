@@ -22,7 +22,7 @@ const server = new McpServer({
     version: "1.0.0",
 });
 
-function formatRunAttemptResult(result: RunAttemptResult): string {
+function _formatRunAttemptResult(result: RunAttemptResult): string {
     if (result.error) {
         return `Errore bat gertatu da: ${result.error}`;
     }
@@ -68,7 +68,7 @@ async function runCodeExecutionTool<TAttempt>(
     return {
         content: [
             {
-                text: formatRunAttemptResult(result),
+                text: JSON.stringify(result, null, 2),
                 type: "text",
             },
         ],

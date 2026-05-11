@@ -1,4 +1,7 @@
-import type { SubmissionContextTest } from "@domain/attempts/local/types/schemas";
+import type {
+    RunAttemptResult,
+    SubmissionContextTest,
+} from "@domain/attempts/local/types/schemas";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 
 import logger from "@common/constants/logger";
@@ -15,7 +18,7 @@ interface ExecuteCodeInput {
 
 interface ExecuteCodeResult {
     isError: boolean;
-    output: string;
+    output: null | RunAttemptResult;
 }
 
 interface MCPTool {
@@ -121,17 +124,11 @@ class MCPClient {
 
         return {
             isError: !!result.isError,
-            output: this.getToolResultText(result),
+            output: this.getCodeExecutionToolResult(result),
         };
     }
 
-    private getToolByLanguage(language: string): string {
-        const lowerLanguage = language.toLowerCase();
-        const toolName = `run_${lowerLanguage}_exercise`;
-        return toolName;
-    }
-
-    private getToolResultText(result: CallToolResult): string {
+    private _getToolResultText(result: CallToolResult): string {
         if (!result.content) {
             return "";
         }
@@ -140,6 +137,24 @@ class MCPClient {
             .filter((item) => item.type === "text")
             .map((item) => item.text)
             .join("\n");
+    }
+
+    private getCodeExecutionToolResult(
+        result: CallToolResult,
+    ): null | RunAttemptResult {
+        if (!result.content) {
+            return null;
+        }
+        const contentText = result.content
+            .filter((item) => item.type === "text")
+            .map((item) => item.text)?.[0];
+        return contentText ? JSON.parse(contentText) : null;
+    }
+
+    private getToolByLanguage(language: string): string {
+        const lowerLanguage = language.toLowerCase();
+        const toolName = `run_${lowerLanguage}_exercise`;
+        return toolName;
     }
 }
 

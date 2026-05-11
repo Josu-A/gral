@@ -48,6 +48,29 @@ type IListAttemptsFlat = {
     ariketa_id?: IListAttempts["query"]["ariketa_id"];
 };
 
+interface RunAttemptResult {
+    duration: number;
+    error: null | string;
+    preRun: null | {
+        duration: number;
+        exitCode: null | number;
+        stderr: string;
+        stdout: string;
+        success: boolean;
+    };
+    testResults?: {
+        duration: number;
+        exitCode: null | number;
+        name: string;
+        ordera: number;
+        phase: null | string;
+        status: string;
+        stderr: string;
+        stdout: string;
+        weight: number;
+    }[];
+}
+
 interface SubmissionContext {
     buru_fitxategia: null | string;
     programazio_lengoaia: {
@@ -67,7 +90,7 @@ interface SubmissionContextTest {
 
 interface SubmitAttemptResponse {
     isError: boolean;
-    output: string;
+    output: null | RunAttemptResult;
 }
 
 export {
@@ -85,6 +108,7 @@ export type {
     IGetAttemptFlat,
     IListAttemptsFlat,
     ISolutionSave,
+    RunAttemptResult,
     SubmissionContext,
     SubmissionContextTest,
     SubmitAttemptResponse,
