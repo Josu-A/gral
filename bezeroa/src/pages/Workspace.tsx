@@ -572,6 +572,7 @@ function Workspace(): JSX.Element {
             }
 
             setAttemptTestResults(output);
+            setActiveTab("testresults");
         } catch (err: unknown) {
             if (
                 err instanceof Error &&
@@ -679,31 +680,29 @@ function Workspace(): JSX.Element {
                                         {attemptTestResults.preRun && (
                                             <>
                                                 <h2 className="mt-4 mb-2 text-xl font-semibold">
-                                                    Testen exekuzio aurreko
-                                                    fasea
-                                                </h2>
-                                                <p>
-                                                    Arrakasta:{" "}
-                                                    {attemptTestResults.preRun
-                                                        .success
-                                                        ? "Bai"
-                                                        : "Ez"}
-                                                </p>
-                                                <p>
-                                                    Iraupena:{" "}
+                                                    Exekuzio aurreko fasea (
                                                     {
                                                         attemptTestResults
                                                             .preRun.duration
                                                     }{" "}
-                                                    ms
-                                                </p>
-                                                <p>
-                                                    Exit code:{" "}
-                                                    {
-                                                        attemptTestResults
-                                                            .preRun.exitCode
-                                                    }
-                                                </p>
+                                                    ms)
+                                                </h2>
+                                                <div className="flex items-center justify-between">
+                                                    <span className="font-semibold">
+                                                        Arrakasta:{" "}
+                                                        {attemptTestResults
+                                                            .preRun.success
+                                                            ? "Bai"
+                                                            : "Ez"}
+                                                    </span>
+                                                    <span>
+                                                        Irteera kodea:{" "}
+                                                        {
+                                                            attemptTestResults
+                                                                .preRun.exitCode
+                                                        }
+                                                    </span>
+                                                </div>
                                                 <div>
                                                     <h3 className="mt-2 mb-1 font-medium">
                                                         Stdout:
@@ -783,8 +782,8 @@ function Workspace(): JSX.Element {
                                                                             }
                                                                         </span>
                                                                         <span>
-                                                                            Exit
-                                                                            code:{" "}
+                                                                            Irteera
+                                                                            kodea:{" "}
                                                                             {
                                                                                 test.exitCode
                                                                             }
