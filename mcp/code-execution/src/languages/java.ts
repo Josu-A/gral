@@ -23,6 +23,7 @@ const javaLanguage: Language<string> = {
                     "-c",
                     `javac -d /opt/code-execution/out --class-path "$JUNIT_JAR" /opt/code-execution/src/*.java /opt/code-execution/tests/*.java`,
                 ],
+                phase: Phase.Compile,
             },
         };
     },
