@@ -47,11 +47,17 @@
     npm run db:migrate:seed
     ```
 
-6. Zerbitzariak abiarazi:
+6. MCP zerbitzariak eraiki:
+
+    ```bash
+    npm run build:mcp
+    ```
+
+7. Zerbitzariak abiarazi:
 
     ```bash
     npm run dev
     ```
 
 > [!WARNING]
-> Windows erabiliz gero, `npm run dev:windows` komandoa erabili behar duzu.
+> Windows erabiliz gero, `npm run build:mcp:windows` eta `npm run dev:windows` komandoak erabili behar dituzu.
