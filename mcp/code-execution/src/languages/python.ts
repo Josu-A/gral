@@ -14,7 +14,7 @@ const pythonLanguage: Language<string> = {
             files: [
                 {
                     content: attempt,
-                    name: "solution.py",
+                    name: "attempt.py",
                 },
             ],
         };
