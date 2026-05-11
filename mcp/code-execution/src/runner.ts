@@ -31,7 +31,7 @@ interface ContainerRunResult {
 
 type ProcessedTestWithMetadata = Pick<
     TestCase,
-    "name" | "order" | "timeout" | "weight"
+    "name" | "order" | "testId" | "timeout" | "weight"
 > &
     ProcessedTest;
 
@@ -65,7 +65,7 @@ interface RunContainerOptions {
     timeout: number;
 }
 
-type TestResult = Pick<TestCase, "name" | "order" | "weight"> & {
+type TestResult = Pick<TestCase, "name" | "order" | "testId" | "weight"> & {
     duration: number;
     exitCode: null | number;
     phase: null | string;
@@ -118,6 +118,7 @@ function returnError(
             status: data.status,
             stderr: "",
             stdout: "",
+            testId: testCase.testId,
             weight: testCase.weight,
         })),
     };
@@ -141,6 +142,7 @@ function returnPreError(
             status: "skipped",
             stderr: preRun.stderr,
             stdout: preRun.stdout,
+            testId: testCase.testId,
             weight: testCase.weight,
         })),
     };
@@ -160,6 +162,7 @@ async function runAttempt<TAttempt>(
             ...language.processTest(test.code, test.fileName),
             name: test.name,
             order: test.order,
+            testId: test.testId,
             timeout: test.timeout,
             weight: test.weight,
         }),
@@ -468,6 +471,7 @@ async function runTest(
             status: "skipped",
             stderr: "",
             stdout: "",
+            testId: test.testId,
             weight: test.weight,
         };
     }
@@ -518,6 +522,7 @@ async function runTest(
                 status: "timed_out",
                 stderr: stderrFull,
                 stdout: stdoutFull,
+                testId: test.testId,
                 weight: test.weight,
             };
         }
@@ -544,6 +549,7 @@ async function runTest(
                 status: "timed_out",
                 stderr: stderrFull,
                 stdout: stdoutFull,
+                testId: test.testId,
                 weight: test.weight,
             };
         }
@@ -557,6 +563,7 @@ async function runTest(
                 status: "failed",
                 stderr: stderrFull,
                 stdout: stdoutFull,
+                testId: test.testId,
                 weight: test.weight,
             };
         }
@@ -571,6 +578,7 @@ async function runTest(
         status: "passed",
         stderr: stderrFull,
         stdout: stdoutFull,
+        testId: test.testId,
         weight: test.weight,
     };
 }

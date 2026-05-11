@@ -48,6 +48,7 @@ async function getSubmissionContext(
                     izena: true,
                     ordena: true,
                     pisua: true,
+                    testa_id: true,
                     testa_kodea: true,
                     timeout: true,
                 },

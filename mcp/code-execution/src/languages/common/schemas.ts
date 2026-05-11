@@ -29,6 +29,13 @@ const testInputSchema = z
                 description:
                     "Execution order of the test case relative to other test cases.",
             }),
+        testId: z
+            .number()
+            .int("Test ID must be an integer")
+            .positive("Test ID must be a positive integer")
+            .meta({
+                description: "Unique identifier for the test case.",
+            }),
         timeout: z
             .number()
             .int("Timeout must be an integer")
@@ -38,12 +45,9 @@ const testInputSchema = z
             .meta({
                 description: "Timeout for the test case in milliseconds.",
             }),
-        weight: z
-            .number()
-            .positive("Weight must be a positive number")
-            .meta({
-                description: "Weight of the test case for scoring purposes.",
-            }),
+        weight: z.number().positive("Weight must be a positive number").meta({
+            description: "Weight of the test case for scoring purposes.",
+        }),
     })
     .meta({
         description:
@@ -67,13 +71,10 @@ const attemptInputSchema = z
 
 const cAttemptInputSchema = z
     .object({
-        header: z
-            .string()
-            .optional()
-            .meta({
-                description:
-                    "Optional header code to include if the test cases don't declare prototypes themselves.",
-            }),
+        header: z.string().optional().meta({
+            description:
+                "Optional header code to include if the test cases don't declare prototypes themselves.",
+        }),
         source: attemptInputSchema,
     })
     .meta({

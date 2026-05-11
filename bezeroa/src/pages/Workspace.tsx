@@ -162,15 +162,39 @@ interface GetExerciseResponse {
     success: boolean;
 }
 
-type StatementTab = "attempts" | "statement";
+type StatementTab = "attempts" | "statement" | "testresults";
 
 interface SubmitAttemptResponse {
     data?: {
         isError: boolean;
-        output: string;
+        output: null | SubmittedTestResults;
     };
     error?: string;
     success: boolean;
+}
+
+interface SubmittedTestResults {
+    duration: number;
+    error: null | string;
+    preRun: null | {
+        duration: number;
+        exitCode: null | number;
+        stderr: string;
+        stdout: string;
+        success: boolean;
+    };
+    testResults?: {
+        duration: number;
+        exitCode: null | number;
+        name: string;
+        order: number;
+        phase: null | string;
+        status: string;
+        stderr: string;
+        stdout: string;
+        testId: number;
+        weight: number;
+    }[];
 }
 
 const ERROR_GENERIC_FETCH = "Akats bat gertatu da ariketa eskuratzean";
@@ -223,6 +247,8 @@ function Workspace(): JSX.Element {
     const userRequestedLanguageChangeRef = useRef<boolean>(false);
     const languageChangeTokenRef = useRef<number>(0);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [attemptTestResults, setAttemptTestResults] =
+        useState<null | SubmittedTestResults>(null);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -542,14 +568,10 @@ function Workspace(): JSX.Element {
             const { isError, output } = res.data.data;
 
             if (isError) {
-                toast.error("Saiakera", {
-                    description: output,
-                });
-            } else {
-                toast.success("Saiakera", {
-                    description: output,
-                });
+                toast.error("Saiakera bidaltzean errore bat gertatu da!");
             }
+
+            setAttemptTestResults(output);
         } catch (err: unknown) {
             if (
                 err instanceof Error &&
@@ -585,6 +607,7 @@ function Workspace(): JSX.Element {
                     {(
                         [
                             { id: "statement", label: "Enuntziatua" },
+                            { id: "testresults", label: "Testen emaitzak" },
                             { id: "attempts", label: "Saiakerak" },
                         ] as const
                     ).map(({ id, label }) => (
@@ -627,6 +650,174 @@ function Workspace(): JSX.Element {
                                 </p>
                             </div>
                         </>
+                    )}
+                    {activeTab === "testresults" && (
+                        <div className="sm:min-h-0 sm:flex-1 sm:overflow-y-auto">
+                            {!attemptTestResults ? (
+                                <p className="text-sm text-gray-700">
+                                    Ez dago test emaitzarik erakusteko.
+                                </p>
+                            ) : (
+                                <>
+                                    <h1 className="mb-3 border-b border-slate-400 pb-1 text-2xl font-bold tracking-tight">
+                                        Exekuzioaren testen emaitzak
+                                    </h1>
+                                    <div className="mb-4 max-w-none sm:min-h-0 sm:flex-1 sm:overflow-y-auto">
+                                        {attemptTestResults.error && (
+                                            <p className="text-sm text-red-700">
+                                                <span className="font-medium text-red-800">
+                                                    Errorea gertatu da
+                                                    exekuzioan:
+                                                </span>{" "}
+                                                {attemptTestResults.error}
+                                            </p>
+                                        )}
+                                        <p>
+                                            Exekuzioaren iraupena:{" "}
+                                            {attemptTestResults.duration} ms
+                                        </p>
+                                        {attemptTestResults.preRun && (
+                                            <>
+                                                <h2 className="mt-4 mb-2 text-xl font-semibold">
+                                                    Testen exekuzio aurreko
+                                                    fasea
+                                                </h2>
+                                                <p>
+                                                    Arrakasta:{" "}
+                                                    {attemptTestResults.preRun
+                                                        .success
+                                                        ? "Bai"
+                                                        : "Ez"}
+                                                </p>
+                                                <p>
+                                                    Iraupena:{" "}
+                                                    {
+                                                        attemptTestResults
+                                                            .preRun.duration
+                                                    }{" "}
+                                                    ms
+                                                </p>
+                                                <p>
+                                                    Exit code:{" "}
+                                                    {
+                                                        attemptTestResults
+                                                            .preRun.exitCode
+                                                    }
+                                                </p>
+                                                <div>
+                                                    <h3 className="mt-2 mb-1 font-medium">
+                                                        Stdout:
+                                                    </h3>
+                                                    <pre className="rounded bg-gray-100 p-2 text-sm whitespace-pre-wrap text-gray-800">
+                                                        {attemptTestResults
+                                                            .preRun.stdout ||
+                                                            "Ezer ez"}
+                                                    </pre>
+                                                </div>
+                                                <div>
+                                                    <h3 className="mt-2 mb-1 font-medium">
+                                                        Stderr:
+                                                    </h3>
+                                                    <pre className="rounded bg-gray-100 p-2 text-sm whitespace-pre-wrap text-gray-800">
+                                                        {attemptTestResults
+                                                            .preRun.stderr ||
+                                                            "Ezer ez"}
+                                                    </pre>
+                                                </div>
+                                            </>
+                                        )}
+                                        {attemptTestResults.testResults &&
+                                            attemptTestResults.testResults
+                                                .length > 0 && (
+                                                <>
+                                                    <h2 className="mt-4 mb-2 text-xl font-semibold">
+                                                        Testen emaitzak:{" "}
+                                                        {
+                                                            attemptTestResults.testResults.filter(
+                                                                (t) =>
+                                                                    t.status ===
+                                                                    "passed",
+                                                            ).length
+                                                        }{" "}
+                                                        /{" "}
+                                                        {
+                                                            attemptTestResults
+                                                                .testResults
+                                                                .length
+                                                        }
+                                                    </h2>
+                                                    <ul className="flex flex-col gap-4">
+                                                        {attemptTestResults.testResults.map(
+                                                            (test) => (
+                                                                <li
+                                                                    className="rounded-md border bg-slate-300 p-3"
+                                                                    key={
+                                                                        test.testId
+                                                                    }
+                                                                >
+                                                                    <div className="flex items-center justify-between">
+                                                                        <span className="font-semibold">
+                                                                            {
+                                                                                test.name
+                                                                            }{" "}
+                                                                            (
+                                                                            {
+                                                                                test.duration
+                                                                            }{" "}
+                                                                            ms)
+                                                                        </span>
+                                                                        {test.phase && (
+                                                                            <span>
+                                                                                Fasea:{" "}
+                                                                                {
+                                                                                    test.phase
+                                                                                }
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+                                                                    <div className="flex items-center justify-between">
+                                                                        <span>
+                                                                            Egoera:{" "}
+                                                                            {
+                                                                                test.status
+                                                                            }
+                                                                        </span>
+                                                                        <span>
+                                                                            Exit
+                                                                            code:{" "}
+                                                                            {
+                                                                                test.exitCode
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                    <div>
+                                                                        <h3 className="mt-2 mb-1 font-medium">
+                                                                            Stdout:
+                                                                        </h3>
+                                                                        <pre className="rounded bg-slate-200 p-2 text-sm whitespace-pre-wrap text-gray-800">
+                                                                            {test.stdout ||
+                                                                                "Ezer ez"}
+                                                                        </pre>
+                                                                    </div>
+                                                                    <div>
+                                                                        <h3 className="mt-2 mb-1 font-medium">
+                                                                            Stderr:
+                                                                        </h3>
+                                                                        <pre className="rounded bg-slate-200 p-2 text-sm whitespace-pre-wrap text-gray-800">
+                                                                            {test.stderr ||
+                                                                                "Ezer ez"}
+                                                                        </pre>
+                                                                    </div>
+                                                                </li>
+                                                            ),
+                                                        )}
+                                                    </ul>
+                                                </>
+                                            )}
+                                    </div>
+                                </>
+                            )}
+                        </div>
                     )}
                     {activeTab === "attempts" && (
                         <div className="sm:min-h-0 sm:flex-1 sm:overflow-y-auto">

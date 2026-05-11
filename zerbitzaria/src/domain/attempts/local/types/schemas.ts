@@ -62,11 +62,12 @@ interface RunAttemptResult {
         duration: number;
         exitCode: null | number;
         name: string;
-        ordera: number;
+        order: number;
         phase: null | string;
         status: string;
         stderr: string;
         stdout: string;
+        testId: number;
         weight: number;
     }[];
 }
@@ -84,6 +85,7 @@ interface SubmissionContextTest {
     izena: string;
     ordena: number;
     pisua: number;
+    testa_id: number;
     testa_kodea: string;
     timeout: number;
 }

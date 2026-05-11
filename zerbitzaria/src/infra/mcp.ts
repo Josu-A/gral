@@ -112,6 +112,7 @@ class MCPClient {
                 fileName: test.fitxategi_izena,
                 name: test.izena,
                 order: test.ordena,
+                testId: test.testa_id,
                 timeout: test.timeout,
                 weight: test.pisua,
             })),
