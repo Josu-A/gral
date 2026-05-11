@@ -11,7 +11,7 @@ interface CAttempt {
 }
 
 const C_FLAGS =
-    "-O0 -Wall -Wextra --std=c23 -g1 -fsanitize=address,undefined -fno-omit-frame-pointer -I/tmp/src";
+    "-O0 -Wall -Wextra --std=c23 -g1 -fsanitize=address,undefined -fno-omit-frame-pointer -I/opt/code-execution/src";
 
 const cLanguage: Language<CAttempt> = {
     id: "c",
@@ -36,8 +36,9 @@ const cLanguage: Language<CAttempt> = {
                 args: [
                     "sh",
                     "-c",
-                    `gcc ${C_FLAGS} -c /opt/code-execution/src/solution.c -o /dev/null`,
+                    `gcc ${C_FLAGS} -c /opt/code-execution/src/solution.c -o /opt/code-execution/out/solution.o`,
                 ],
+                phase: Phase.Compile,
             },
         };
     },
@@ -56,7 +57,7 @@ const cLanguage: Language<CAttempt> = {
                     args: [
                         "sh",
                         "-c",
-                        `gcc ${C_FLAGS} /opt/code-execution/src/solution.c /opt/code-execution/tests/${fileNameWithTestPrefix} -o ${executable}`,
+                        `gcc ${C_FLAGS} /opt/code-execution/tests/${fileNameWithTestPrefix} /opt/code-execution/out/solution.o -o ${executable}`,
                     ],
                     phase: Phase.Compile,
                 },
