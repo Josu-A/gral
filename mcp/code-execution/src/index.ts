@@ -49,7 +49,7 @@ async function main() {
     await buildImages();
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.log("Code execution MCP zerbitzaria abiarazi da.");
+    logger.info("Code execution MCP zerbitzaria abiarazi da.");
 }
 
 async function runCodeExecutionTool<TAttempt>(
