@@ -9,11 +9,15 @@ import type { TestCase } from "./languages/common/schemas.js";
 import { PreError, RunnerError } from "./common/errors.js";
 import {
     Language,
+    Phase,
     ProcessedAttempt,
     ProcessedTest,
+    StepPhase,
+    TestCommands,
 } from "./languages/common/types.js";
 
 interface ContainerMounts {
+    artifacts: string;
     src: string;
     tests: string;
 }
@@ -52,6 +56,15 @@ interface RunAttemptResult {
     testResults?: Array<TestResult>;
 }
 
+interface RunContainerOptions {
+    args: Array<string>;
+    image: string;
+    memoryLimit?: number;
+    mounts: ContainerMounts;
+    phase: StepPhase;
+    timeout: number;
+}
+
 type TestResult = Pick<TestCase, "name" | "order" | "weight"> & {
     duration: number;
     exitCode: null | number;
@@ -63,6 +76,7 @@ type TestResult = Pick<TestCase, "name" | "order" | "weight"> & {
 
 type TestStatus = "error" | "failed" | "passed" | "skipped" | "timed_out";
 
+const COMPILE_MEMORY_LIMIT_BYTES = 1 * 1_024 * 1_024 * 1_024;
 const BUFFER_TIMEOUT = 5 * 1_000;
 const MAX_TEST_TIMEOUT = 5 * 60 * 1_000;
 const MAX_ATTEMPT_PRE_TIMEOUT = 30 * 1_000;
@@ -166,11 +180,19 @@ async function runAttempt<TAttempt>(
         );
         const srcDir = join(rootDir, "src");
         const testsDir = join(rootDir, "tests");
+        const artifactsDir = join(rootDir, "artifacts");
 
         await Promise.all([
             mkdir(srcDir, { recursive: true }),
             mkdir(testsDir, { recursive: true }),
+            mkdir(artifactsDir, { mode: 0o777, recursive: true }),
         ]);
+
+        const mounts: ContainerMounts = {
+            artifacts: artifactsDir,
+            src: srcDir,
+            tests: testsDir,
+        };
 
         await Promise.all([
             ...processedAttempt.files.map((files) =>
@@ -191,12 +213,9 @@ async function runAttempt<TAttempt>(
                     maxTimeout: totalTimeout,
                 },
                 {
-                    args: processedAttempt.pre.args,
                     image: language.image,
-                    mounts: {
-                        src: srcDir,
-                        tests: testsDir,
-                    },
+                    mounts,
+                    preCommands: processedAttempt.pre,
                 },
             );
         }
@@ -208,10 +227,7 @@ async function runAttempt<TAttempt>(
             },
             {
                 image: language.image,
-                mounts: {
-                    src: srcDir,
-                    tests: testsDir,
-                },
+                mounts,
                 tests: processedTests,
             },
         );
@@ -252,9 +268,9 @@ async function runAttempt<TAttempt>(
 async function runAttemptPreCommands(
     time: { initialTime: number; maxTimeout: number },
     dockerOptions: {
-        args: Array<string>;
         image: string;
         mounts: ContainerMounts;
+        preCommands: TestCommands;
     },
 ): Promise<RunAttemptPreResult> {
     const remainingTime = processRemainingTime(
@@ -269,12 +285,14 @@ async function runAttemptPreCommands(
     }
 
     const preStartTime = Date.now();
-    const result = await runInsideContainer(
-        dockerOptions.image,
-        dockerOptions.mounts,
-        dockerOptions.args,
-        timeout,
-    );
+    const result = await runInsideContainer({
+        args: dockerOptions.preCommands.args,
+        image: dockerOptions.image,
+        memoryLimit: COMPILE_MEMORY_LIMIT_BYTES,
+        mounts: dockerOptions.mounts,
+        phase: dockerOptions.preCommands.phase,
+        timeout: timeout,
+    });
 
     const preRun: RunAttemptPreResult = {
         duration: Date.now() - preStartTime,
@@ -292,11 +310,13 @@ async function runAttemptPreCommands(
 }
 
 async function runInsideContainer(
-    image: string,
-    mounts: ContainerMounts,
-    args: Array<string>,
-    timeout: number,
+    options: RunContainerOptions,
 ): Promise<ContainerRunResult> {
+    const { args, image, memoryLimit, mounts, phase, timeout } = options;
+
+    const artifactsMode = phase === Phase.Compile ? "rw" : "ro";
+    const memory = memoryLimit ?? MEMORY_LIMIT_BYTES;
+
     const container = await docker.createContainer({
         AttachStderr: true,
         AttachStdout: true,
@@ -306,16 +326,16 @@ async function runInsideContainer(
             Binds: [
                 `${mounts.src}:/opt/code-execution/src:ro`,
                 `${mounts.tests}:/opt/code-execution/tests:ro`,
+                `${mounts.artifacts}:/opt/code-execution/out:${artifactsMode}`,
             ],
             CapDrop: ["ALL"],
-            Memory: MEMORY_LIMIT_BYTES,
-            MemorySwap: MEMORY_LIMIT_BYTES,
+            Memory: memory,
+            MemorySwap: memory,
             NanoCpus: CPU_LIMIT_NANOSECONDS,
             PidsLimit: PIDS_LIMIT,
             ReadonlyRootfs: true,
             SecurityOpt: ["no-new-privileges"],
             Tmpfs: {
-                "/opt/code-execution/out": `rw,size=${TMPFS_SIZE},mode=0777,nodev,nosuid`,
                 "/tmp": `rw,size=${TMPFS_SIZE},mode=1777,nodev,nosuid`,
             },
         },
@@ -501,12 +521,13 @@ async function runTest(
                 weight: test.weight,
             };
         }
-        const result = await runInsideContainer(
-            dockerOptions.image,
-            dockerOptions.mounts,
-            step.args,
-            testRemainingTime,
-        );
+        const result = await runInsideContainer({
+            args: step.args,
+            image: dockerOptions.image,
+            mounts: dockerOptions.mounts,
+            phase: step.phase,
+            timeout: testRemainingTime,
+        });
 
         stdoutFull = appendOutput(stdoutFull, result.stdout, step.phase);
         stderrFull = appendOutput(stderrFull, result.stderr, step.phase);

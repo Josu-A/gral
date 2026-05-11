@@ -3,10 +3,6 @@ const Phase = {
     Run: "run",
 } as const;
 
-interface Commands {
-    args: Array<string>;
-}
-
 interface Language<TAttempt> {
     id: string;
     image: string;
@@ -17,7 +13,7 @@ interface Language<TAttempt> {
 
 interface ProcessedAttempt {
     files: Array<SourceFile>;
-    pre?: Commands;
+    pre?: TestCommands;
 }
 
 interface ProcessedTest {
@@ -32,10 +28,17 @@ interface SourceFile {
 
 type StepPhase = (typeof Phase)[keyof typeof Phase];
 
-interface TestCommands extends Commands {
+interface TestCommands {
+    args: Array<string>;
     phase: StepPhase;
 }
 
 export { Phase };
 
-export type { Language, ProcessedAttempt, ProcessedTest };
+export type {
+    Language,
+    ProcessedAttempt,
+    ProcessedTest,
+    StepPhase,
+    TestCommands,
+};
