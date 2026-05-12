@@ -209,7 +209,9 @@ function Exercises(): JSX.Element {
                 toast.error(handleApiError(err, ERROR_GENERIC_FETCH).general);
                 setExercises([]);
             } finally {
-                setIsLoadingExercises(false);
+                if (!controller.signal.aborted) {
+                    setIsLoadingExercises(false);
+                }
             }
         };
 
