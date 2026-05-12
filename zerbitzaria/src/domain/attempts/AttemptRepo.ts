@@ -1,14 +1,60 @@
 import type {
+    AttemptId,
     GetAttemptResponse,
     GetAttemptsResponse,
+    IAddAttempt,
     IGetAttemptFlat,
     IListAttemptsFlat,
     ISolutionSave,
+    RunAttemptTestResult,
+    SolutionId,
     SubmissionContext,
 } from "@domain/attempts/local/types/schemas";
+import type { Prisma, PrismaClient } from "@infra/prisma/generated/client";
 
 import db from "@infra/db";
 import { Egoera } from "@infra/prisma/generated/enums";
+
+type DbClient = Prisma.TransactionClient | PrismaClient;
+
+async function addAttempt(
+    data: IAddAttempt,
+    databaseClient: DbClient = db,
+): Promise<AttemptId> {
+    const attempt = await databaseClient.saiakera.create({
+        data: {
+            ebazpena_id: data.ebazpena_id,
+            nota: data.nota,
+            saiakera_kodea: data.saiakera_kodea,
+        },
+        select: {
+            saiakera_id: true,
+        },
+    });
+    return attempt;
+}
+
+async function addExecutions(
+    saiakera_id: number,
+    testResults: Array<RunAttemptTestResult>,
+    databaseClient: DbClient = db,
+): Promise<void> {
+    await databaseClient.exekuzioa.createMany({
+        data: testResults.map((testResult) => ({
+            emaitza: JSON.stringify({
+                exitCode: testResult.exitCode,
+                phase: testResult.phase,
+                status: testResult.status,
+                stderr: testResult.stderr,
+                stdout: testResult.stdout,
+            }),
+            exekuzio_denbora: testResult.duration,
+            saiakera_id: saiakera_id,
+            testa_id: testResult.testId,
+            zuzena: testResult.status === "passed",
+        })),
+    });
+}
 
 async function getAttempt(
     erabiltzailea_id: number,
@@ -84,16 +130,34 @@ async function listAttempts(
     return attempts;
 }
 
+async function markSolutionAsCompleted(
+    ebazpena_id: number,
+    databaseClient: DbClient = db,
+): Promise<void> {
+    await databaseClient.ebazpena.update({
+        data: {
+            egoera: Egoera.Gaindituta,
+        },
+        where: {
+            ebazpena_id,
+        },
+    });
+}
+
 async function saveSolution(
     erabiltzailea_id: number,
     data: ISolutionSave,
-): Promise<boolean> {
-    const result = await db.ebazpena.upsert({
+    databaseClient: DbClient = db,
+): Promise<SolutionId> {
+    const result = await databaseClient.ebazpena.upsert({
         create: {
             ariketa_zehatza_id: data.ariketa_zehatza_id,
             egoera: Egoera.Hasita,
             erabiltzailea_id,
             kodea: data.kodea,
+        },
+        select: {
+            ebazpena_id: true,
         },
         update: {
             egoera: Egoera.Hasita,
@@ -106,12 +170,15 @@ async function saveSolution(
             },
         },
     });
-    return !!result;
+    return result;
 }
 
 export default {
+    addAttempt,
+    addExecutions,
     getAttempt,
     getSubmissionContext,
     listAttempts,
+    markSolutionAsCompleted,
     saveSolution,
 } as const;

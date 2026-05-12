@@ -12,6 +12,7 @@ import HttpStatusCode from "@common/constants/HttpStatusCodes";
 import logger from "@common/constants/logger";
 import { RequestError } from "@common/utils/errors";
 import AttemptRepo from "@domain/attempts/AttemptRepo";
+import db from "@infra/db";
 import mcp from "@infra/mcp";
 
 async function getAttempt(
@@ -49,8 +50,8 @@ async function saveSolution(
     erabiltzailea_id: number,
     data: ISolutionSave,
 ): Promise<void> {
-    const isSaved = await AttemptRepo.saveSolution(erabiltzailea_id, data);
-    if (!isSaved) {
+    const solution = await AttemptRepo.saveSolution(erabiltzailea_id, data);
+    if (!solution) {
         throw new RequestError(
             HttpStatusCode.INTERNAL_SERVER_ERROR,
             "Errorea ebazpena gordetzean",
@@ -85,6 +86,40 @@ async function submitAttempt(
             source: data.kodea,
         },
         tests: context.testak,
+    });
+
+    const testResults = result.output?.testResults ?? [];
+    const totalWeight = testResults.reduce((sum, test) => sum + test.weight, 0);
+    const passedWeight = testResults.reduce(
+        (sum, test) => sum + (test.status === "passed" ? test.weight : 0),
+        0,
+    );
+    const score = totalWeight > 0 ? (passedWeight / totalWeight) * 10 : 0;
+
+    await db.$transaction(async (tx) => {
+        const solution = await AttemptRepo.saveSolution(
+            erabiltzailea_id,
+            data,
+            tx,
+        );
+        const attempt = await AttemptRepo.addAttempt(
+            {
+                ebazpena_id: solution.ebazpena_id,
+                nota: score,
+                saiakera_kodea: data.kodea,
+            },
+            tx,
+        );
+        if (testResults.length > 0) {
+            await AttemptRepo.addExecutions(
+                attempt.saiakera_id,
+                testResults,
+                tx,
+            );
+        }
+        if (score >= 5) {
+            await AttemptRepo.markSolutionAsCompleted(solution.ebazpena_id, tx);
+        }
     });
 
     logger.info("Ebazpena bidali da MCP code execution zerbitzarira", {

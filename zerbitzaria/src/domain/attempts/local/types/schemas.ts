@@ -20,8 +20,18 @@ const GetAttemptSchema = z.object({
     }),
 });
 
+interface AttemptId {
+    saiakera_id: number;
+}
+
 interface GetAttemptResponse {
     saiakera_kodea: null | string;
+}
+
+interface IAddAttempt {
+    ebazpena_id: number;
+    nota: number;
+    saiakera_kodea: string;
 }
 
 type IGetAttempt = z.infer<typeof GetAttemptSchema>;
@@ -29,6 +39,10 @@ type IGetAttempt = z.infer<typeof GetAttemptSchema>;
 type IGetAttemptFlat = {
     saiakera_id: IGetAttempt["params"]["saiakera_id"];
 };
+
+interface SolutionId {
+    ebazpena_id: number;
+}
 
 const ListAttemptsSchema = z.object({
     query: z.object({
@@ -58,18 +72,20 @@ interface RunAttemptResult {
         stdout: string;
         success: boolean;
     };
-    testResults?: {
-        duration: number;
-        exitCode: null | number;
-        name: string;
-        order: number;
-        phase: null | string;
-        status: string;
-        stderr: string;
-        stdout: string;
-        testId: number;
-        weight: number;
-    }[];
+    testResults?: Array<RunAttemptTestResult>;
+}
+
+interface RunAttemptTestResult {
+    duration: number;
+    exitCode: null | number;
+    name: string;
+    order: number;
+    phase: null | string;
+    status: string;
+    stderr: string;
+    stdout: string;
+    testId: number;
+    weight: number;
 }
 
 interface SubmissionContext {
@@ -103,14 +119,18 @@ export {
 };
 
 export type {
+    AttemptId,
     GetAttemptResponse,
     GetAttemptsResponse,
+    IAddAttempt,
     IAttemptSubmit,
     IGetAttempt,
     IGetAttemptFlat,
     IListAttemptsFlat,
     ISolutionSave,
     RunAttemptResult,
+    RunAttemptTestResult,
+    SolutionId,
     SubmissionContext,
     SubmissionContextTest,
     SubmitAttemptResponse,
