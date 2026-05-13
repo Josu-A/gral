@@ -20,10 +20,6 @@ const GetAttemptSchema = z.object({
     }),
 });
 
-interface AttemptId {
-    saiakera_id: number;
-}
-
 interface GetAttemptResponse {
     saiakera_kodea: null | string;
 }
@@ -32,6 +28,12 @@ interface IAddAttempt {
     ebazpena_id: number;
     nota: number;
     saiakera_kodea: string;
+}
+
+interface IAddAttemptResponse {
+    denbora_zigilua: Date;
+    nota: number;
+    saiakera_id: number;
 }
 
 type IGetAttempt = z.infer<typeof GetAttemptSchema>;
@@ -107,6 +109,7 @@ interface SubmissionContextTest {
 }
 
 interface SubmitAttemptResponse {
+    attempt: IAddAttemptResponse | null;
     isError: boolean;
     output: null | RunAttemptResult;
 }
@@ -119,10 +122,10 @@ export {
 };
 
 export type {
-    AttemptId,
     GetAttemptResponse,
     GetAttemptsResponse,
     IAddAttempt,
+    IAddAttemptResponse,
     IAttemptSubmit,
     IGetAttempt,
     IGetAttemptFlat,

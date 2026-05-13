@@ -1,8 +1,8 @@
 import type {
-    AttemptId,
     GetAttemptResponse,
     GetAttemptsResponse,
     IAddAttempt,
+    IAddAttemptResponse,
     IGetAttemptFlat,
     IListAttemptsFlat,
     ISolutionSave,
@@ -20,7 +20,7 @@ type DbClient = Prisma.TransactionClient | PrismaClient;
 async function addAttempt(
     data: IAddAttempt,
     databaseClient: DbClient = db,
-): Promise<AttemptId> {
+): Promise<IAddAttemptResponse> {
     const attempt = await databaseClient.saiakera.create({
         data: {
             ebazpena_id: data.ebazpena_id,
@@ -28,6 +28,8 @@ async function addAttempt(
             saiakera_kodea: data.saiakera_kodea,
         },
         select: {
+            denbora_zigilua: true,
+            nota: true,
             saiakera_id: true,
         },
     });

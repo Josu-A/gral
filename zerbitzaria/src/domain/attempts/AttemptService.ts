@@ -1,6 +1,7 @@
 import type {
     GetAttemptResponse,
     GetAttemptsResponse,
+    IAddAttemptResponse,
     IAttemptSubmit,
     IGetAttemptFlat,
     IListAttemptsFlat,
@@ -96,13 +97,14 @@ async function submitAttempt(
     );
     const score = totalWeight > 0 ? (passedWeight / totalWeight) * 10 : 0;
 
+    let attempt: IAddAttemptResponse | null = null;
     await db.$transaction(async (tx) => {
         const solution = await AttemptRepo.saveSolution(
             erabiltzailea_id,
             data,
             tx,
         );
-        const attempt = await AttemptRepo.addAttempt(
+        attempt = await AttemptRepo.addAttempt(
             {
                 ebazpena_id: solution.ebazpena_id,
                 nota: score,
@@ -129,6 +131,7 @@ async function submitAttempt(
     });
 
     return {
+        attempt,
         isError: result.isError,
         output: result.output,
     };

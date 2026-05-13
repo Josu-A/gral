@@ -14,8 +14,6 @@ import GralMonacoEditor from "@/components/ui/MonacoEditor";
 import { Select } from "@/components/ui/Select";
 import { useDebounce } from "@/hooks/useDebounce";
 
-type Attempt = NonNullable<GetAttemptsResponse["data"]>[number];
-
 interface ExerciseDetails {
     ariketa_zehatza?: {
         ariketa_id: number;
@@ -81,11 +79,7 @@ interface GetAttemptResponse {
 }
 
 interface GetAttemptsResponse {
-    data?: {
-        denbora_zigilua: string;
-        nota: number;
-        saiakera_id: number;
-    }[];
+    data?: Array<IAttempt>;
     error?: string;
     success: boolean;
 }
@@ -162,10 +156,17 @@ interface GetExerciseResponse {
     success: boolean;
 }
 
+interface IAttempt {
+    denbora_zigilua: string;
+    nota: number;
+    saiakera_id: number;
+}
+
 type StatementTab = "attempts" | "statement" | "testresults";
 
 interface SubmitAttemptResponse {
     data?: {
+        attempt: IAttempt | null;
         isError: boolean;
         output: null | SubmittedTestResults;
     };
@@ -233,7 +234,7 @@ function Workspace(): JSX.Element {
     const debouncedCode = useDebounce(editingCode, 500);
     const hasUnsavedChanges = useRef<boolean>(false);
     const [activeTab, setActiveTab] = useState<StatementTab>("statement");
-    const [attempts, setAttempts] = useState<Attempt[]>([]);
+    const [attempts, setAttempts] = useState<IAttempt[]>([]);
     const [isAttemptsLoading, setIsAttemptsLoading] = useState<boolean>(false);
     const [attemptsError, setAttemptsError] = useState<null | string>(null);
     const isViewingPreviousAttemptRef = useRef<boolean>(false);
@@ -567,7 +568,7 @@ function Workspace(): JSX.Element {
                 return;
             }
 
-            const { isError, output } = res.data.data;
+            const { attempt, isError, output } = res.data.data;
 
             if (isError) {
                 toast.error("Saiakera bidaltzean errore bat gertatu da!");
@@ -575,6 +576,9 @@ function Workspace(): JSX.Element {
 
             setAttemptTestResults(output);
             setActiveTab("testresults");
+            if (attempts.length > 0 && attempt) {
+                setAttempts((prev) => [attempt, ...prev]);
+            }
         } catch (err: unknown) {
             if (
                 err instanceof Error &&
