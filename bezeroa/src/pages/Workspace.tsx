@@ -612,7 +612,7 @@ function Workspace(): JSX.Element {
     return (
         <div className="flex flex-col gap-4 px-6 py-8 sm:h-full sm:min-h-0 sm:flex-row">
             <section className="w-full sm:flex sm:min-h-0 sm:w-1/2 sm:flex-col">
-                <div className="flex w-full gap-2 [&_button]:flex-1">
+                <div className="flex w-full gap-2 overflow-x-auto [&_button]:flex-1">
                     {(
                         [
                             { id: "statement", label: "Enuntziatua" },
@@ -639,7 +639,7 @@ function Workspace(): JSX.Element {
                             <h1 className="mb-3 border-b border-slate-400 pb-1 text-2xl font-bold tracking-tight">
                                 {exerciseDetails.izenburua}
                             </h1>
-                            <div className="mb-4 max-w-none sm:min-h-0 sm:flex-1 sm:overflow-y-auto">
+                            <div className="[&_pre]:tab-4 mb-4 max-w-none sm:min-h-0 sm:flex-1 sm:overflow-y-auto [&_pre]:overflow-x-auto">
                                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                                     {exerciseDetails.enuntziatua}
                                 </ReactMarkdown>
