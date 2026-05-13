@@ -318,7 +318,9 @@ function Workspace(): JSX.Element {
                 }
                 setError(handleApiError(err, ERROR_GENERIC_FETCH).general);
             } finally {
-                setIsLoading(false);
+                if (!controller.signal.aborted) {
+                    setIsLoading(false);
+                }
             }
         };
 
