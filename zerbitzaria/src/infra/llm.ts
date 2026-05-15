@@ -74,13 +74,16 @@ function renderTemplate(
     template: string,
     variables: Record<string, string>,
 ): string {
-    const pattern = /\\\{\{|\{\{(\w+)\}\}/g;
-    return template.replace(pattern, (match, key: string | undefined) => {
-        if (match === "\\{{") {
-            return "{{";
-        }
-        return variables[key ?? ""] ?? "";
-    });
+    const pattern = /\\(.)|\{\{(\w+)\}\}/g;
+    return template.replace(
+        pattern,
+        (_match, escapedChar: string | undefined, key: string | undefined) => {
+            if (escapedChar !== undefined) {
+                return escapedChar;
+            }
+            return variables[key ?? ""] ?? "";
+        },
+    );
 }
 
 async function sendMessage(
