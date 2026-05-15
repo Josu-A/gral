@@ -1,53 +1,71 @@
-import type { FullContextEbazpena, ISendMessageAnyone } from '@domain/chats/local/types/schemas';
-import type { Mezua } from '@infra/prisma/generated/client';
+import type {
+    FullContextEbazpena,
+    ISendMessageAnyone,
+} from "@domain/chats/local/types/schemas";
+import type {
+    Mezua,
+    Prisma,
+    PrismaClient,
+} from "@infra/prisma/generated/client";
 
-import db from '@infra/db';
+import db from "@infra/db";
 
-async function createMessage(data: ISendMessageAnyone): Promise<Mezua> {
-    const message = await db.mezua.create({
+type DbClient = Prisma.TransactionClient | PrismaClient;
+
+async function createMessage(
+    data: ISendMessageAnyone,
+    databaseClient: DbClient = db,
+): Promise<Mezua> {
+    const message = await databaseClient.mezua.create({
         data: {
             ebazpena_id: data.ebazpena_id,
             edukia: data.content,
             jabea: data.jabea,
-        }
+        },
     });
     return message;
 }
 
-async function getFullContextEbazpena(ebazpena_id: number, erabiltzailea_id: number): Promise<FullContextEbazpena | null> {
+async function getFullContextEbazpena(
+    ebazpena_id: number,
+    erabiltzailea_id: number,
+): Promise<FullContextEbazpena | null> {
     const ebazpena = await db.ebazpena.findFirst({
         include: {
             ariketa_zehatza: {
                 include: {
                     ariketa: true,
                     programazio_lengoaia: true,
-                    testak: true
-                }
+                    testak: true,
+                },
             },
             ikaslea: true,
             mezuak: {
                 orderBy: {
-                    denbora_zigilua: 'asc'
-                }
-            }
+                    denbora_zigilua: "asc",
+                },
+            },
         },
         where: {
             ebazpena_id,
-            erabiltzailea_id
-        }
+            erabiltzailea_id,
+        },
     });
     return ebazpena;
 }
 
-async function getMessages(ebazpena_id: number, erabiltzailea_id: number): Promise<Mezua[]> {
+async function getMessages(
+    ebazpena_id: number,
+    erabiltzailea_id: number,
+): Promise<Mezua[]> {
     const messages = await db.mezua.findMany({
-        orderBy: { denbora_zigilua: 'asc' },
+        orderBy: { denbora_zigilua: "asc" },
         where: {
             ebazpena: {
-                erabiltzailea_id
+                erabiltzailea_id,
             },
-            ebazpena_id
-        }
+            ebazpena_id,
+        },
     });
     return messages;
 }
@@ -55,5 +73,5 @@ async function getMessages(ebazpena_id: number, erabiltzailea_id: number): Promi
 export default {
     createMessage,
     getFullContextEbazpena,
-    getMessages
+    getMessages,
 } as const;

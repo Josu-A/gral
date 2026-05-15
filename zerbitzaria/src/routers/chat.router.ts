@@ -7,7 +7,7 @@ const chatRouter = Router();
 
 chatRouter.use(authenticate);
 
-chatRouter.get(Paths.Chat.Message, ChatController.getMessages);
-chatRouter.post(Paths.Chat.Message, ChatController.sendMessage);
+chatRouter.get(Paths.Chat.Messages, ChatController.getMessages);
+chatRouter.post(Paths.Chat.Send, ChatController.sendMessage);
 
 export default chatRouter;

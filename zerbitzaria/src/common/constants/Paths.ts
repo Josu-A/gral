@@ -21,7 +21,8 @@ const Paths = {
     Base: environment.VITE_BASE_API_PATH,
     Chat: {
         Base: "/chat",
-        Message: "/:specificExerciseId",
+        Messages: "/",
+        Send: "/send",
     },
     Dashboard: {
         Base: "/dashboard",
