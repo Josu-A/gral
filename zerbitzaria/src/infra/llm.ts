@@ -48,10 +48,11 @@ function filterMessageChain(
         return messages;
     }
 
-    const systemMessages = messages.filter((m) => m.role === LlmRole.System);
-    const conversationMessages = messages.filter(
-        (m) => m.role !== LlmRole.System,
-    );
+    const isFirstMessageSystem = messages[0].role === LlmRole.System;
+    const systemMessage = isFirstMessageSystem ? [messages[0]] : [];
+    const conversationMessages = isFirstMessageSystem
+        ? messages.slice(1)
+        : messages;
 
     if (conversationMessages.length <= lastMessagesToKeep) {
         return messages;
@@ -67,7 +68,7 @@ function filterMessageChain(
         recentConversationMessages.shift();
     }
 
-    return [...systemMessages, ...recentConversationMessages];
+    return [...systemMessage, ...recentConversationMessages];
 }
 
 function renderTemplate(
