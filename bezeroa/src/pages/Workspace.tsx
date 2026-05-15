@@ -12,6 +12,7 @@ import { handleApiError } from "@/common/errorHelper";
 import { Button } from "@/components/ui/Button";
 import GralMonacoEditor from "@/components/ui/MonacoEditor";
 import { Select } from "@/components/ui/Select";
+import { Chat } from "@/components/workspace/Chat";
 import { useDebounce } from "@/hooks/useDebounce";
 
 interface ExerciseDetails {
@@ -252,6 +253,9 @@ function Workspace(): JSX.Element {
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const [attemptTestResults, setAttemptTestResults] =
         useState<null | SubmittedTestResults>(null);
+    const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
+    const ebazpenaId =
+        exerciseDetails?.ariketa_zehatza?.ebazpenak[0]?.ebazpena_id;
 
     useEffect(() => {
         const controller = new AbortController();
@@ -611,7 +615,12 @@ function Workspace(): JSX.Element {
 
     return (
         <div className="flex flex-col gap-4 px-6 py-8 sm:h-full sm:min-h-0 sm:flex-row">
-            <section className="w-full sm:flex sm:min-h-0 sm:w-1/2 sm:flex-col">
+            <section
+                className={clsx(
+                    "w-full sm:flex sm:min-h-0 sm:min-w-0 sm:flex-col",
+                    isChatOpen ? "sm:w-1/3" : "sm:w-1/2",
+                )}
+            >
                 <div className="flex w-full gap-2 overflow-x-auto [&_button]:flex-1">
                     {(
                         [
@@ -883,7 +892,12 @@ function Workspace(): JSX.Element {
                     )}
                 </div>
             </section>
-            <div className="w-full sm:flex sm:min-h-0 sm:w-1/2 sm:flex-col">
+            <section
+                className={clsx(
+                    "w-full sm:flex sm:min-h-0 sm:min-w-0 sm:flex-col",
+                    isChatOpen ? "sm:w-1/3" : "sm:w-1/2",
+                )}
+            >
                 {isViewingPreviousAttempt && (
                     <div className="mb-2 flex items-center justify-center gap-4 rounded-md border border-amber-300 bg-amber-200 px-2 py-1">
                         <span className="text-sm text-gray-700">
@@ -917,6 +931,16 @@ function Workspace(): JSX.Element {
                             )}
                             value={selectedLanguageId}
                         />
+                        {!isChatOpen && (
+                            <Button
+                                disabled={!ebazpenaId}
+                                isLoading={false}
+                                onClick={() => setIsChatOpen((prev) => !prev)}
+                                variant="secondary"
+                            >
+                                Ireki AA
+                            </Button>
+                        )}
                         <Button
                             disabled={
                                 isLoading ||
@@ -959,7 +983,21 @@ function Workspace(): JSX.Element {
                     }}
                     value={code}
                 />
-            </div>
+            </section>
+            {isChatOpen && ebazpenaId !== undefined && (
+                <section className="fixed inset-x-8 top-12 bottom-8 z-5 sm:static sm:inset-auto sm:flex sm:min-h-0 sm:w-1/3 sm:min-w-0 sm:flex-col">
+                    <div
+                        className="fixed inset-0 z-4 bg-black/60 sm:hidden"
+                        onClick={() => setIsChatOpen(false)}
+                    />
+                    <div className="relative z-5 h-full shadow-lg shadow-slate-800/70 sm:shadow-none">
+                        <Chat
+                            ebazpenaId={ebazpenaId}
+                            onChatClose={() => setIsChatOpen(false)}
+                        />
+                    </div>
+                </section>
+            )}
         </div>
     );
 }
