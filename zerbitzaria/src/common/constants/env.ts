@@ -20,6 +20,13 @@ const JwtDurationSchema = z
     .transform((val) => val as StringValue);
 
 const EnvironmentSchema = z.object({
+    API_KEY_LATXA: z.string().min(1, {
+        error: "Latxa API gakoa beharrezkoa da",
+    }),
+    API_MODEL_LATXA: z.string().min(1, {
+        error: "Latxa API modeloa beharrezkoa da",
+    }),
+    API_URL_LATXA: z.url(),
     CLIENT_PORT: z.coerce.number<number>().default(5173),
     CLIENT_URL: z
         .union([z.httpUrl(), z.url({ hostname: /^localhost$/ })])
