@@ -28,7 +28,7 @@
     cp .env.example .env.development
     ```
 
-    Fitxategi berrian, aldatu `JWT_ACCESS_SECRET` eta `JWT_REFRESH_SECRET` balioak (luzeera handikoak izan behar dira) eta datu-basearekin konektatzeko `DB_URL` balioa eguneratu.
+    Fitxategi berrian, aldatu `JWT_ACCESS_SECRET` eta `JWT_REFRESH_SECRET` balioak (luzeera handikoak izan behar dira), Latxa LLMarekin konektatzeko `API_KEY_LATXA`, `API_URL_LATXA` eta `API_MODEL_LATXA` balioak zehaztu, eta datu-basearekin konektatzeko `DB_URL` balioa eguneratu.
     - `USER`: datu-basea jabetzat duen erabiltzailearen izena.
     - `PASSWORD`: datu-basea jabetzat duen erabiltzailearen pasahitza.
     - `HOST`: datu-basearen host-a (adibidez, `localhost`).
