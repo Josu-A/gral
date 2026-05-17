@@ -1,32 +1,30 @@
-type Egoera = "Gaindituta" | "Hasita" | "Hutsik";
-type IkasketaMaila = "Aurreratua" | "Ertaina" | "Hasiberria";
-type Zailtasuna = "Erraza" | "Ertaina" | "Zaila";
+import { Egoera, IkasketaMaila, Zailtasuna } from "@gral/datu-basea";
 
 const MAILAK: {
     label: string;
     value: IkasketaMaila;
 }[] = [
-    { label: "Hasiberria", value: "Hasiberria" },
-    { label: "Ertaina", value: "Ertaina" },
-    { label: "Aurreratua", value: "Aurreratua" },
+    { label: "Hasiberria", value: IkasketaMaila.Hasiberria },
+    { label: "Ertaina", value: IkasketaMaila.Ertaina },
+    { label: "Aurreratua", value: IkasketaMaila.Aurreratua },
 ];
 
 const EGOERAK: {
     label: string;
     value: Egoera;
 }[] = [
-    { label: "Hutsik", value: "Hutsik" },
-    { label: "Hasita", value: "Hasita" },
-    { label: "Gaindituta", value: "Gaindituta" },
+    { label: "Hutsik", value: Egoera.Hutsik },
+    { label: "Hasita", value: Egoera.Hasita },
+    { label: "Gaindituta", value: Egoera.Gaindituta },
 ];
 
 const ZAILTASUNAK: {
     label: string;
     value: Zailtasuna;
 }[] = [
-    { label: "Erraza", value: "Erraza" },
-    { label: "Ertaina", value: "Ertaina" },
-    { label: "Zaila", value: "Zaila" },
+    { label: "Erraza", value: Zailtasuna.Erraza },
+    { label: "Ertaina", value: Zailtasuna.Ertaina },
+    { label: "Zaila", value: Zailtasuna.Zaila },
 ];
 
 export type { Egoera, IkasketaMaila, Zailtasuna };

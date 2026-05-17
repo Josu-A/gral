@@ -1,3 +1,4 @@
+import { Jabea } from "@gral/datu-basea";
 import clsx from "clsx";
 import { type JSX, useEffect, useLayoutEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -7,11 +8,6 @@ import { toast } from "sonner";
 import apiClient from "@/common/apiClient";
 import { handleApiError } from "@/common/errorHelper";
 import { Button } from "@/components/ui/Button";
-
-const Jabea = {
-    AA: "AA",
-    Erabiltzailea: "Erabiltzailea",
-} as const;
 
 interface ChatMessage {
     denbora_zigilua: string;
@@ -31,8 +27,6 @@ interface GetMessagesResponse {
     error?: string;
     success: boolean;
 }
-
-type Jabea = (typeof Jabea)[keyof typeof Jabea];
 
 interface SendMessageResponse {
     data?: {
