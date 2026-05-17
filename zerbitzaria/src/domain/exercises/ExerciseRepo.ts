@@ -29,36 +29,42 @@ async function getExercise(
     programazio_lengoaia_id: null | number,
 ): Promise<GetExerciseResponse | null> {
     const exercise = await db.ariketa.findUnique({
-        include: {
+        select: {
             ariketa_zehatzak: {
-                include: {
+                select: {
+                    ariketa_zehatza_id: true,
                     ebazpenak: {
                         select: {
                             ebazpena_id: true,
-                            egoera: true,
                             kodea: true,
                         },
                         where: {
                             erabiltzailea_id,
                         },
                     },
-                    programazio_lengoaia: true,
+                    hasierako_kodea: true,
+                    programazio_lengoaia: {
+                        select: {
+                            bertsioa: true,
+                            izena: true,
+                            programazio_lengoaia_id: true,
+                        },
+                    },
+                    programazio_lengoaia_id: true,
                 },
             },
+            enuntziatua: true,
             etiketak: {
-                include: {
+                select: {
                     etiketa: {
-                        include: {
-                            kategoria: {
-                                select: {
-                                    izena: true,
-                                    kategoria_id: true,
-                                },
-                            },
+                        select: {
+                            izena: true,
                         },
                     },
                 },
             },
+            izenburua: true,
+            zailtasun_maila: true,
         },
         where: { ariketa_id },
     });
@@ -82,9 +88,33 @@ async function getExercise(
 
     const ikasle_kodea = chosenSpecificExercise?.ebazpenak?.[0]?.kodea ?? null;
 
+    const processedSpecificExercises = exercise.ariketa_zehatzak.map(
+        (specific_exercise) => {
+            const { ebazpenak, ...rest } = specific_exercise;
+            return {
+                ...rest,
+                ebazpenak: ebazpenak.map(({ ebazpena_id }) => ({
+                    ebazpena_id,
+                })),
+            };
+        },
+    );
+
+    const processedChosenSpecificExercise = chosenSpecificExercise
+        ? {
+              ...chosenSpecificExercise,
+              ebazpenak: chosenSpecificExercise.ebazpenak.map(
+                  ({ ebazpena_id }) => ({ ebazpena_id }),
+              ),
+          }
+        : null;
+
     return {
-        ariketa: exercise,
-        ariketa_zehatza: chosenSpecificExercise,
+        ariketa: {
+            ...exercise,
+            ariketa_zehatzak: processedSpecificExercises,
+        },
+        ariketa_zehatza: processedChosenSpecificExercise,
         ikasle_kodea,
     };
 }

@@ -89,30 +89,38 @@ const ListExercisesSchema = z.object({
 });
 
 type ExerciseArgs = {
-    include: {
+    select: {
         ariketa_zehatzak: {
-            include: {
+            select: {
+                ariketa_zehatza_id: true;
                 ebazpenak: {
                     select: {
                         ebazpena_id: true;
-                        egoera: true;
-                        kodea: true;
                     };
                 };
-                programazio_lengoaia: true;
+                hasierako_kodea: true;
+                programazio_lengoaia: {
+                    select: {
+                        bertsioa: true;
+                        izena: true;
+                        programazio_lengoaia_id: true;
+                    };
+                };
+                programazio_lengoaia_id: true;
             };
         };
+        enuntziatua: true;
         etiketak: {
-            include: {
+            select: {
                 etiketa: {
-                    include: {
-                        kategoria: {
-                            select: { izena: true; kategoria_id: true };
-                        };
+                    select: {
+                        izena: true;
                     };
                 };
             };
         };
+        izenburua: true;
+        zailtasun_maila: true;
     };
 };
 

@@ -5,7 +5,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import remarkGfm from "remark-gfm";
 import { toast } from "sonner";
 
-import type { Egoera, Zailtasuna } from "@/common/types/entities";
+import type { Zailtasuna } from "@/common/types/entities";
 
 import apiClient from "@/common/apiClient";
 import { handleApiError } from "@/common/errorHelper";
@@ -16,50 +16,8 @@ import { Chat } from "@/components/workspace/Chat";
 import { useDebounce } from "@/hooks/useDebounce";
 
 interface ExerciseDetails {
-    ariketa_zehatza?: {
-        ariketa_id: number;
-        ariketa_zehatza_id: number;
-        buru_fitxategia: null | string;
-        ebazpenak: {
-            ariketa_zehatza_id: number;
-            ebazpena_id: number;
-            egoera: Egoera;
-            erabiltzailea_id: number;
-            kodea: null | string;
-        }[];
-        erreferentzia_emaitza: string;
-        funtzio_izena: string;
-        hasierako_kodea: string;
-        programazio_lengoaia: {
-            bertsioa: string;
-            izena: string;
-            programazio_lengoaia_id: number;
-        };
-        programazio_lengoaia_id: number;
-        saiakera_fitxategia: string;
-    };
-    ariketa_zehatzak: {
-        ariketa_id: number;
-        ariketa_zehatza_id: number;
-        buru_fitxategia: null | string;
-        ebazpenak: {
-            ariketa_zehatza_id: number;
-            ebazpena_id: number;
-            egoera: Egoera;
-            erabiltzailea_id: number;
-            kodea: null | string;
-        }[];
-        erreferentzia_emaitza: string;
-        funtzio_izena: string;
-        hasierako_kodea: string;
-        programazio_lengoaia: {
-            bertsioa: string;
-            izena: string;
-            programazio_lengoaia_id: number;
-        };
-        programazio_lengoaia_id: number;
-        saiakera_fitxategia: string;
-    }[];
+    ariketa_zehatza?: SpecificExercise;
+    ariketa_zehatzak: Array<SpecificExercise>;
     enuntziatua: string;
     etiketaIzenak: string[];
     izenburua: string;
@@ -88,69 +46,17 @@ interface GetAttemptsResponse {
 interface GetExerciseResponse {
     data?: {
         ariketa: {
-            ariketa_id: number;
-            ariketa_zehatzak: {
-                ariketa_id: number;
-                ariketa_zehatza_id: number;
-                buru_fitxategia: null | string;
-                ebazpenak: {
-                    ariketa_zehatza_id: number;
-                    ebazpena_id: number;
-                    egoera: Egoera;
-                    erabiltzailea_id: number;
-                    kodea: null | string;
-                }[];
-                erreferentzia_emaitza: string;
-                funtzio_izena: string;
-                hasierako_kodea: string;
-                programazio_lengoaia: {
-                    bertsioa: string;
-                    izena: string;
-                    programazio_lengoaia_id: number;
-                };
-                programazio_lengoaia_id: number;
-                saiakera_fitxategia: string;
-            }[];
+            ariketa_zehatzak: Array<SpecificExercise>;
             enuntziatua: string;
-            etiketak: {
-                ariketa_id: number;
+            etiketak: Array<{
                 etiketa: {
-                    deskribapena: string;
-                    etiketa_id: number;
                     izena: string;
-                    kategoria: {
-                        izena: string;
-                        kategoria_id: number;
-                    };
-                    kategoria_id: number;
                 };
-                etiketa_id: number;
-            }[];
+            }>;
             izenburua: string;
             zailtasun_maila: Zailtasuna;
         };
-        ariketa_zehatza: null | {
-            ariketa_id: number;
-            ariketa_zehatza_id: number;
-            buru_fitxategia: null | string;
-            ebazpenak: {
-                ariketa_zehatza_id: number;
-                ebazpena_id: number;
-                egoera: Egoera;
-                erabiltzailea_id: number;
-                kodea: null | string;
-            }[];
-            erreferentzia_emaitza: string;
-            funtzio_izena: string;
-            hasierako_kodea: string;
-            programazio_lengoaia: {
-                bertsioa: string;
-                izena: string;
-                programazio_lengoaia_id: number;
-            };
-            programazio_lengoaia_id: number;
-            saiakera_fitxategia: string;
-        };
+        ariketa_zehatza: null | SpecificExercise;
         ikasle_kodea: null | string;
     };
     error?: string;
@@ -161,6 +67,20 @@ interface IAttempt {
     denbora_zigilua: string;
     nota: number;
     saiakera_id: number;
+}
+
+interface SpecificExercise {
+    ariketa_zehatza_id: number;
+    ebazpenak: Array<{
+        ebazpena_id: number;
+    }>;
+    hasierako_kodea: string;
+    programazio_lengoaia: {
+        bertsioa: string;
+        izena: string;
+        programazio_lengoaia_id: number;
+    };
+    programazio_lengoaia_id: number;
 }
 
 type StatementTab = "attempts" | "statement" | "testresults";
