@@ -1,4 +1,4 @@
-import { Egoera, IkasketaMaila, Zailtasuna } from "@gral/datu-basea";
+import { Egoera, IkasketaMaila, Zailtasuna } from "@gral/datu-basea/browser";
 
 const MAILAK: {
     label: string;

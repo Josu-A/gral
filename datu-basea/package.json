@@ -14,6 +14,16 @@
         "types": "./dist/index.d.ts",
         "default": "./dist/index.js"
       }
+    },
+    "./browser": {
+      "dev": {
+        "types": "./src/browser.ts",
+        "default": "./src/browser.ts"
+      },
+      "default": {
+        "types": "./dist/browser.d.ts",
+        "default": "./dist/browser.js"
+      }
     }
   },
   "scripts": {

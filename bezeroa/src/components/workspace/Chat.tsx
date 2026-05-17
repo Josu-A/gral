@@ -1,4 +1,4 @@
-import { Jabea } from "@gral/datu-basea";
+import { Jabea } from "@gral/datu-basea/browser";
 import clsx from "clsx";
 import { type JSX, useEffect, useLayoutEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";

@@ -30,7 +30,6 @@
     "dev:zerbitzaria": "npm run dev -w zerbitzaria",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "start": "npm run start:zerbitzaria && npm run start:bezeroa",
     "start:bezeroa": "npm start -w bezeroa",
     "start:zerbitzaria": "npm start -w zerbitzaria",
     "type-check": "tsc --noEmit -p zerbitzaria/tsconfig.json",
