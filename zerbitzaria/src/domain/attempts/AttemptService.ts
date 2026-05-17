@@ -13,7 +13,7 @@ import HttpStatusCode from "@common/constants/HttpStatusCodes";
 import logger from "@common/constants/logger";
 import { RequestError } from "@common/utils/errors";
 import AttemptRepo from "@domain/attempts/AttemptRepo";
-import db from "@infra/db";
+import db from "@gral/datu-basea";
 import mcp from "@infra/mcp";
 
 async function getAttempt(

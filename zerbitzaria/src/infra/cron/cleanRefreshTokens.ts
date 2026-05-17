@@ -1,5 +1,5 @@
 import logger from "@common/constants/logger";
-import db from "@infra/db";
+import db from "@gral/datu-basea";
 import cron, { type ScheduledTask } from "node-cron";
 
 const EXPIRED_TOKEN_AGE = 7 * 24 * 60 * 60 * 1000;

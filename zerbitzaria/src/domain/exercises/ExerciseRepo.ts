@@ -7,10 +7,10 @@ import type {
     IListExercises,
     ListedAriketa,
 } from "@domain/exercises/local/types/schemas";
-import type { Prisma } from "@infra/prisma/generated/client";
+import type { Prisma } from "@gral/datu-basea";
 
-import db from "@infra/db";
-import { Egoera } from "@infra/prisma/generated/enums";
+import db from "@gral/datu-basea";
+import { Egoera } from "@gral/datu-basea";
 
 async function getCategories(): Promise<GetCategoryResponse[]> {
     return await db.etiketaKategoria.findMany({

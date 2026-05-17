@@ -1,0 +1,53 @@
+{
+  "name": "@gral/datu-basea",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "dev": {
+        "types": "./src/index.ts",
+        "default": "./src/index.ts"
+      },
+      "default": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "scripts": {
+    "build": "npm run db:generate && tsup",
+    "db:deploy": "prisma migrate deploy",
+    "db:deploy:seed": "npm run db:deploy && npm run db:seed",
+    "db:generate": "prisma generate",
+    "db:generate:dev": "cross-env NODE_ENV=development npm run db:generate",
+    "db:migrate": "cross-env NODE_ENV=development prisma migrate dev && cross-env NODE_ENV=development npm run db:generate",
+    "db:migrate:seed": "cross-env NODE_ENV=development npm run db:migrate && cross-env NODE_ENV=development npm run db:seed",
+    "db:reset": "cross-env NODE_ENV=development npm run db:reset:noseed && cross-env NODE_ENV=development npm run db:seed",
+    "db:reset:noseed": "cross-env NODE_ENV=development prisma migrate reset",
+    "db:seed": "prisma db seed",
+    "db:studio": "cross-env NODE_ENV=development prisma studio"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.7.0",
+    "@prisma/client": "^7.7.0",
+    "dotenv": "^17.4.2",
+    "pg": "^8.20.0",
+    "winston": "^3.19.0",
+    "winston-daily-rotate-file": "^5.0.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "@types/pg": "^8.20.0",
+    "cross-env": "^10.1.0",
+    "prisma": "^7.7.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  }
+}

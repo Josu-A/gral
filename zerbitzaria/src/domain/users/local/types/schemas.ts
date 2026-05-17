@@ -1,4 +1,4 @@
-import { IkasketaMaila } from "@infra/prisma/generated/enums";
+import { IkasketaMaila } from "@gral/datu-basea";
 import { z } from "zod";
 
 const UpdateEducationSchema = z.object({

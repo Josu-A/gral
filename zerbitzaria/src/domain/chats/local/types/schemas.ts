@@ -4,27 +4,31 @@ import type {
     Ikaslea,
     Mezua,
     ProgramazioLengoaia,
-    Testa
-} from '@infra/prisma/generated/client';
+    Testa,
+} from "@gral/datu-basea";
 
-import { Jabea } from '@infra/prisma/generated/client';
-import { z } from 'zod';
+import { Jabea } from "@gral/datu-basea";
+import { z } from "zod";
 
 const SendMessageSchema = z.object({
-    content: z.string().trim().min(1, 'Mezua ezin da hutsik egon').max(1000, 'Mezua luzeegia da'),
-    ebazpena_id: z.coerce.number<number>().int().positive()
+    content: z
+        .string()
+        .trim()
+        .min(1, "Mezua ezin da hutsik egon")
+        .max(1000, "Mezua luzeegia da"),
+    ebazpena_id: z.coerce.number<number>().int().positive(),
 });
 
 type ISendMessage = z.infer<typeof SendMessageSchema>;
 
 const SendMessageAnyoneSchema = SendMessageSchema.extend({
-    jabea: z.enum(Jabea)
+    jabea: z.enum(Jabea),
 });
 
 type ISendMessageAnyone = z.infer<typeof SendMessageAnyoneSchema>;
 
 const GetMessagesSchema = z.object({
-    ebazpena_id: z.coerce.number<number>().int().positive()
+    ebazpena_id: z.coerce.number<number>().int().positive(),
 });
 
 interface FullContextEbazpena {
@@ -36,7 +40,7 @@ interface FullContextEbazpena {
     ikaslea: Ikaslea;
     kodea: null | string;
     mezuak: Mezua[];
-};
+}
 
 type IGetMessages = z.infer<typeof GetMessagesSchema>;
 
@@ -45,7 +49,7 @@ interface LlmMessage {
     role: (typeof LlmRole)[keyof typeof LlmRole];
 }
 
-type MezuaWithoutIds = Omit<Mezua, 'ebazpena_id' | 'mezua_id'>;
+type MezuaWithoutIds = Omit<Mezua, "ebazpena_id" | "mezua_id">;
 
 interface SendMessageResponse {
     assistantMessage: MezuaWithoutIds;
@@ -53,9 +57,9 @@ interface SendMessageResponse {
 }
 
 const LlmRole = {
-    Assistant: 'assistant',
-    System: 'system',
-    User: 'user'
+    Assistant: "assistant",
+    System: "system",
+    User: "user",
 } as const;
 
 interface SystemPromptData {
@@ -70,7 +74,7 @@ export {
     GetMessagesSchema,
     LlmRole,
     SendMessageAnyoneSchema,
-    SendMessageSchema
+    SendMessageSchema,
 };
 
 export type {
@@ -80,5 +84,5 @@ export type {
     ISendMessageAnyone,
     LlmMessage,
     SendMessageResponse,
-    SystemPromptData
+    SystemPromptData,
 };

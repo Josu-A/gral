@@ -1,4 +1,4 @@
-import type { Mezua } from "@infra/prisma/generated/client";
+import type { Mezua } from "@gral/datu-basea";
 
 import HttpStatusCode from "@common/constants/HttpStatusCodes";
 import logger from "@common/constants/logger";
@@ -12,9 +12,9 @@ import {
     type SendMessageResponse,
     type SystemPromptData,
 } from "@domain/chats/local/types/schemas";
-import db from "@infra/db";
+import db from "@gral/datu-basea";
+import { Jabea } from "@gral/datu-basea";
 import llm from "@infra/llm";
-import { Jabea } from "@infra/prisma/generated/enums";
 
 async function getMessages(erabiltzailea_id: number, data: IGetMessages) {
     const messages = await ChatRepo.getMessages(

@@ -4,9 +4,9 @@ import type {
     IkasketaMaila,
     Prisma,
     PrismaClient,
-} from "@infra/prisma/generated/client";
+} from "@gral/datu-basea";
 
-import db from "@infra/db";
+import db from "@gral/datu-basea";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
 
 type DbClient = Prisma.TransactionClient | PrismaClient;

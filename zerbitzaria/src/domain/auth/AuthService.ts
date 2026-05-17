@@ -11,7 +11,7 @@ import HttpStatusCode from "@common/constants/HttpStatusCodes";
 import logger from "@common/constants/logger";
 import { RequestError } from "@common/utils/errors";
 import AuthRepo from "@domain/auth/AuthRepo";
-import db from "@infra/db";
+import db from "@gral/datu-basea";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import jwt, { type JwtPayload, type SignOptions } from "jsonwebtoken";

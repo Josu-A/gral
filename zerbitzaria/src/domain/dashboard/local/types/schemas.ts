@@ -1,4 +1,4 @@
-import { IkasketaMaila } from "@infra/prisma/generated/enums";
+import { IkasketaMaila } from "@gral/datu-basea";
 
 interface DashboardData {
     averageGrade: number;
@@ -18,8 +18,4 @@ type LastAttempts = Array<{
 
 type SolvedSolutions = Record<Lowercase<IkasketaMaila>, number>;
 
-export type {
-    DashboardData,
-    LastAttempts,
-    SolvedSolutions
-};
+export type { DashboardData, LastAttempts, SolvedSolutions };

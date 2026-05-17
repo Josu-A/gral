@@ -16,7 +16,8 @@ export default defineConfig(
     {
         name: 'global/ignores',
         ignores: [
-            '**/dist/**'
+            '**/dist/**',
+            'datu-basea/src/generated/**'
         ]
     },
     {
@@ -41,7 +42,7 @@ export default defineConfig(
     },
     {
         name: 'app/server',
-        files: ['{zerbitzaria,mcp}/**/*.ts'],
+        files: ['{zerbitzaria,mcp,datu-basea}/**/*.ts'],
         languageOptions: {
             globals: {
                 ...globals.node

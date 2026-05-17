@@ -4,8 +4,8 @@ import type {
     UserProfile,
 } from "@domain/users/local/types/schemas";
 
-import db from "@infra/db";
-import { IkasketaMaila } from "@infra/prisma/generated/enums";
+import db from "@gral/datu-basea";
+import { IkasketaMaila } from "@gral/datu-basea";
 
 async function deleteAccount(erabiltzailea_id: number): Promise<void> {
     await db.erabiltzailea.delete({

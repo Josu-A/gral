@@ -2,6 +2,7 @@
   "files": [],
   "references": [
     { "path": "./bezeroa" },
+    { "path": "./datu-basea" },
     { "path": "./zerbitzaria" }
   ]
 }

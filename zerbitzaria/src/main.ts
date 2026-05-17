@@ -2,8 +2,8 @@ import app from "@app";
 import { environment } from "@common/constants/env";
 import logger from "@common/constants/logger";
 import { isErrno } from "@common/utils/errors";
+import db, { checkDBConnection } from "@gral/datu-basea";
 import { startTokenCleanup } from "@infra/cron/cleanRefreshTokens";
-import db, { checkDBConnection } from "@infra/db";
 import mcpClient from "@infra/mcp";
 import {
     connections,

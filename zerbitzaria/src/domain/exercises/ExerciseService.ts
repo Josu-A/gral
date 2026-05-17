@@ -14,7 +14,7 @@ import logger from "@common/constants/logger";
 import { RequestError } from "@common/utils/errors";
 import ExerciseRepo from "@domain/exercises/ExerciseRepo";
 import UserRepo from "@domain/users/UserRepo";
-import { IkasketaMaila, Zailtasuna } from "@infra/prisma/generated/enums";
+import { IkasketaMaila, Zailtasuna } from "@gral/datu-basea";
 
 const IKASKETA_MAILA_TO_ZAILTASUNA: Record<IkasketaMaila, Zailtasuna> = {
     [IkasketaMaila.Aurreratua]: Zailtasuna.Zaila,

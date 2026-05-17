@@ -1,5 +1,5 @@
-import { Prisma } from "@infra/prisma/generated/client";
-import { Egoera, Zailtasuna } from "@infra/prisma/generated/enums";
+import { Prisma } from "@gral/datu-basea";
+import { Egoera, Zailtasuna } from "@gral/datu-basea";
 import { z } from "zod";
 
 const GetExerciseSchema = z.object({

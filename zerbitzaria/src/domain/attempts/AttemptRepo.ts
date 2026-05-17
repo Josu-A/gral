@@ -10,10 +10,10 @@ import type {
     SolutionId,
     SubmissionContext,
 } from "@domain/attempts/local/types/schemas";
-import type { Prisma, PrismaClient } from "@infra/prisma/generated/client";
+import type { Prisma, PrismaClient } from "@gral/datu-basea";
 
-import db from "@infra/db";
-import { Egoera } from "@infra/prisma/generated/enums";
+import db from "@gral/datu-basea";
+import { Egoera } from "@gral/datu-basea";
 
 type DbClient = Prisma.TransactionClient | PrismaClient;
 
