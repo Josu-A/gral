@@ -912,7 +912,12 @@ function Workspace(): JSX.Element {
                         />
                         {!isChatOpen && (
                             <Button
-                                disabled={!ebazpenaId}
+                                disabled={
+                                    !ebazpenaId ||
+                                    isLoading ||
+                                    isSwitchingLanguage ||
+                                    isSubmitting
+                                }
                                 isLoading={false}
                                 onClick={() => setIsChatOpen((prev) => !prev)}
                                 variant="secondary"
