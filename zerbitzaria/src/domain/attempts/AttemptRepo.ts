@@ -1,6 +1,7 @@
 import type {
     GetAttemptResponse,
     GetAttemptsResponse,
+    GetSpecificAttemptsResponse,
     IAddAttempt,
     IAddAttemptResponse,
     IGetAttemptFlat,
@@ -152,6 +153,29 @@ async function listAttempts(
     return attempts;
 }
 
+async function listSpecificAttempts(
+    erabiltzailea_id: number,
+    ebazpena_id: number,
+): Promise<GetSpecificAttemptsResponse> {
+    const attempts = await db.saiakera.findMany({
+        orderBy: {
+            denbora_zigilua: "desc",
+        },
+        select: {
+            denbora_zigilua: true,
+            nota: true,
+        },
+        take: 10,
+        where: {
+            ebazpena: {
+                erabiltzailea_id,
+            },
+            ebazpena_id,
+        },
+    });
+    return attempts;
+}
+
 async function markSolutionAsCompleted(
     ebazpena_id: number,
     databaseClient: DbClient = db,
@@ -202,6 +226,7 @@ export default {
     getAttempt,
     getSubmissionContext,
     listAttempts,
+    listSpecificAttempts,
     markSolutionAsCompleted,
     saveSolution,
 } as const;

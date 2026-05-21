@@ -3,6 +3,7 @@ import type { Mezua } from "@gral/datu-basea";
 import HttpStatusCode from "@common/constants/HttpStatusCodes";
 import logger from "@common/constants/logger";
 import { RequestError } from "@common/utils/errors";
+import AttemptRepo from "@domain/attempts/AttemptRepo";
 import ChatRepo from "@domain/chats/ChatRepo";
 import {
     type IGetMessages,
@@ -32,15 +33,25 @@ async function sendMessage(
     erabiltzailea_id: number,
     data: ISendMessage,
 ): Promise<SendMessageResponse> {
-    const fullContext = await ChatRepo.getFullContextEbazpena(
-        data.ebazpena_id,
-        erabiltzailea_id,
-    );
+    const [fullContext, recentAttempts] = await Promise.all([
+        ChatRepo.getFullContextEbazpena(data.ebazpena_id, erabiltzailea_id),
+        AttemptRepo.listSpecificAttempts(erabiltzailea_id, data.ebazpena_id),
+    ]);
     if (!fullContext) {
         throw new RequestError(
             HttpStatusCode.NOT_FOUND,
             "Ebazpena hori ez da existitzen",
         );
+    }
+
+    let formattedAttempts = "Ikasleak ez du oraindik saiakerarik egin.";
+    if (recentAttempts.length > 0) {
+        formattedAttempts = recentAttempts
+            .map(
+                (attempt) =>
+                    `- Data: ${attempt.denbora_zigilua.toISOString()}, Nota: ${attempt.nota}`,
+            )
+            .join("\n");
     }
 
     const promptData: SystemPromptData = {
@@ -51,6 +62,7 @@ async function sendMessage(
             fullContext.ariketa_zehatza.programazio_lengoaia.izena,
         programmingLanguageVersion:
             fullContext.ariketa_zehatza.programazio_lengoaia.bertsioa,
+        recentAttempts: formattedAttempts,
     };
     const systemPrompt = llm.createSystemPrompt(promptData);
 

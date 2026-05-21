@@ -45,6 +45,7 @@ function createSystemPrompt(data: SystemPromptData) {
         exerciseTitle: data.exerciseTitle,
         programmingLanguage: data.programmingLanguage,
         programmingLanguageVersion: data.programmingLanguageVersion,
+        recentAttempts: data.recentAttempts,
     });
 }
 

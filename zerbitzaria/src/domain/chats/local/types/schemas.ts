@@ -68,6 +68,7 @@ interface SystemPromptData {
     exerciseTitle: string;
     programmingLanguage: string;
     programmingLanguageVersion: string;
+    recentAttempts: string;
 }
 
 export {

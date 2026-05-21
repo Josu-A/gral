@@ -57,6 +57,10 @@ type GetAttemptsResponse = Array<{
     nota: number;
     saiakera_id: number;
 }>;
+type GetSpecificAttemptsResponse = Array<{
+    denbora_zigilua: Date;
+    nota: number;
+}>;
 
 type IListAttempts = z.infer<typeof ListAttemptsSchema>;
 
@@ -124,6 +128,7 @@ export {
 export type {
     GetAttemptResponse,
     GetAttemptsResponse,
+    GetSpecificAttemptsResponse,
     IAddAttempt,
     IAddAttemptResponse,
     IAttemptSubmit,

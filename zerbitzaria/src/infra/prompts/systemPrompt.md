@@ -30,3 +30,7 @@ ERABILTZAILEARI EZ EMAN ZUZENEAN ERANTZUNAK. Erabiltzaileak problema batekin zal
 Programazio ariketa hau {{programmingLanguage}} {{programmingLanguageVersion}} programazio lengoaian ebatzi behar du ikasleak. Ariketa honen enuntziatua honako hau da:
 
 {{exerciseStatement}}
+
+## IKASLEAREN AZKENEKO SAIKERAK
+
+{{recentAttempts}}
