@@ -58,6 +58,26 @@ async function addExecutions(
     });
 }
 
+async function createSolutionIfNotExists(
+    ariketa_zehatza_id: number,
+    erabiltzailea_id: number,
+    databaseClient: DbClient = db,
+): Promise<void> {
+    await databaseClient.ebazpena.upsert({
+        create: {
+            ariketa_zehatza_id,
+            erabiltzailea_id,
+        },
+        update: {},
+        where: {
+            erabiltzailea_id_ariketa_zehatza_id: {
+                ariketa_zehatza_id,
+                erabiltzailea_id,
+            },
+        },
+    });
+}
+
 async function getAttempt(
     erabiltzailea_id: number,
     data: IGetAttemptFlat,
@@ -178,6 +198,7 @@ async function saveSolution(
 export default {
     addAttempt,
     addExecutions,
+    createSolutionIfNotExists,
     getAttempt,
     getSubmissionContext,
     listAttempts,

@@ -18,7 +18,7 @@ exerciseRouter.get(
     ExerciseController.getCategories,
 );
 exerciseRouter.get(Paths.Exercises.View, ExerciseController.getExercise);
-exerciseRouter.post(
+exerciseRouter.get(
     Paths.Exercises.Language,
     ExerciseController.getSpecificExercise,
 );

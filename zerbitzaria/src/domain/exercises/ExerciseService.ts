@@ -2,6 +2,7 @@ import type {
     GetCategoryResponse,
     GetExerciseResponse,
     GetProgrammingLanguagesResponse,
+    GetSpecificExerciseResponse,
     GetTagResponse,
     IGetExerciseFlat,
     IGetSpecificExerciseFlat,
@@ -12,8 +13,10 @@ import type {
 import HttpStatusCode from "@common/constants/HttpStatusCodes";
 import logger from "@common/constants/logger";
 import { RequestError } from "@common/utils/errors";
+import AttemptRepo from "@domain/attempts/AttemptRepo";
 import ExerciseRepo from "@domain/exercises/ExerciseRepo";
 import UserRepo from "@domain/users/UserRepo";
+import db from "@gral/datu-basea";
 import { IkasketaMaila, Zailtasuna } from "@gral/datu-basea";
 
 const IKASKETA_MAILA_TO_ZAILTASUNA: Record<IkasketaMaila, Zailtasuna> = {
@@ -37,11 +40,31 @@ async function getExercise(
         preferedProgrammingLanguage =
             await UserRepo.getPreferredProgrammingLanguageId(erabiltzailea_id);
     }
-    const exerciseData = await ExerciseRepo.getExercise(
-        data.ariketa_id,
-        erabiltzailea_id,
-        preferedProgrammingLanguage,
-    );
+    let exerciseData: GetExerciseResponse | null = null;
+    await db.$transaction(async (tx) => {
+        const specificExerciseId = await ExerciseRepo.getSpecificExerciseId(
+            data.ariketa_id,
+            preferedProgrammingLanguage,
+            tx,
+        );
+        if (!specificExerciseId) {
+            throw new RequestError(
+                HttpStatusCode.NOT_FOUND,
+                "Ariketa ez da aurkitu",
+            );
+        }
+        await AttemptRepo.createSolutionIfNotExists(
+            specificExerciseId.ariketa_zehatza_id,
+            erabiltzailea_id,
+            tx,
+        );
+        exerciseData = await ExerciseRepo.getExercise(
+            data.ariketa_id,
+            erabiltzailea_id,
+            preferedProgrammingLanguage,
+            tx,
+        );
+    });
     if (!exerciseData) {
         throw new RequestError(
             HttpStatusCode.NOT_FOUND,
@@ -67,13 +90,34 @@ async function getProgrammingLanguages(): Promise<
 async function getSpecificExercise(
     erabiltzailea_id: number,
     data: IGetSpecificExerciseFlat,
-) {
-    const exercise = await ExerciseRepo.getSpecificExercise(
-        data.ariketa_id,
-        erabiltzailea_id,
-        data.programazio_lengoaia_id,
-    );
-    if (!exercise) {
+): Promise<GetSpecificExerciseResponse> {
+    let exerciseData: GetSpecificExerciseResponse | null = null;
+    await db.$transaction(async (tx) => {
+        const specificExerciseId = await ExerciseRepo.getSpecificExerciseId(
+            data.ariketa_id,
+            data.programazio_lengoaia_id,
+            tx,
+        );
+        if (!specificExerciseId) {
+            throw new RequestError(
+                HttpStatusCode.NOT_FOUND,
+                "Ariketa ez da aurkitu",
+            );
+        }
+        await AttemptRepo.createSolutionIfNotExists(
+            specificExerciseId.ariketa_zehatza_id,
+            erabiltzailea_id,
+            tx,
+        );
+        exerciseData = await ExerciseRepo.getSpecificExercise(
+            data.ariketa_id,
+            erabiltzailea_id,
+            data.programazio_lengoaia_id,
+            tx,
+        );
+    });
+
+    if (!exerciseData) {
         throw new RequestError(
             HttpStatusCode.NOT_FOUND,
             "Ariketa ez da aurkitu",
@@ -84,7 +128,7 @@ async function getSpecificExercise(
         erabiltzailea_id,
         programazio_lengoaia_id: data.programazio_lengoaia_id,
     });
-    return exercise;
+    return exerciseData;
 }
 
 async function getTags(): Promise<GetTagResponse[]> {

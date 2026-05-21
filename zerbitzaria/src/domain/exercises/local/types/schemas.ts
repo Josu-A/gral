@@ -145,6 +145,10 @@ interface GetProgrammingLanguagesResponse {
     programazio_lengoaia_id: number;
 }
 
+interface GetSpecificExerciseIdResponse {
+    ariketa_zehatza_id: number;
+}
+
 interface GetSpecificExerciseResponse {
     ebazpena: null | SinglePartialEbazpena;
     hasierako_kodea: string;
@@ -189,6 +193,7 @@ export type {
     GetCategoryResponse,
     GetExerciseResponse,
     GetProgrammingLanguagesResponse,
+    GetSpecificExerciseIdResponse,
     GetSpecificExerciseResponse,
     GetTagResponse,
     IGetExercise,

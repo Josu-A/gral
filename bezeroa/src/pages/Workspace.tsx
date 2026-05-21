@@ -5,7 +5,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import remarkGfm from "remark-gfm";
 import { toast } from "sonner";
 
-import type { Zailtasuna } from "@/common/types/entities";
+import type { Egoera, Zailtasuna } from "@/common/types/entities";
 
 import apiClient from "@/common/apiClient";
 import { handleApiError } from "@/common/errorHelper";
@@ -58,6 +58,19 @@ interface GetExerciseResponse {
         };
         ariketa_zehatza: null | SpecificExercise;
         ikasle_kodea: null | string;
+    };
+    error?: string;
+    success: boolean;
+}
+
+interface GetSpecificExerciseResponse {
+    data?: {
+        ebazpena: null | {
+            ebazpena_id: number;
+            egoera: Egoera;
+            kodea: null | string;
+        };
+        hasierako_kodea: string;
     };
     error?: string;
     success: boolean;
@@ -411,18 +424,27 @@ function Workspace(): JSX.Element {
         const changeToken = languageChangeTokenRef.current;
 
         setSelectedLanguageId(value);
-        setExerciseDetails({
-            ...exerciseDetails,
-            ariketa_zehatza: selectedZehatza,
+        setExerciseDetails((currentExerciseDetails) => {
+            if (!currentExerciseDetails) {
+                return currentExerciseDetails;
+            }
+
+            return {
+                ...currentExerciseDetails,
+                ariketa_zehatza: selectedZehatza,
+            };
         });
 
         setIsSwitchingLanguage(true);
 
         try {
-            const res = await apiClient.get<GetExerciseResponse>(
-                `/exercises/${ariketaIdNumber}`,
+            const res = await apiClient.get<GetSpecificExerciseResponse>(
+                `/exercises/${ariketaIdNumber}/language`,
                 {
-                    params: { programazio_lengoaia_id: value },
+                    params: {
+                        programazio_lengoaia_id:
+                            selectedZehatza.programazio_lengoaia_id,
+                    },
                 },
             );
 
@@ -438,14 +460,51 @@ function Workspace(): JSX.Element {
             const exerData = res.data.data;
 
             const newCode =
-                exerData.ikasle_kodea ||
-                (
-                    exerData.ariketa_zehatza ??
-                    exerData.ariketa.ariketa_zehatzak[0]
-                )?.hasierako_kodea ||
+                exerData.ebazpena?.kodea ||
+                selectedZehatza.hasierako_kodea ||
                 "";
             setCode(newCode);
             setEditingCode(newCode);
+            setExerciseDetails((currentExerciseDetails) => {
+                if (
+                    !currentExerciseDetails?.ariketa_zehatza ||
+                    !exerData.ebazpena ||
+                    currentExerciseDetails.ariketa_zehatza.ebazpenak.length > 0
+                ) {
+                    return currentExerciseDetails;
+                }
+
+                const newEbazpenaId = exerData.ebazpena.ebazpena_id;
+
+                return {
+                    ...currentExerciseDetails,
+                    ariketa_zehatza: {
+                        ...currentExerciseDetails.ariketa_zehatza,
+                        ebazpenak: [
+                            {
+                                ebazpena_id: newEbazpenaId,
+                            },
+                        ],
+                    },
+                    ariketa_zehatzak:
+                        currentExerciseDetails.ariketa_zehatzak.map((az) => {
+                            if (
+                                az.programazio_lengoaia_id ===
+                                selectedZehatza.programazio_lengoaia_id
+                            ) {
+                                return {
+                                    ...az,
+                                    ebazpenak: [
+                                        {
+                                            ebazpena_id: newEbazpenaId,
+                                        },
+                                    ],
+                                };
+                            }
+                            return az;
+                        }),
+                };
+            });
             hasUnsavedChanges.current = false;
         } catch (err: unknown) {
             if (changeToken !== languageChangeTokenRef.current) {

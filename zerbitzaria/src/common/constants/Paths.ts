@@ -31,7 +31,7 @@ const Paths = {
     Exercises: {
         Base: "/exercises",
         Categories: "/categories",
-        Language: "/:exerciseId/language",
+        Language: "/:ariketa_id/language",
         List: "/",
         ProgrammingLanguages: "/programming-languages",
         Tags: "/tags",

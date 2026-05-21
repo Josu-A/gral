@@ -2,15 +2,18 @@ import type {
     GetCategoryResponse,
     GetExerciseResponse,
     GetProgrammingLanguagesResponse,
+    GetSpecificExerciseIdResponse,
     GetSpecificExerciseResponse,
     GetTagResponse,
     IListExercises,
     ListedAriketa,
 } from "@domain/exercises/local/types/schemas";
-import type { Prisma } from "@gral/datu-basea";
+import type { Prisma, PrismaClient } from "@gral/datu-basea";
 
 import db from "@gral/datu-basea";
 import { Egoera } from "@gral/datu-basea";
+
+type DbClient = Prisma.TransactionClient | PrismaClient;
 
 async function getCategories(): Promise<GetCategoryResponse[]> {
     return await db.etiketaKategoria.findMany({
@@ -27,10 +30,14 @@ async function getExercise(
     ariketa_id: number,
     erabiltzailea_id: number,
     programazio_lengoaia_id: null | number,
+    databaseClient: DbClient = db,
 ): Promise<GetExerciseResponse | null> {
-    const exercise = await db.ariketa.findUnique({
+    const exercise = await databaseClient.ariketa.findUnique({
         select: {
             ariketa_zehatzak: {
+                orderBy: {
+                    programazio_lengoaia_id: "asc",
+                },
                 select: {
                     ariketa_zehatza_id: true,
                     ebazpenak: {
@@ -286,8 +293,9 @@ async function getSpecificExercise(
     ariketa_id: number,
     erabiltzailea_id: number,
     programazio_lengoaia_id: number,
+    databaseClient: DbClient = db,
 ): Promise<GetSpecificExerciseResponse | null> {
-    const specificExercise = await db.ariketaZehatza.findUnique({
+    const specificExercise = await databaseClient.ariketaZehatza.findUnique({
         select: {
             ebazpenak: {
                 select: {
@@ -317,6 +325,37 @@ async function getSpecificExercise(
         ebazpena: specificExercise.ebazpenak?.[0] ?? null,
         hasierako_kodea: specificExercise.hasierako_kodea,
     };
+}
+
+async function getSpecificExerciseId(
+    ariketa_id: number,
+    programazio_lengoaia_id: null | number,
+    databaseClient: DbClient = db,
+): Promise<GetSpecificExerciseIdResponse | null> {
+    if (programazio_lengoaia_id !== null) {
+        return await databaseClient.ariketaZehatza.findUnique({
+            select: {
+                ariketa_zehatza_id: true,
+            },
+            where: {
+                ariketa_id_programazio_lengoaia_id: {
+                    ariketa_id,
+                    programazio_lengoaia_id,
+                },
+            },
+        });
+    }
+    return await databaseClient.ariketaZehatza.findFirst({
+        orderBy: {
+            programazio_lengoaia_id: "asc",
+        },
+        select: {
+            ariketa_zehatza_id: true,
+        },
+        where: {
+            ariketa_id,
+        },
+    });
 }
 
 async function getTags(): Promise<GetTagResponse[]> {
@@ -402,5 +441,6 @@ export default {
     getExercises,
     getProgrammingLanguages,
     getSpecificExercise,
+    getSpecificExerciseId,
     getTags,
 } as const;
