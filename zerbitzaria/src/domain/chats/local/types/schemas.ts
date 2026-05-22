@@ -6,6 +6,7 @@ import type {
     ProgramazioLengoaia,
     Testa,
 } from "@gral/datu-basea";
+import type { OpenAI } from "openai";
 
 import { Jabea } from "@gral/datu-basea";
 import { z } from "zod";
@@ -44,10 +45,29 @@ interface FullContextEbazpena {
 
 type IGetMessages = z.infer<typeof GetMessagesSchema>;
 
-interface LlmMessage {
-    content: string;
-    role: (typeof LlmRole)[keyof typeof LlmRole];
-}
+const LlmRole = {
+    Assistant: "assistant",
+    System: "system",
+    Tool: "tool",
+    User: "user",
+} as const;
+
+type LlmMessage =
+    | {
+          content: string;
+          name?: string;
+          role: typeof LlmRole.Tool;
+          tool_call_id: string;
+      }
+    | {
+          content: string;
+          role: typeof LlmRole.Assistant;
+          tool_calls?: Array<OpenAI.ChatCompletionMessageToolCall>;
+      }
+    | {
+          content: string;
+          role: typeof LlmRole.System | typeof LlmRole.User;
+      };
 
 type MezuaWithoutIds = Omit<Mezua, "ebazpena_id" | "mezua_id">;
 
@@ -55,12 +75,6 @@ interface SendMessageResponse {
     assistantMessage: MezuaWithoutIds;
     userMessage: MezuaWithoutIds;
 }
-
-const LlmRole = {
-    Assistant: "assistant",
-    System: "system",
-    User: "user",
-} as const;
 
 interface SystemPromptData {
     educationLevel: IkasketaMaila;

@@ -14,8 +14,9 @@ interface ContextOptions {
 }
 
 interface LlmResponse {
-    content: string;
+    content: null | string;
     model: string;
+    toolCalls?: Array<OpenAI.ChatCompletionMessageToolCall>;
     usage: {
         completionTokens: number;
         promptTokens: number;
@@ -101,28 +102,36 @@ function renderTemplate(
 
 async function sendMessage(
     messages: LlmMessage[],
+    tools?: Array<OpenAI.ChatCompletionTool>,
 ): Promise<LlmResponse | null> {
     logger.info("LLM APIari mezua bidaltzen", {
         messages: JSON.stringify(messages),
+        tools: JSON.stringify(tools),
     });
     try {
         const completion = await client.chat.completions.create({
             max_tokens: MAX_COMPLETION_TOKENS,
-            messages,
+            messages: messages,
             model: environment.API_MODEL_LATXA,
             temperature: TEMPERATURE,
+            tools: tools && tools.length > 0 ? tools : undefined,
         });
 
         const choice = completion.choices[0];
+        const hasContent = !!choice?.message.content;
+        const hasToolCalls = !!choice?.message.tool_calls?.length;
 
-        if (!choice?.message.content) {
-            logger.warn("LLM APIak ez du edukirik itzuli", { completion });
+        if (!hasContent && !hasToolCalls) {
+            logger.warn("LLM APIak ez du edukirik edo tool deirik itzuli", {
+                completion,
+            });
             return null;
         }
 
         return {
             content: choice.message.content,
             model: completion.model,
+            toolCalls: choice.message.tool_calls,
             usage: {
                 completionTokens: completion.usage?.completion_tokens ?? 0,
                 promptTokens: completion.usage?.prompt_tokens ?? 0,

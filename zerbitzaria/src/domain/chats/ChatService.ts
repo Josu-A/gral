@@ -16,6 +16,7 @@ import {
 import db from "@gral/datu-basea";
 import { Jabea } from "@gral/datu-basea";
 import llm from "@infra/llm";
+import mcpClient from "@infra/mcp";
 
 async function getMessages(erabiltzailea_id: number, data: IGetMessages) {
     const messages = await ChatRepo.getMessages(
@@ -95,10 +96,93 @@ async function sendMessage(
     });
 
     const filteredMessageChain = llm.filterMessageChain(messageChain);
-    const llmResponse = await llm.sendMessage(filteredMessageChain);
-    const llmResponseContent = llmResponse?.content;
+    const availableTools = mcpClient.getAvailableTools();
 
-    if (!llmResponseContent?.trim()) {
+    const MAX_TOOL_CALLS = 3;
+    let finalContent: null | string = null;
+
+    for (let i = 0; i < MAX_TOOL_CALLS; i++) {
+        logger.info("LLMri mezua bidaltzen", {
+            ebazpena_id: data.ebazpena_id,
+            toolCallRounds: i + 1,
+        });
+        const llmResponse = await llm.sendMessage(
+            filteredMessageChain,
+            availableTools,
+        );
+
+        if (!llmResponse) {
+            throw new RequestError(
+                HttpStatusCode.BAD_GATEWAY,
+                "LLM APIak ez du baliozko erantzunik itzuli",
+            );
+        }
+
+        const toolCalls = llmResponse.toolCalls ?? [];
+        if (toolCalls.length === 0) {
+            finalContent = llmResponse.content;
+            break;
+        }
+
+        filteredMessageChain.push({
+            content: llmResponse.content ?? "",
+            role: LlmRole.Assistant,
+            tool_calls: toolCalls,
+        });
+
+        for (const toolCall of toolCalls) {
+            if (toolCall.type !== "function") {
+                logger.warn(
+                    "LLM APIak ez du 'function' motako tool deirik itzuli",
+                    {
+                        toolCallId: toolCall.id,
+                        toolCallType: toolCall.type,
+                    },
+                );
+                continue;
+            }
+
+            let parsedArgs: Record<string, unknown>;
+            try {
+                parsedArgs = JSON.parse(toolCall.function.arguments) as Record<
+                    string,
+                    unknown
+                >;
+            } catch (error) {
+                logger.error(
+                    "Llm-ak tool deirako argumentu baliogabeak itzuli ditu",
+                    {
+                        arguments: toolCall.function.arguments,
+                        error,
+                        toolCallId: toolCall.function.name,
+                    },
+                );
+                continue;
+            }
+
+            const toolResult = await mcpClient.callTool(
+                toolCall.function.name,
+                parsedArgs,
+            );
+            filteredMessageChain.push({
+                content: toolResult.content || "Tresnak ez du edukirik itzuli",
+                name: toolCall.function.name,
+                role: LlmRole.Tool,
+                tool_call_id: toolCall.id,
+            });
+        }
+    }
+
+    if (finalContent === null) {
+        logger.warn(
+            "Tool deien muga gainditu da LLM erantzun baliozkorik itzuli gabe",
+            { ebazpena_id: data.ebazpena_id },
+        );
+        const finalResponse = await llm.sendMessage(filteredMessageChain);
+        finalContent = finalResponse?.content ?? null;
+    }
+
+    if (!finalContent?.trim()) {
         throw new RequestError(
             HttpStatusCode.BAD_GATEWAY,
             "LLM APIak ez du erantzun baliorik itzuli",
@@ -119,7 +203,7 @@ async function sendMessage(
         );
         llmMessage = await ChatRepo.createMessage(
             {
-                content: llmResponseContent,
+                content: finalContent,
                 ebazpena_id: data.ebazpena_id,
                 jabea: Jabea.AA,
             },
