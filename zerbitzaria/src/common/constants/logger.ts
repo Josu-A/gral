@@ -11,9 +11,14 @@ const consoleFormat = combine(
     timestamp({ format: TIMESTAMP_STYLE }),
     printf(({ level, message, stack, timestamp, ...extra }) => {
         const msg = stack || message;
-        const log = `${timestamp} ${level}: ${msg ? " " + msg : ""}`;
+        const log = `${timestamp} ${level}:${msg ? " " + msg : ""}`;
         const extraString = Object.keys(extra).length
-            ? ` ${Object.values(extra).join(" ")}`
+            ? ` ${Object.entries(extra)
+                  .map(
+                      ([key, value]) =>
+                          `${key}=${typeof value === "object" ? JSON.stringify(value) : String(value)}`,
+                  )
+                  .join(" ")}`
             : "";
         return `[Backend] ${log}${extraString}`;
     }),
