@@ -46,6 +46,11 @@ async function getLastAttempts(
                 select: {
                     ariketa_zehatza: {
                         select: {
+                            ariketa: {
+                                select: {
+                                    izenburua: true,
+                                },
+                            },
                             ariketa_id: true,
                             programazio_lengoaia: {
                                 select: {
@@ -72,6 +77,7 @@ async function getLastAttempts(
     return attempts.map((attempt) => ({
         ariketa_id: attempt.ebazpena.ariketa_zehatza.ariketa_id,
         denbora_zigilua: attempt.denbora_zigilua,
+        izenburua: attempt.ebazpena.ariketa_zehatza.ariketa.izenburua,
         nota: attempt.nota,
         programazio_lengoaia_izena:
             attempt.ebazpena.ariketa_zehatza.programazio_lengoaia.izena,
@@ -83,9 +89,9 @@ async function getSolvedSolutions(
     erabiltzailea_id: number,
 ): Promise<SolvedSolutions> {
     const solveSolutionsCounts: SolvedSolutions = {
-        aurreratua: 0,
+        erraza: 0,
         ertaina: 0,
-        hasiberria: 0,
+        zaila: 0,
     };
 
     const solvedSolutions = await db.ebazpena.findMany({
@@ -109,13 +115,13 @@ async function getSolvedSolutions(
     for (const solvedSolution of solvedSolutions) {
         switch (solvedSolution.ariketa_zehatza.ariketa.zailtasun_maila) {
             case Zailtasuna.Erraza:
-                solveSolutionsCounts.hasiberria += 1;
+                solveSolutionsCounts.erraza += 1;
                 break;
             case Zailtasuna.Ertaina:
                 solveSolutionsCounts.ertaina += 1;
                 break;
             case Zailtasuna.Zaila:
-                solveSolutionsCounts.aurreratua += 1;
+                solveSolutionsCounts.zaila += 1;
                 break;
         }
     }

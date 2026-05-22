@@ -30,11 +30,32 @@ async function addAttempt(
         },
         select: {
             denbora_zigilua: true,
+            ebazpena: {
+                select: {
+                    ariketa_zehatza: {
+                        select: {
+                            programazio_lengoaia: {
+                                select: {
+                                    izena: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
             nota: true,
             saiakera_id: true,
         },
     });
-    return attempt;
+    return (
+        attempt && {
+            denbora_zigilua: attempt.denbora_zigilua,
+            nota: attempt.nota,
+            programazio_lengoaia_izena:
+                attempt.ebazpena.ariketa_zehatza.programazio_lengoaia.izena,
+            saiakera_id: attempt.saiakera_id,
+        }
+    );
 }
 
 async function addExecutions(
@@ -85,6 +106,11 @@ async function getAttempt(
 ): Promise<GetAttemptResponse | null> {
     const attempt = await db.saiakera.findUnique({
         select: {
+            ebazpena: {
+                select: {
+                    ariketa_zehatza_id: true,
+                },
+            },
             saiakera_kodea: true,
         },
         where: {
@@ -94,7 +120,13 @@ async function getAttempt(
             saiakera_id: data.saiakera_id,
         },
     });
-    return attempt;
+
+    const formattedAttempt = attempt && {
+        ariketa_zehatza_id: attempt.ebazpena.ariketa_zehatza_id,
+        saiakera_kodea: attempt.saiakera_kodea,
+    };
+
+    return formattedAttempt;
 }
 
 async function getSubmissionContext(
@@ -138,6 +170,19 @@ async function listAttempts(
         },
         select: {
             denbora_zigilua: true,
+            ebazpena: {
+                select: {
+                    ariketa_zehatza: {
+                        select: {
+                            programazio_lengoaia: {
+                                select: {
+                                    izena: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            },
             nota: true,
             saiakera_id: true,
         },
@@ -150,7 +195,13 @@ async function listAttempts(
             },
         },
     });
-    return attempts;
+    return attempts.map((attempt) => ({
+        denbora_zigilua: attempt.denbora_zigilua,
+        nota: attempt.nota,
+        programazio_lengoaia_izena:
+            attempt.ebazpena.ariketa_zehatza.programazio_lengoaia.izena,
+        saiakera_id: attempt.saiakera_id,
+    }));
 }
 
 async function listSpecificAttempts(

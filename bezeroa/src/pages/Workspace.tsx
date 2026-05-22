@@ -31,6 +31,7 @@ interface ExerciseDetails {
 
 interface GetAttemptResponse {
     data?: {
+        ariketa_zehatza_id: number;
         saiakera_kodea: null | string;
     };
     error?: string;
@@ -79,6 +80,7 @@ interface GetSpecificExerciseResponse {
 interface IAttempt {
     denbora_zigilua: string;
     nota: number;
+    programazio_lengoaia_izena: string;
     saiakera_id: number;
 }
 
@@ -207,8 +209,48 @@ function Workspace(): JSX.Element {
                     const ariketaZehatzak = exerData.ariketa.ariketa_zehatzak;
                     const initialZehatza =
                         exerData.ariketa_zehatza ?? ariketaZehatzak[0];
+
+                    const initialCode =
+                        exerData.ikasle_kodea ||
+                        initialZehatza?.hasierako_kodea ||
+                        "";
+
+                    let displayedCode = initialCode;
+                    let activeZehatza = initialZehatza;
+
+                    if (saiakeraParamId) {
+                        const attRes = await apiClient.get<GetAttemptResponse>(
+                            `/attempts/${saiakeraParamId}`,
+                            { signal: controller.signal },
+                        );
+
+                        if (!attRes.data.success || !attRes.data.data) {
+                            toast.warning(
+                                attRes.data.error || ERROR_GENERIC_FETCH,
+                            );
+                        } else {
+                            const attData = attRes.data.data;
+
+                            const zehatzaSaiakera = ariketaZehatzak.find(
+                                (az) =>
+                                    az.ariketa_zehatza_id ===
+                                    attData.ariketa_zehatza_id,
+                            );
+                            if (zehatzaSaiakera) {
+                                activeZehatza = zehatzaSaiakera;
+                            }
+
+                            displayedCode =
+                                attData.saiakera_kodea ?? initialCode;
+
+                            setIsViewingPreviousAttempt(true);
+                            isViewingPreviousAttemptRef.current = true;
+                            setViewedAttemptId(Number(saiakeraParamId));
+                        }
+                    }
+
                     setExerciseDetails({
-                        ariketa_zehatza: initialZehatza ?? undefined,
+                        ariketa_zehatza: activeZehatza ?? undefined,
                         ariketa_zehatzak: ariketaZehatzak,
                         enuntziatua: exerData.ariketa.enuntziatua,
                         etiketaIzenak: exerData.ariketa.etiketak.map(
@@ -221,32 +263,13 @@ function Workspace(): JSX.Element {
                         zailtasun_maila: exerData.ariketa.zailtasun_maila,
                     });
 
-                    let initialCode =
-                        exerData.ikasle_kodea ||
-                        initialZehatza?.hasierako_kodea ||
-                        "";
-
                     if (initialZehatza) {
                         setSelectedLanguageId(
                             String(initialZehatza.programazio_lengoaia_id),
                         );
                     }
 
-                    if (saiakeraParamId) {
-                        const attRes = await apiClient.get<GetAttemptResponse>(
-                            `/attempts/${saiakeraParamId}`,
-                            { signal: controller.signal },
-                        );
-
-                        if (!attRes.data.success || !attRes.data.data) {
-                            setError(attRes.data.error || ERROR_GENERIC_FETCH);
-                        } else {
-                            const attData = attRes.data.data;
-                            initialCode = attData.saiakera_kodea ?? initialCode;
-                        }
-                    }
-
-                    setCode(initialCode);
+                    setCode(displayedCode);
                     setEditingCode(initialCode);
                 }
             } catch (err: unknown) {
@@ -377,6 +400,7 @@ function Workspace(): JSX.Element {
                 isViewingPreviousAttemptRef.current = true;
                 setViewedAttemptId(saiakeraId);
                 setCode(attData.saiakera_kodea ?? "");
+                setIsChatOpen(false);
             }
         } catch (err: unknown) {
             if (
@@ -855,7 +879,21 @@ function Workspace(): JSX.Element {
                                                     <span className="text-sm">
                                                         {new Date(
                                                             attempt.denbora_zigilua,
-                                                        ).toLocaleString()}
+                                                        ).toLocaleString(
+                                                            undefined,
+                                                            {
+                                                                day: "2-digit",
+                                                                hour: "2-digit",
+                                                                minute: "2-digit",
+                                                                month: "2-digit",
+                                                                year: "2-digit",
+                                                            },
+                                                        )}
+                                                    </span>
+                                                    <span className="mx-2 text-sm">
+                                                        {
+                                                            attempt.programazio_lengoaia_izena
+                                                        }
                                                     </span>
                                                     <span className="text-sm font-medium">
                                                         {attempt.nota.toFixed(

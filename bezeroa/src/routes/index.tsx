@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import AppLayout from "@/components/layout/AppLayout";
 import AuthLayout from "@/components/layout/AuthLayout";
+import Dashboard from "@/pages/Dashboard";
 import Login from "@/pages/Login";
 import Logout from "@/pages/Logout";
 import SignUp from "@/pages/SignUp";
@@ -31,7 +32,7 @@ const router = createBrowserRouter([
                         path: "profile",
                     },
                     {
-                        element: <div>Dashboard</div>,
+                        element: <Dashboard />,
                         path: "dashboard",
                     },
                     {

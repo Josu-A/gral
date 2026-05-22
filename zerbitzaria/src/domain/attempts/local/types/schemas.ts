@@ -21,6 +21,7 @@ const GetAttemptSchema = z.object({
 });
 
 interface GetAttemptResponse {
+    ariketa_zehatza_id: number;
     saiakera_kodea: null | string;
 }
 
@@ -33,6 +34,7 @@ interface IAddAttempt {
 interface IAddAttemptResponse {
     denbora_zigilua: Date;
     nota: number;
+    programazio_lengoaia_izena: string;
     saiakera_id: number;
 }
 
@@ -55,6 +57,7 @@ const ListAttemptsSchema = z.object({
 type GetAttemptsResponse = Array<{
     denbora_zigilua: Date;
     nota: number;
+    programazio_lengoaia_izena: string;
     saiakera_id: number;
 }>;
 type GetSpecificAttemptsResponse = Array<{
