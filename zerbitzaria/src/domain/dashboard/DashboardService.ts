@@ -14,17 +14,22 @@ async function getDashboard(
     user_id: number,
     parsedData: IGetDashboard,
 ): Promise<DashboardData> {
-    const [averageGrade, lastAttempts, totalSolvedSolutions, solvedSolutions] =
-        await Promise.all([
-            DashboardRepo.getAverageGrade(user_id),
-            DashboardRepo.getLastAttempts(
-                user_id,
-                Math.min(parsedData.attempts_to_fetch, MAX_ATTEMPTS_TO_FETCH),
-            ),
-            DashboardRepo.getTotalSolvedSolutions(user_id),
-            DashboardRepo.getSolvedSolutions(user_id),
-        ]);
-    const educationLevel = await UserRepo.getEducationLevel(user_id);
+    const [
+        averageGrade,
+        lastAttempts,
+        totalSolvedSolutions,
+        solvedSolutions,
+        educationLevel,
+    ] = await Promise.all([
+        DashboardRepo.getAverageGrade(user_id),
+        DashboardRepo.getLastAttempts(
+            user_id,
+            Math.min(parsedData.attempts_to_fetch, MAX_ATTEMPTS_TO_FETCH),
+        ),
+        DashboardRepo.getTotalSolvedSolutions(user_id),
+        DashboardRepo.getSolvedSolutions(user_id),
+        UserRepo.getEducationLevel(user_id),
+    ]);
 
     const dashboardData: DashboardData = {
         averageGrade,
