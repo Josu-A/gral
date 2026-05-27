@@ -1,6 +1,17 @@
 {
+  "endOfLine": "lf",
   "plugins": ["prettier-plugin-tailwindcss"],
   "tailwindFunctions": ["clsx", "tw"],
   "tailwindPreserveDuplicates": true,
-  "tailwindStylesheet": "bezeroa/src/styles/index.css"
+  "tailwindStylesheet": "bezeroa/src/styles/index.css",
+  "tabWidth": 4,
+  "useTabs": false,
+  "overrides": [
+    {
+      "files": "*.json",
+      "options": {
+        "tabWidth": 2
+      }
+    }
+  ]
 }
