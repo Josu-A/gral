@@ -1,15 +1,12 @@
+import type { DbClient } from "@common/types";
 import type {
     Erabiltzailea,
     FreskatzeTokena,
     IkasketaMaila,
-    Prisma,
-    PrismaClient,
 } from "@gral/datu-basea";
 
 import db from "@gral/datu-basea";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/client";
-
-type DbClient = Prisma.TransactionClient | PrismaClient;
 
 async function createRefreshToken(
     data: {

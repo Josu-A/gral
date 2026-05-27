@@ -1,3 +1,4 @@
+import type { DbClient } from "@common/types";
 import type {
     GetAttemptResponse,
     GetAttemptsResponse,
@@ -11,12 +12,9 @@ import type {
     SolutionId,
     SubmissionContext,
 } from "@domain/attempts/local/types/schemas";
-import type { Prisma, PrismaClient } from "@gral/datu-basea";
 
 import db from "@gral/datu-basea";
 import { Egoera } from "@gral/datu-basea";
-
-type DbClient = Prisma.TransactionClient | PrismaClient;
 
 async function addAttempt(
     data: IAddAttempt,

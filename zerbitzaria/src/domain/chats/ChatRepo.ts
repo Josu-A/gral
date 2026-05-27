@@ -1,12 +1,11 @@
+import type { DbClient } from "@common/types";
 import type {
     FullContextEbazpena,
     ISendMessageAnyone,
 } from "@domain/chats/local/types/schemas";
-import type { Mezua, Prisma, PrismaClient } from "@gral/datu-basea";
+import type { Mezua } from "@gral/datu-basea";
 
 import db from "@gral/datu-basea";
-
-type DbClient = Prisma.TransactionClient | PrismaClient;
 
 async function createMessage(
     data: ISendMessageAnyone,

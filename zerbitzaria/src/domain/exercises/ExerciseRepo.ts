@@ -1,3 +1,4 @@
+import type { DbClient } from "@common/types";
 import type {
     GetCategoryResponse,
     GetExerciseResponse,
@@ -8,12 +9,10 @@ import type {
     IListExercises,
     ListedAriketa,
 } from "@domain/exercises/local/types/schemas";
-import type { Prisma, PrismaClient } from "@gral/datu-basea";
+import type { Prisma } from "@gral/datu-basea";
 
 import db from "@gral/datu-basea";
 import { Egoera } from "@gral/datu-basea";
-
-type DbClient = Prisma.TransactionClient | PrismaClient;
 
 async function getCategories(): Promise<GetCategoryResponse[]> {
     return await db.etiketaKategoria.findMany({

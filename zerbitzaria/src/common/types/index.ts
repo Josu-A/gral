@@ -1,3 +1,4 @@
+import type { Prisma, PrismaClient } from "@gral/datu-basea";
 import type { Request } from "express";
 
 interface AuthenticatedRequest extends Request {
@@ -13,6 +14,8 @@ interface AuthUser {
     id: number;
 }
 
+type DbClient = Prisma.TransactionClient | PrismaClient;
+
 interface IApiResponse<T = void> {
     data?: T;
     error?: string;
@@ -23,4 +26,4 @@ interface IApiResponse<T = void> {
     success: boolean;
 }
 
-export type { AuthenticatedRequest, AuthRequest, IApiResponse };
+export type { AuthenticatedRequest, AuthRequest, DbClient, IApiResponse };
