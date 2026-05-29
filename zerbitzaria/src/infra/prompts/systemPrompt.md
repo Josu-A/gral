@@ -32,6 +32,12 @@ Programazio ariketa hau {{programmingLanguage}} {{programmingLanguageVersion}} p
 
 {{exerciseStatement}}
 
+## ARIKETAREN ERREFERENTZIA EMAITZA
+
+```{{programmingLanguage}}
+{{referenceSolution}}
+```
+
 ## IKASLEAREN AZKENEKO SAIKERAK
 
 {{recentAttempts}}

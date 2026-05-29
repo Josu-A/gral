@@ -35,6 +35,7 @@ const GetMessagesSchema = z.object({
 interface FullContextEbazpena {
     ariketa_zehatza: {
         ariketa: Ariketa;
+        erreferentzia_emaitza: string;
         programazio_lengoaia: ProgramazioLengoaia;
         testak: Testa[];
     };
@@ -83,6 +84,7 @@ interface SystemPromptData {
     programmingLanguage: string;
     programmingLanguageVersion: string;
     recentAttempts: string;
+    referenceSolution: string;
 }
 
 export {

@@ -64,6 +64,7 @@ async function sendMessage(
         programmingLanguageVersion:
             fullContext.ariketa_zehatza.programazio_lengoaia.bertsioa,
         recentAttempts: formattedAttempts,
+        referenceSolution: fullContext.ariketa_zehatza.erreferentzia_emaitza,
     };
     const systemPrompt = llm.createSystemPrompt(promptData);
 

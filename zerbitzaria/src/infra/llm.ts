@@ -40,14 +40,7 @@ const client = new OpenAI({
 });
 
 function createSystemPrompt(data: SystemPromptData) {
-    return renderTemplate(systemPromptTemplate, {
-        educationLevel: data.educationLevel,
-        exerciseStatement: data.exerciseStatement,
-        exerciseTitle: data.exerciseTitle,
-        programmingLanguage: data.programmingLanguage,
-        programmingLanguageVersion: data.programmingLanguageVersion,
-        recentAttempts: data.recentAttempts,
-    });
+    return renderTemplate(systemPromptTemplate, { ...data });
 }
 
 function filterMessageChain(
