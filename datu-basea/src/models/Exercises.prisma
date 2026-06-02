@@ -59,7 +59,6 @@ model AriketaZehatza {
     funtzio_izena           String  @db.VarChar(255)
     hasierako_kodea         String
     erreferentzia_emaitza   String
-    saiakera_fitxategia     String
     buru_fitxategia         String?
 
     ariketa              Ariketa             @relation(fields: [ariketa_id], references: [ariketa_id], onDelete: Cascade)

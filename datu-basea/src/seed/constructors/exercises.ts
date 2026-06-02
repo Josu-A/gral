@@ -93,7 +93,6 @@ async function seedExercises(
                         ),
                         programazio_lengoaia_id:
                             programazioLengoaia.programazio_lengoaia_id,
-                        saiakera_fitxategia: specificData.saiakera_fitxategia,
                         testak: {
                             create: tests,
                         },

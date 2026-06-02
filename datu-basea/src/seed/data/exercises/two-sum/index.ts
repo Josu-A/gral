@@ -11,7 +11,6 @@ export const twoSum = {
             funtzio_izena: "twoSum",
             hasierako_kodea: "initialCode.py",
             programmingLanguageKey: "python",
-            saiakera_fitxategia: "attempt.py",
             tests: [
                 {
                     izena: "Oinarrizko kasua",
@@ -27,7 +26,6 @@ export const twoSum = {
             funtzio_izena: "twoSum",
             hasierako_kodea: "initialCode.java",
             programmingLanguageKey: "java",
-            saiakera_fitxategia: "Solution.java",
             tests: [
                 {
                     izena: "Oinarrizko kasua",
@@ -44,7 +42,6 @@ export const twoSum = {
             funtzio_izena: "twoSum",
             hasierako_kodea: "initialCode.c",
             programmingLanguageKey: "c",
-            saiakera_fitxategia: "solution.c",
             tests: [
                 {
                     izena: "Oinarrizko kasua",

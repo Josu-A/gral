@@ -17,7 +17,6 @@ interface SpecificExercise {
     readonly funtzio_izena: string;
     readonly hasierako_kodea: string;
     readonly programmingLanguageKey: ProgrammingLanguageKey;
-    readonly saiakera_fitxategia: string;
     readonly tests: ReadonlyArray<Test>;
 }
 
