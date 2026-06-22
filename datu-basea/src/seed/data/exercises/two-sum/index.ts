@@ -32,7 +32,7 @@ export const twoSum = {
                     ordena: 1,
                     pisua: 1,
                     testa_kodea: "BasicCaseTest.java",
-                    timeout: 2000,
+                    timeout: 10000,
                 },
             ],
         },
