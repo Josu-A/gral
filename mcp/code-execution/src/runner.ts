@@ -1,5 +1,5 @@
 import Dockerode from "dockerode";
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { chmod, mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { PassThrough } from "node:stream";
@@ -188,8 +188,9 @@ async function runAttempt<TAttempt>(
         await Promise.all([
             mkdir(srcDir, { recursive: true }),
             mkdir(testsDir, { recursive: true }),
-            mkdir(artifactsDir, { mode: 0o777, recursive: true }),
+            mkdir(artifactsDir, { recursive: true }),
         ]);
+        await chmod(artifactsDir, 0o777);
 
         const mounts: ContainerMounts = {
             artifacts: artifactsDir,
