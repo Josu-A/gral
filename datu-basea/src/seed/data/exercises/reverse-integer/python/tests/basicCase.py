@@ -40,4 +40,4 @@ def test_7():
 
 def test_8():
     result = solution.reverse(-2147483412)
-    assert result == -2147483412
+    assert result == -2143847412
