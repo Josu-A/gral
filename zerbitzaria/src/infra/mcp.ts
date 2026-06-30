@@ -5,9 +5,13 @@ import type {
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import type OpenAI from "openai";
 
+import { environment } from "@common/constants/env";
 import logger from "@common/constants/logger";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import {
+    getDefaultEnvironment,
+    StdioClientTransport,
+} from "@modelcontextprotocol/sdk/client/stdio.js";
 
 interface ExecuteCodeInput {
     attempt: {
@@ -104,6 +108,12 @@ class MCPClient {
             this.transport = new StdioClientTransport({
                 args: [serverScriptPath],
                 command,
+                env: {
+                    ...getDefaultEnvironment(),
+                    ...(environment.DOCKER_HOST
+                        ? { DOCKER_HOST: environment.DOCKER_HOST }
+                        : {}),
+                },
             });
             await this.mcp.connect(this.transport, {
                 timeout: 5 * 60 * 1_000,

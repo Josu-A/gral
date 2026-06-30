@@ -50,6 +50,7 @@ const EnvironmentSchema = z.object({
     CLIENT_URL: z
         .union([z.httpUrl(), z.url({ hostname: /^localhost$/ })])
         .default("http://localhost:5173"),
+    DOCKER_HOST: z.string().optional(),
     JWT_ACCESS_EXPIRATION: JwtDurationSchema.default("15min"),
     JWT_ACCESS_SECRET: z.string().min(64, {
         error: "JWT sarbide sekretuak gutxienez 64 karaktere izan behar ditu",
