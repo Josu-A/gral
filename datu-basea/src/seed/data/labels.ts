@@ -39,6 +39,18 @@ export const labelData = [
         izena: "Zenbakien teoria",
         key: "numberTheory",
     },
+    {
+        categoryKey: "dataStructure",
+        deskribapena: "Stringekin erlazionatutako ariketak",
+        izena: "String",
+        key: "string",
+    },
+    {
+        categoryKey: "dataStructure",
+        deskribapena: "Pilekin erlazionatutako ariketak",
+        izena: "Pila",
+        key: "stack",
+    },
 ] as const satisfies ReadonlyArray<{
     categoryKey: CategoryKey;
     deskribapena: string;
