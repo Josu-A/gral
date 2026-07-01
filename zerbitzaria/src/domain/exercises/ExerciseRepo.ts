@@ -332,17 +332,23 @@ async function getSpecificExerciseId(
     databaseClient: DbClient = db,
 ): Promise<GetSpecificExerciseIdResponse | null> {
     if (programazio_lengoaia_id !== null) {
-        return await databaseClient.ariketaZehatza.findUnique({
-            select: {
-                ariketa_zehatza_id: true,
-            },
-            where: {
-                ariketa_id_programazio_lengoaia_id: {
-                    ariketa_id,
-                    programazio_lengoaia_id,
+        const specificExercise = await databaseClient.ariketaZehatza.findUnique(
+            {
+                select: {
+                    ariketa_zehatza_id: true,
+                },
+                where: {
+                    ariketa_id_programazio_lengoaia_id: {
+                        ariketa_id,
+                        programazio_lengoaia_id,
+                    },
                 },
             },
-        });
+        );
+
+        if (specificExercise) {
+            return specificExercise;
+        }
     }
     return await databaseClient.ariketaZehatza.findFirst({
         orderBy: {
