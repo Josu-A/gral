@@ -18,8 +18,6 @@ Itzuli elementu guztien kopurua kate gisa, honako forma honetan: lehen izena (or
 
 Proba-kasuak sortuta daude irteerako balio guztiak **32 biteko** osoko zenbaki batean sartzeko moduan.
 
-&nbsp;
-
 ## 1. adibidea
 
 ```
@@ -43,8 +41,6 @@ Sarrera: formula = "K4(ON(SO3)2)2"
 Irteera: "K4N2O14S4"
 Azalpena: Elementuen kopurua {'K': 4, 'N': 2, 'O': 14, 'S': 4} da.
 ```
-
-&nbsp;
 
 ## Murrizketak
 

@@ -2,8 +2,6 @@ Emanda `nums1` eta `nums2` ordenatutako bi array, `m` eta `n` tamainakoak hurren
 
 Exekuzio-denboraren konplexutasun orokorra `O(log (m+n))` izan behar da.
 
-&nbsp;
-
 **1. adibidea:**
 
 ```
@@ -19,8 +17,6 @@ Sarrera: nums1 = [1,2], nums2 = [3,4]
 Irteera: 2.50000
 Azalpena: bateratutako array-a = [1,2,3,4] eta mediana (2 + 3) / 2 = 2.5 da.
 ```
-
-&nbsp;
 
 **Murrizketak:**
 

@@ -2,8 +2,6 @@
 
 **Suposatu ingurumenak ez duela baimentzen 64 biteko zenbaki osoak gordetzea (ikurdunak edo ikurgabeak).**
 
-&nbsp;
-
 **1. adibidea:**
 
 ```
@@ -24,8 +22,6 @@ Irteera: -321
 Sarrera: x = 120
 Irteera: 21
 ```
-
-&nbsp;
 
 Murrizpenak:
 

@@ -1,7 +1,5 @@
 Emanda `x` zenbaki oso bat, itzuli `true` `x` _palindromoa_ bada, eta `false` bestela.
 
-&nbsp;
-
 **1. adibidea:**
 
 ```
@@ -26,12 +24,8 @@ Irteera: false
 Azalpena: Eskuinetik ezkerrera 01 irakurtzen da. Beraz, ez da palindromoa.
 ```
 
-&nbsp;
-
 **Murrizketak:**
 
 - `-2^31 <= x <= 2^31 - 1`
-
-&nbsp;
 
 **Hurrengo pausoa:** Ebatzi al dezakezu zenbaki osoa katera bihurtu gabe?

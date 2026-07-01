@@ -4,8 +4,6 @@ Suposa dezakezu sarrera bakoitzak **zehazki soluzio bakarra** duela, eta ezin du
 
 Erantzuna edozein ordenatan itzul dezakezu.
 
-&nbsp;
-
 **1. adibidea:**
 
 ```
@@ -28,15 +26,11 @@ Sarrera: nums = [3,3], target = 6
 Irteera: [0,1]
 ```
 
-&nbsp;
-
 **Murrizketak:**
 
 - `2 <= nums.length <= 10⁴`
 - `-10⁹ <= nums[i] <= 10⁹`
 - `-10⁹ <= target <= 10⁹`
 - **Soluzio baliodun bakarra existitzen da.**
-
-&nbsp;
 
 **Jarraipena:** O(n²) baino denbora-konplexutasun txikiagoa duen algoritmo bat asma dezakezu?
