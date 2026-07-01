@@ -76,8 +76,8 @@ const ListExercisesSchema = z.object({
     egoerak: enumArrayFromQuery(z.enum(Egoera)),
     etiketa_ids: intArrayFromQuery,
     etiketa_ids_mode: FilterMode,
-    etiketa_kategoria_ids: intArrayFromQuery,
-    etiketa_kategoria_ids_mode: FilterMode,
+    kategoria_ids: intArrayFromQuery,
+    kategoria_ids_mode: FilterMode,
     programazio_lengoaia_ids: intArrayFromQuery,
     programazio_lengoaia_ids_mode: FilterMode,
     titulua: z

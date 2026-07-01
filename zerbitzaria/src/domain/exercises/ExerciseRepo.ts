@@ -133,8 +133,8 @@ async function getExercises(
         egoerak,
         etiketa_ids,
         etiketa_ids_mode,
-        etiketa_kategoria_ids,
-        etiketa_kategoria_ids_mode,
+        kategoria_ids,
+        kategoria_ids_mode,
         programazio_lengoaia_ids,
         programazio_lengoaia_ids_mode,
         titulua,
@@ -210,20 +210,20 @@ async function getExercises(
         }
     }
 
-    if (etiketa_kategoria_ids.length > 0) {
-        if (etiketa_kategoria_ids_mode === "OR") {
+    if (kategoria_ids.length > 0) {
+        if (kategoria_ids_mode === "OR") {
             andConditions.push({
                 etiketak: {
                     some: {
                         etiketa: {
-                            kategoria_id: { in: etiketa_kategoria_ids },
+                            kategoria_id: { in: kategoria_ids },
                         },
                     },
                 },
             });
         } else {
             andConditions.push({
-                AND: etiketa_kategoria_ids.map((id) => ({
+                AND: kategoria_ids.map((id) => ({
                     etiketak: {
                         some: {
                             etiketa: {
