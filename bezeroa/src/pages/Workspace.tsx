@@ -652,7 +652,74 @@ function Workspace(): JSX.Element {
                                 {exerciseDetails.izenburua}
                             </h1>
                             <div className="[&_pre]:tab-4 mb-4 max-w-none sm:min-h-0 sm:flex-1 sm:overflow-y-auto [&_pre]:overflow-x-auto">
-                                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                <ReactMarkdown
+                                    components={{
+                                        code: (props) => {
+                                            const { node: _, ...rest } = props;
+                                            return (
+                                                <code
+                                                    className="rounded bg-slate-300 px-1 py-0.5 text-sm"
+                                                    {...rest}
+                                                />
+                                            );
+                                        },
+                                        h1: (props) => {
+                                            const { node: _, ...rest } = props;
+                                            return (
+                                                <h1
+                                                    className="mt-4 mb-2 text-xl font-bold"
+                                                    {...rest}
+                                                />
+                                            );
+                                        },
+                                        h2: (props) => {
+                                            const { node: _, ...rest } = props;
+                                            return (
+                                                <h2
+                                                    className="mt-4 mb-2 text-lg font-bold"
+                                                    {...rest}
+                                                />
+                                            );
+                                        },
+                                        li: (props) => {
+                                            const { node: _, ...rest } = props;
+                                            return (
+                                                <li
+                                                    className="mb-2"
+                                                    {...rest}
+                                                />
+                                            );
+                                        },
+                                        p: (props) => {
+                                            const { node: _, ...rest } = props;
+                                            return (
+                                                <p
+                                                    className="mb-3 leading-relaxed"
+                                                    {...rest}
+                                                />
+                                            );
+                                        },
+                                        pre: (props) => {
+                                            const { node: _, ...rest } = props;
+                                            return (
+                                                <pre
+                                                    className="mb-3 rounded-md bg-slate-300 p-2 [&_code]:px-0"
+                                                    {...rest}
+                                                />
+                                            );
+                                        },
+                                        ul: (props) => {
+                                            const { node: _, ...rest } = props;
+                                            return (
+                                                <ul
+                                                    className="mb-2 list-disc pl-4"
+                                                    {...rest}
+                                                />
+                                            );
+                                        },
+                                    }}
+                                    remarkPlugins={[remarkGfm]}
+                                >
                                     {exerciseDetails.enuntziatua}
                                 </ReactMarkdown>
                             </div>
