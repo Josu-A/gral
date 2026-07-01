@@ -51,6 +51,12 @@ export const labelData = [
         izena: "Pila",
         key: "stack",
     },
+    {
+        categoryKey: "dataStructure",
+        deskribapena: "Grafoekin erlazionatutako ariketak",
+        izena: "Grafoa",
+        key: "graph",
+    },
 ] as const satisfies ReadonlyArray<{
     categoryKey: CategoryKey;
     deskribapena: string;

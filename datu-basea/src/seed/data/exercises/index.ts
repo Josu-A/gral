@@ -1,3 +1,4 @@
+import { courseSchedule } from "./course-schedule";
 import { medianOfTwoSortedArrays } from "./median-of-two-sorted-arrays";
 import { numberOfAtoms } from "./number-of-atoms";
 import { palindromeNumber } from "./palindrome-number";
@@ -10,6 +11,7 @@ export const exerciseData = [
     palindromeNumber,
     numberOfAtoms,
     reverseInteger,
+    courseSchedule,
 ] as const;
 
 export type ExerciseKey = (typeof exerciseData)[number]["key"];
