@@ -1,5 +1,40 @@
 # Programazioan laguntzeko web-sistema, LLM eta MCP teknologietan oinarritua
 
+Gradu Amaierako Lan (GrAL) honetan, programazio ikasleentzako web-plataforma bat
+diseinatu eta inplementatu da. Hizkuntza-eredu Handiak (LLM) eta Model Context
+Protocol (MCP) protokoloa erabiliz ikaskuntza autonomoa sustatzen duen feedback
+pedagogikoa eskaintzen du.
+
+Ikasleek C, Java eta Python lengoaietako programazio-ariketak egin eta exekuta
+ditzakete nabigatzailetik bertatik. Edozein momentutan, txatbot bati laguntza eska
+diezaiokete. Ariketaren zailtasuna eta ikaslearen ikasketa-maila kontuan hartuta,
+txatboak pista pertsonalizatuak ematen ditu, ikaslea erantzun egokira pixkanaka
+gertutatu dadin, soluzioa zuzenean eman gabe.
+
+## Arkitektura
+
+Sistemak hiru geruzako bezero-zerbitzari arkitektura modularra jarraitzen du:
+
+- **Bezeroa** (`bezeroa/`): React eta Tailwind bidez eraikitako frontenda, Monaco
+  kode-editorea barne.
+- **Zerbitzaria** (`zerbitzaria/`): Express eta TypeScript bidez eraikitako backenda,
+  sistemaren orkestratzaile gisa jarduten duena. JWT bidezko kautotzea kudeatzen
+  du, datu-basearekin komunikatzen da, eta HiTZ zentroak garatutako Latxa LLMari
+  deitzen dio feedback pedagogikoa sortzeko.
+- **Kode exekuzio MCP zerbitzaria** (`mcp/code-execution/`): ikasleen kodea Docker
+  edukiontzi isolatuetan exekutatzen du, exekuzio-denborak mugatuz. Backendarekin
+  bakarrik komunikatzen da, STDIO bidez, eta lengoaia bakoitzeko tresna bat eskaintzen
+  dio: `run_c_exercise`, `run_java_exercise` eta `run_python_exercise`.
+
+Datuak PostgreSQL datu-base batean gordetzen dira, Prisma bidez kudeatuta (`datu-basea/`).
+
+## Demo-bideoa eta txostena
+
+- [Demo-bideoa](Project%20Demo.mp4): plataformaren funtzionamendua erakusten duen
+  bideoa.
+- [Proiektuaren txostena](Project%20Report.pdf): GrALaren memoria osoa: aurrekariak,
+  planifikazioa, betekizunak, arkitektura eta diseinua, inplementazioa eta ondorioak.
+
 ## Garapena
 
 ### Beharrezkoak
